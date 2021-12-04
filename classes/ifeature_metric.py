@@ -20,7 +20,6 @@ class IFeatureMetric(ABC):
   def feature_type(self) -> str
     raise NotImplementedError
 
-
   @property
   @abstractmethod
   def number_of_nulls(self) -> int
