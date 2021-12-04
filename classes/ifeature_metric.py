@@ -35,7 +35,6 @@ class IFeatureMetric(ABC):
   def variance(self) -> float
     raise NotImplementedError
 
-
   @property
   @abstractmethod
   def is_important_feature(self) -> bool
