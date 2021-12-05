@@ -10,7 +10,7 @@ class IFeatureMetric(ABC):
     raise NotImplementedError
 
   @property
-  def dataset(self) -> str:
+  def dataset_type(self) -> str:
     raise NotImplementedError
 
   @property

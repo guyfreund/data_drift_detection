@@ -2,6 +2,4 @@ from enum import Enum
 
 class DatasetType(Enum):
     Training = 0
-    Test = 1
-    Validation = 2
-    Deployment = 3
+    Deployment = 1
