@@ -69,5 +69,3 @@ class NumericFeatureMetric(IFeatureMetric):
   @is_important_feature.setter
   def is_important_feature(self, value: bool):
     self._is_important_feature = value
-
-   
