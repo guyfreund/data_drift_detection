@@ -3,7 +3,8 @@ from enum import Enum
 class DatasetType(Enum):
     Training = 0
     Test = 1
-    Deployment = 2
+    Validation = 2
+    Deployment = 3
 
 
 class FeatureType(Enum):
