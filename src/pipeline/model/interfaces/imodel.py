@@ -1,4 +1,4 @@
-from abc import ABS
+from abc import ABC
 
 class IModel(ABC):
   """

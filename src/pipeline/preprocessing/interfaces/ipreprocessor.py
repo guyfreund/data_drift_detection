@@ -1,4 +1,4 @@
-from abc import ABS, abstractmethod
+from abc import ABC, abstractmethod
 from typings import Tuple, List
 import pandas as pd
 
