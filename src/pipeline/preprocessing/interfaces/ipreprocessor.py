@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Tuple, List
 import pandas as pd
 
-from src.data_structures.interfaces.ifeature_metric import IFeatureMetric
+from src.pipeline.preprocessing.interfaces.ifeature_metric import IFeatureMetric
+from src.pipeline.datasets.dataset import Dataset
 
 class IPreprocessor(ABC):
   """
@@ -10,5 +11,5 @@ class IPreprocessor(ABC):
   """
 
   @abstractmethod
-  def preprocess(self) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetric]]:
+  def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetric]]:
     raise NotImplementedError
