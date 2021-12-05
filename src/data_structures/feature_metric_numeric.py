@@ -5,10 +5,10 @@ class NumericFeatureMetric(IFeatureMetric):
   """
   A class that represents a numeric feature and its metrics
   """
-  def __init__(self, name: str, dataset: DatasetType, feature_type: FeatureType):
+  def __init__(self, name: str, dataset: DatasetType):
     self._name = name
     self._dataset_type = dataset
-    self._feature_type = feature_type
+    self._feature_type = FeatureType.Numeric
     self._number_of_nulls = 0
     self._mean = 0
     self._variance = 0
@@ -49,10 +49,6 @@ class NumericFeatureMetric(IFeatureMetric):
   @dataset.setter
   def dataset(self, value: DatasetType):
     self._dataset = value
-
-  @feature_type.setter
-  def feature_type(self, value: FeatureType):
-    self._feature_type = value
 
   @number_of_nulls.setter
   def number_of_nulls(self, value: int):
