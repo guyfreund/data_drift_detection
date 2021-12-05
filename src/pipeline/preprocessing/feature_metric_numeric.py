@@ -1,5 +1,6 @@
 from src.pipeline.preprocessing.interfaces.ifeature_metric import IFeatureMetric
-from src.constants import DatasetType, FeatureType
+from src.pipeline.preprocessing.constants import FeatureType
+from src.pipeline.datasets.constants import DatasetType
 
 class NumericFeatureMetric(IFeatureMetric):
   """

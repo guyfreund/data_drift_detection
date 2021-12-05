@@ -1,6 +1,7 @@
-from abc import ABC
+from abc import ABC, abstractmethod
+import pandas as pd
 
-from src.constants import DatasetType
+from src.pipeline.datasets.constants import DatasetType
 
 class IDataset(ABC):
   """
@@ -17,4 +18,19 @@ class IDataset(ABC):
 
   @property
   def dtype(self) -> DatasetType:
+    raise NotImplementedError
+
+  @property
+  def path(self) -> str:
+    raise NotImplementedError
+
+  @property
+  def df(self) -> pd.DataFrame:
+    raise NotImplementedError
+
+  @abstractmethod
+  def load(self):
+    """
+    loads the dataset from memory
+    """
     raise NotImplementedError
