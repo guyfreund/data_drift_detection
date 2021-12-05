@@ -1,4 +1,4 @@
-from data_drift_detector.classes.ifeature_metric import IFeatureMetric
+from data_drift_detector.src.data_structures.interfaces import IFeatureMetric
 
 class NumericFeatureMetric(IFeatureMetric)
   pass
