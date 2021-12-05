@@ -12,4 +12,3 @@ class IPreprocessor(ABC):
   @abstractmethod
   def preprocess(self) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetric]]:
     raise NotImplementedError
-
