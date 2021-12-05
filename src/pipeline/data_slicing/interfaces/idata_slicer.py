@@ -6,6 +6,6 @@ class IDataSlicer(ABC):
   """
 
   @abstractmethod
-  def slice(self)
+  def slice(self):
     raise NotImplementedError
 

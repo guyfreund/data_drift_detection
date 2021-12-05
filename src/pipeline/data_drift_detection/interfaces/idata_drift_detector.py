@@ -6,6 +6,6 @@ class IDataDriftDetector(ABC):
   """
 
   @abstractmethod
-  def detect(self) -> bool
+  def detect(self) -> bool:
     raise NotImplementedError
 

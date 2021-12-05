@@ -6,29 +6,29 @@ class IFeatureMetric(ABC):
   """
 
   @property
-  def name(self) -> str
+  def name(self) -> str:
     raise NotImplementedError
 
   @property
-  def dataset(self) -> str
+  def dataset(self) -> str:
     raise NotImplementedError
 
   @property
-  def feature_type(self) -> str
+  def feature_type(self) -> str:
     raise NotImplementedError
 
   @property
-  def number_of_nulls(self) -> int
+  def number_of_nulls(self) -> int:
     raise NotImplementedError
 
   @property
-  def mean(self) -> float
+  def mean(self) -> float:
     raise NotImplementedError
 
   @property
-  def variance(self) -> float
+  def variance(self) -> float:
     raise NotImplementedError
 
   @property
-  def is_important_feature(self) -> bool
+  def is_important_feature(self) -> bool:
     raise NotImplementedError

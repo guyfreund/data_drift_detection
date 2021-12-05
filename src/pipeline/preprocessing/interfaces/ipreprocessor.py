@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typings import Tuple, List
+from typing import Tuple, List
 import pandas as pd
 
-from data_drift_detector.src.data_structures.interfaces import IFeatureMetric
+from src.data_structures.interfaces.ifeature_metric import IFeatureMetric
 
 class IPreprocessor(ABC):
   """
@@ -10,6 +10,6 @@ class IPreprocessor(ABC):
   """
 
   @abstractmethod
-  def preprocess(self) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetric]]
+  def preprocess(self) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetric]]:
     raise NotImplementedError
 
