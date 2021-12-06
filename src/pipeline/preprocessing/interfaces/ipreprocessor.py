@@ -14,6 +14,7 @@ class IPreprocessor(ABC):
   def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetric]]:
     """ preprocesses the raw dataset
         saves the processed data frame in self._processed_df
+        saves the processes data as a pickle
 
     Args:
         dataset (Dataset): The raw dataset
@@ -30,6 +31,7 @@ class IPreprocessor(ABC):
   def split(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """ split the processed dataset into X_train, X_validation, X_test
         saves the sets in self._X_train, self._X_validation, self._X_test
+        save X_train, X_validation, X_test as a pickle
 
     Returns:
         Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
