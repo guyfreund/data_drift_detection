@@ -15,14 +15,15 @@ class IPreprocessor(ABC):
     """ preprocesses the raw dataset
         saves the processed data frame in self._processed_df
         saves the processes data as a pickle
+        saves feature_metrics_list as a pickle
 
     Args:
         dataset (Dataset): The raw dataset
 
     Returns:
         Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetric]]:
-        X (pd.DataFrame): the processesed data frame
-        X+ (pd.DataFrame): the processed data frame with the addition of the DatasetType column for all instances
+        processed_dataset (pd.DataFrame): the processesed data frame
+        processed_dataset_plus (pd.DataFrame): the processed data frame with the addition of the DatasetType column for all instances
         feature_metrics_list (List[IFeatureMetric]]): a list of IFeatureMetric objects per feature
     """
     raise NotImplementedError
