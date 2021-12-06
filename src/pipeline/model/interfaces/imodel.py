@@ -23,8 +23,8 @@ class IModel(ABC):
     raise NotImplementedError
 
   @abstractmethod
-  def tune_hyperparametes(self, X_validation: pd.DataFrame):
-    """ tunes the parameter of the model
+  def tune_hyperparameters(self, X_validation: pd.DataFrame):
+    """ tunes the parameters of the model
         keep track on model training (loss, etc...)
         saves the tuned model as a pickle
         saves the tuned model in self._model
