@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 pandas = "*"
+pyyaml = "*"
+easydict = "*"
 
 [dev-packages]
 

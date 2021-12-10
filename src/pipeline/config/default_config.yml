@@ -1,0 +1,4 @@
+data_drift:
+  mean_threshold: 0.5
+  variance_threshold: 0.5
+  number_of_nulls_threshold: 5
