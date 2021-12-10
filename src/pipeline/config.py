@@ -2,7 +2,7 @@ import os
 import yaml
 from easydict import EasyDict
 
-from src.pipeline.config.paths import DEFAULT_CONFIG_PATH
+from src.pipeline.paths import DEFAULT_CONFIG_PATH
 from src.pipeline.utils import Singleton
 
 

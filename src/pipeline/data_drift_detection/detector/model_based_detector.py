@@ -9,7 +9,7 @@ from src.pipeline.model.interfaces.imodel import IModel
 from src.pipeline.model.interfaces.imodel_metric import IModelMetric
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
-from src.pipeline.config.config import Config
+from src.pipeline.config import Config
 from src.pipeline.model.constants import ModelMetricType
 
 

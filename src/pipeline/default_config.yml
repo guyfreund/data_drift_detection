@@ -1,5 +1,8 @@
 data_drift:
+  # feature thresholds
   mean_threshold: 0.5
   variance_threshold: 0.5
   number_of_nulls_threshold: 5
+
+  # approach thresholds
   model_based_threshold: 0.1
