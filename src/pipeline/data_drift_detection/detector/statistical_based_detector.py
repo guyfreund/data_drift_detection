@@ -60,7 +60,8 @@ class StatisticalBasedDetector(IDataDriftDetector):
         return training_feature_names, training_feature_metrics_list, deployment_feature_metrics_list
 
     @staticmethod
-    def _extract_data_drifts(feature_names, training_feature_metrics_list, deployment_feature_metrics_list) -> Dict[str, Dict[DataDriftType, DataDrift]]:
+    def _extract_data_drifts(feature_names: List[str], training_feature_metrics_list: List[IFeatureMetrics],
+                             deployment_feature_metrics_list: List[IFeatureMetrics]) -> Dict[str, Dict[DataDriftType, DataDrift]]:
         data_drifts_per_feature_dict: Dict[str, Dict[DataDriftType, DataDrift]] = {feature_name: {} for feature_name in feature_names}
 
         for feature_name, training_fm, deployment_fm in zip(feature_names, training_feature_metrics_list, deployment_feature_metrics_list):
