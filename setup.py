@@ -7,7 +7,6 @@ LONG_DESCRIPTION = 'Implentation of a Machine Learning Operations pipeline, whic
                    'https://archive.ics.uci.edu/ml/datasets/bank+marketing\n' \
                    'https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)\n'
 
-# Setting up
 setup(
     name="data_drift_detector",
     version=VERSION,
