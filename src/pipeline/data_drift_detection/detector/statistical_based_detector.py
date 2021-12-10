@@ -31,6 +31,7 @@ class StatisticalBasedDetector(IDataDriftDetector):
             num_nulls_drifted_feature_names = self._get_data_drift_feature_names(data_drifts_per_feature_dict)
 
         # statistical data drift detection
+        # based on the percent of feature that were identified as drifted per data drift type
         percent_features_variance_drifted = len(variance_drifted_feature_names) / len(feature_names)
         percent_features_mean_drifted = len(mean_drifted_feature_names) / len(feature_names)
         percent_features_num_nulls_drifted = len(num_nulls_drifted_feature_names) / len(feature_names)
