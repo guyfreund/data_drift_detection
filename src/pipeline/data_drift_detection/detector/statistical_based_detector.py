@@ -35,16 +35,20 @@ class StatisticalBasedDetector(IDataDriftDetector):
         percent_features_mean_drifted = len(mean_drifted_feature_names) / len(feature_names)
         percent_features_num_nulls_drifted = len(num_nulls_drifted_feature_names) / len(feature_names)
 
-        is_variance_drifted = percent_features_variance_drifted <= Config().data_drift.variance.percent_of_features
-        is_mean_drifted = percent_features_mean_drifted <= Config().data_drift.mean.percent_of_features
-        is_num_nulls_drifted = percent_features_num_nulls_drifted <= Config().data_drift.number_of_nulls.percent_of_features
+        is_variance_drifted = percent_features_variance_drifted <= Config().internal_data_drift_detector.data_drift.variance.percent_of_features
+        is_mean_drifted = percent_features_mean_drifted <= Config().internal_data_drift_detector.data_drift.mean.percent_of_features
+        is_num_nulls_drifted = percent_features_num_nulls_drifted <= Config().internal_data_drift_detector.data_drift.number_of_nulls.percent_of_features
 
         weighted_sum_on_all_data_drift_types = np.dot(
             np.array([is_variance_drifted, is_mean_drifted, is_num_nulls_drifted]),
-            np.array([Config().data_drift.variance.weight, Config().data_drift.mean.weight, Config().data_drift.number_of_nulls.weight])
+            np.array([
+                Config().internal_data_drift_detector.data_drift.variance.weight,
+                Config().internal_data_drift_detector.data_drift.mean.weight,
+                Config().internal_data_drift_detector.data_drift.number_of_nulls.weight
+            ])
         )
 
-        is_drifted = weighted_sum_on_all_data_drift_types > Config().data_drift.statistical_based_threshold
+        is_drifted = weighted_sum_on_all_data_drift_types > Config().internal_data_drift_detector.data_drift.statistical_based_threshold
 
         return StatisticalBasedDataDrift(is_drifted=is_drifted)
 
@@ -68,19 +72,19 @@ class StatisticalBasedDetector(IDataDriftDetector):
             # extract variance
             training_variance = training_fm.variance
             deployment_variance = deployment_fm.variance
-            is_variance_drifted = np.abs(training_variance - deployment_variance) > Config().data_drift.variance.threshold
+            is_variance_drifted = np.abs(training_variance - deployment_variance) > Config().internal_data_drift_detector.data_drift.variance.threshold
             data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: VarianceDataDrift(is_drifted=is_variance_drifted)}
 
             # extract mean
             training_mean = training_fm.mean
             deployment_mean = deployment_fm.mean
-            is_mean_drifted = np.abs(training_mean - deployment_mean) > Config().data_drift.mean.threshold
+            is_mean_drifted = np.abs(training_mean - deployment_mean) > Config().internal_data_drift_detector.data_drift.mean.threshold
             data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: MeanDataDrift(is_drifted=is_mean_drifted)}
 
             # handle number of nulls
             training_num_nulls = training_fm.number_of_nulls
             deployment_num_nulls = deployment_fm.number_of_nulls
-            is_num_nulls_drifted = np.abs(training_num_nulls - deployment_num_nulls) > Config().data_drift.number_of_nulls.threshold
+            is_num_nulls_drifted = np.abs(training_num_nulls - deployment_num_nulls) > Config().internal_data_drift_detector.data_drift.number_of_nulls.threshold
             data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: NumNullsDataDrift(is_drifted=is_num_nulls_drifted)}
 
         return data_drifts_per_feature_dict
