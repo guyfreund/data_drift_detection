@@ -3,7 +3,7 @@ from src.pipeline.preprocessing.constants import FeatureType
 from src.pipeline.datasets.constants import DatasetType
 
 
-class NumericFeatureMetric(IFeatureMetrics):
+class NumericFeatureMetrics(IFeatureMetrics):
     """
     A class that represents a numeric feature and its metrics
     """
