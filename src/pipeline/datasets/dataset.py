@@ -13,8 +13,8 @@ class Dataset:
     def __init__(self, dtype: DatasetType, path: str):
         assert os.path.exists(path)
         self._path = path
-        self._raw_df = self.load(self._path)
-        self._num_instances, self._num_features = self._df.shape
+        self._raw_df = self.load()
+        self._num_instances, self._num_features = self._raw_df.shape
         self._dtype = dtype
 
     @property
@@ -39,7 +39,10 @@ class Dataset:
 
     @abstractmethod
     def load(self) -> pd.DataFrame:
-        """
-        loads the dataset from memory
+        """ loads the dataset from memory
+
+        Returns:
+            (pd.DataFrame): the raw dataframe
+
         """
         raise NotImplementedError
