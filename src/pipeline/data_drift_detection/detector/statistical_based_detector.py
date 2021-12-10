@@ -85,7 +85,7 @@ class StatisticalBasedDetector(IDataDriftDetector):
         return data_drifts_per_feature_dict
 
     @staticmethod
-    def _get_data_drift_feature_names(data_drifts_per_feature_dict) -> Tuple[List[str], List[str], List[str]]:
+    def _get_data_drift_feature_names(data_drifts_per_feature_dict: Dict[str, Dict[DataDriftType, DataDrift]]) -> Tuple[List[str], List[str], List[str]]:
         variance_drifted_feature_names, mean_drifted_feature_names, num_nulls_drifted_feature_names = [], [], []
 
         for fn, fm in data_drifts_per_feature_dict.items():
