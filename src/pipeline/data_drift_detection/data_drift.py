@@ -2,6 +2,10 @@ class DataDrift:
     def __init__(self, is_drifted: bool):
         self._is_drifted = is_drifted
 
+    @property
+    def is_drifted(self):
+        return self._is_drifted
+
 
 class ModelBasedDataDrift(DataDrift):
     def __init__(self, is_drifted: bool):

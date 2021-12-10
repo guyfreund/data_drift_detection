@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from src.pipeline.data_drift_detection.data_drift import DataDrift
+
 
 class IDataDriftDetector(ABC):
     """
@@ -7,5 +9,5 @@ class IDataDriftDetector(ABC):
     """
 
     @abstractmethod
-    def detect(self) -> bool:
+    def detect(self) -> DataDrift:
         raise NotImplementedError
