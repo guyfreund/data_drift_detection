@@ -4,7 +4,7 @@ import pandas as pd
 from src.pipeline.datasets.constants import DatasetType
 
 
-class IDataset(ABC):  # Not in use
+class IDataset(ABC):  # NOT IN USE
     """
     Interface for a dataset object
     """
