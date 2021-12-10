@@ -38,4 +38,3 @@ class ModelBasedDetector(IDataDriftDetector):
         is_drifted = np.abs(0.5 - model_accuracy) < Config().data_drift.model_based_threshold
 
         return ModelBasedDataDrift(is_drifted=is_drifted)
-
