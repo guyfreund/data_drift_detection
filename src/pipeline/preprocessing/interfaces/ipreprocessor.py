@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Tuple, List
 import pandas as pd
 
-from src.pipeline.preprocessing.interfaces.ifeature_metric import IFeatureMetric
+from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
 from src.pipeline.datasets.dataset import Dataset
 
 
@@ -12,7 +12,7 @@ class IPreprocessor(ABC):
     """
 
     @abstractmethod
-    def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetric]]:
+    def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
         """ preprocesses the raw dataset
         saves the processed data frame in self._processed_df
         saves the processed data as a pickle
@@ -22,7 +22,7 @@ class IPreprocessor(ABC):
             dataset (Dataset): The raw dataset
 
         Returns:
-            Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetric]]:
+            Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
             processed_dataset (pd.DataFrame): the processesed data frame
             processed_dataset_plus (pd.DataFrame): the processed data frame with the addition of the DatasetType column for all instances
             feature_metrics_list (List[IFeatureMetric]]): a list of IFeatureMetric objects per feature

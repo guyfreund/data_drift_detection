@@ -1,7 +1,7 @@
 from abc import ABC
 
 
-class IFeatureMetric(ABC):
+class IFeatureMetrics(ABC):
     """
     Interface for a feature metric object
     """

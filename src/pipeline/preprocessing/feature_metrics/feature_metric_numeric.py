@@ -1,9 +1,9 @@
-from src.pipeline.preprocessing.interfaces.ifeature_metric import IFeatureMetric
+from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
 from src.pipeline.preprocessing.constants import FeatureType
 from src.pipeline.datasets.constants import DatasetType
 
 
-class NumericFeatureMetric(IFeatureMetric):
+class NumericFeatureMetric(IFeatureMetrics):
     """
     A class that represents a numeric feature and its metrics
     """
