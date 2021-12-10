@@ -35,7 +35,7 @@ class ModelBasedDetector(IDataDriftDetector):
         self._model.tune_hyperparameters(X_validation=X_validation, y_validation=y_validation)
         model_metrics_dict: Dict[ModelMetricType, IModelMetric] = self._model.evaluate(X_test=X_test, y_test=y_test)
 
-        # data drift is detected if model accuracy is like a coin-flip
+        # data drift is detected if model accuracy is not like a coin-flip
         model_accuracy: float = model_metrics_dict[ModelMetricType.Accuracy].value
         is_accuracy_like_coin_flip = np.abs(model_accuracy - 0.5) < Config().data_drift.internal_data_drift_detector.model_based_threshold  # TODO: change to np.isclose
 
