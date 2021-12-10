@@ -37,6 +37,6 @@ class ModelBasedDetector(IDataDriftDetector):
 
         # data drift is detected if model accuracy is like a coin-flip
         model_accuracy: float = model_metrics_dict[ModelMetricType.Accuracy].value
-        is_accuracy_like_coin_flip = np.abs(0.5 - model_accuracy) < Config().data_drift.model_based_threshold
+        is_accuracy_like_coin_flip = np.abs(0.5 - model_accuracy) < Config().data_drift.model_based_threshold  # TODO: change to np.isclose
 
         return ModelBasedDataDrift(is_drifted=not is_accuracy_like_coin_flip)

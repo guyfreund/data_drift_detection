@@ -26,7 +26,7 @@ class IPreprocessor(ABC):
             Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
             processed_dataset (pd.DataFrame): the processed data frame
             processed_dataset_plus (pd.DataFrame): the processed data frame with the addition of the DatasetType column for all instances
-            feature_metrics_list (List[IFeatureMetric]]): a list of IFeatureMetric objects per feature
+            feature_metrics_list (List[IFeatureMetrics]): a list of IFeatureMetric objects per feature
         """
         raise NotImplementedError
 
@@ -66,4 +66,20 @@ class IPreprocessor(ABC):
 
     @property
     def X_test(self) -> pd.DataFrame:
+        raise NotImplementedError
+
+    @property
+    def y_train(self) -> pd.DataFrame:
+        raise NotImplementedError
+
+    @property
+    def y_validation(self) -> pd.DataFrame:
+        raise NotImplementedError
+
+    @property
+    def y_test(self) -> pd.DataFrame:
+        raise NotImplementedError
+
+    @property
+    def feature_metrics_list(self) -> List[IFeatureMetrics]:
         raise NotImplementedError

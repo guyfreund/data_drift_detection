@@ -12,6 +12,11 @@ class ModelBasedDataDrift(DataDrift):
         super().__init__(is_drifted=is_drifted)
 
 
+class StatisticalBasedDataDrift(DataDrift):
+    def __init__(self, is_drifted: bool):
+        super().__init__(is_drifted=is_drifted)
+
+
 class MeanDataDrift(DataDrift):
     def __init__(self, is_drifted: bool):
         super().__init__(is_drifted=is_drifted)
