@@ -15,7 +15,8 @@ class IPreprocessor(ABC):
     def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
         """ preprocesses the raw dataset
         saves the processed data frame in self._processed_df
-        saves the processed data as a pickle
+        saves the processed dataset as a pickle
+        saves the processed dataset plus as a pickle
         saves feature_metrics_list as a pickle
 
         Args:
@@ -30,16 +31,24 @@ class IPreprocessor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def split(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    def split(self, processed_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """ split the processed dataset into X_train, X_validation, X_test
         saves the sets in self._X_train, self._X_validation, self._X_test
         save X_train, X_validation, X_test as a pickle
+        saves the sets in self._y_train, self._y_validation, self._y_test
+        save y_train, y_validation, y_test as a pickle
+
+        Args:
+            processed_df (pd.DataFrame): The processed dataframe
 
         Returns:
             Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
             X_train (pd.DataFrame): the training set
             X_validation (pd.DataFrame): the validation set
             X_test (pd.DataFrame): the test set
+            y_train (pd.DataFrame): the training set labels
+            y_validation (pd.DataFrame): the validation set labels
+            y_test (pd.DataFrame): the test set labels
         """
         raise NotImplementedError
 

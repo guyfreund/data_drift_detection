@@ -1,6 +1,7 @@
 from enum import Enum
 
 
+# TODO: figure out
 class DataDriftType(Enum):
     Model = 0
     Mean = 1
