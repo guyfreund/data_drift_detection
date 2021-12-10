@@ -11,7 +11,3 @@ class BankMarketingDataset(Dataset):
 
     def load(self) -> pd.DataFrame:
         return pd.read_csv(self._path)
-
-
-bm_ds = BankMarketingDataset()
-print()

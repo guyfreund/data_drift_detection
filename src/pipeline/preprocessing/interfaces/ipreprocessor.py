@@ -23,7 +23,7 @@ class IPreprocessor(ABC):
 
         Returns:
             Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
-            processed_dataset (pd.DataFrame): the processesed data frame
+            processed_dataset (pd.DataFrame): the processed data frame
             processed_dataset_plus (pd.DataFrame): the processed data frame with the addition of the DatasetType column for all instances
             feature_metrics_list (List[IFeatureMetric]]): a list of IFeatureMetric objects per feature
         """
