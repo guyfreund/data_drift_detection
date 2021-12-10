@@ -1,8 +1,18 @@
 data_drift:
   # feature thresholds
-  mean_threshold: 0.5
-  variance_threshold: 0.5
-  number_of_nulls_threshold: 5
+  mean:
+    threshold: 5e-1
+    percent_of_features: 1e-1  # number of features the indicates on data drift
+    weight: .33333
+  variance:
+    threshold: 5e-1
+    percent_of_features: 1e-1  # number of features the indicates on data drift
+    weight: .33333
+  number_of_nulls:
+    threshold: 5
+    percent_of_features: 1e-1  # number of features the indicates on data drift
+    weight: .33333
 
   # approach thresholds
-  model_based_threshold: 0.1
+  model_based_threshold: 1e-1
+  statistical_based_threshold: .3  # at least one is detected
