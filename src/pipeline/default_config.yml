@@ -26,3 +26,14 @@ data_drift:
 
   scikit_multiflow:
     weight: 1
+
+  dataset_schema:
+    bank_marketing_dataset:
+      numerical_features: []
+      categorical_features: []
+
+    german_credit_dataset:
+      numerical_features: []
+      categorical_features: []
+
+
