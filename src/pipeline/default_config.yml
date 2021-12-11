@@ -30,6 +30,7 @@ data_drift:
   scikit_multiflow:
     weight: 1
 
+dataset:
   dataset_schema:
     bank_marketing_dataset:
       numerical_features: []
