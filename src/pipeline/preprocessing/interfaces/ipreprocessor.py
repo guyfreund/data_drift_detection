@@ -31,7 +31,7 @@ class IPreprocessor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def split(self, processed_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    def split(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """ split the processed dataset into X_train, X_validation, X_test
         saves the sets in self._X_train, self._X_validation, self._X_test
         save X_train, X_validation, X_test as a pickle
@@ -42,7 +42,7 @@ class IPreprocessor(ABC):
             processed_df (pd.DataFrame): The processed dataframe
 
         Returns:
-            Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+            Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
             X_train (pd.DataFrame): the training set
             X_validation (pd.DataFrame): the validation set
             X_test (pd.DataFrame): the test set

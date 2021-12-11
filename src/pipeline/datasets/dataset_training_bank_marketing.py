@@ -10,4 +10,4 @@ class BankMarketingDataset(Dataset):
         super().__init__(dtype=DatasetType.Training, path=BANK_MARKETING_DATASET_PATH)
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path)
+        return pd.read_csv(self._path, delimiter=';')

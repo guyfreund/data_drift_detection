@@ -1,5 +1,5 @@
 from src.pipeline.model.interfaces.imodel import IModel
 
 
-class BankMarketingProductionModel(IModel):
+class GermanCreditProductionModel(IModel):
     pass
