@@ -9,6 +9,7 @@ pandas = "*"
 seaborn = "*"
 matplotlib = "*"
 easydict = "*"
+scikit-multiflow = "*"
 
 [dev-packages]
 
