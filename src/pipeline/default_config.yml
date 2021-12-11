@@ -1,4 +1,7 @@
 data_drift:
+  # general
+  threshold: 3
+
   internal_data_drift_detector:
     # general
     weight: 3
