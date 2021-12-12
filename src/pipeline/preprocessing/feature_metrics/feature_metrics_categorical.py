@@ -9,8 +9,6 @@ class CategoricalFeatureMetrics(IFeatureMetrics):
         self._dataset_type = dataset_type
         self._feature_type = FeatureType.Categorical
         self._number_of_nulls = 0
-        self._mean = 0
-        self._variance = 0
         self._is_important_feature = False
 
     @property
@@ -36,14 +34,6 @@ class CategoricalFeatureMetrics(IFeatureMetrics):
     @property
     def number_of_nulls(self) -> int:
         return self._number_of_nulls
-
-    @property
-    def mean(self) -> float:
-        return self._mean
-
-    @property
-    def variance(self) -> float:
-        return self._variance
 
     @property
     def is_important_feature(self) -> bool:
