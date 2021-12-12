@@ -10,4 +10,3 @@ class IManager(ABC):
     @abstractmethod
     def manage(self) -> Any:
         raise NotImplementedError
-
