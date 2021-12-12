@@ -1,17 +1,13 @@
-from typing import Dict, Any
-import pandas as pd
 from xgboost import XGBClassifier
+from typing import Dict, Any
 from sklearn import metrics
+import pandas as pd
 import pickle
-import xgboost as xgb
-from xgboost import plot_importance
-from matplotlib import pyplot
-import matplotlib as plt
+import os
 
 from src.pipeline.model.constants import ModelMetricType
 from src.pipeline.model.interfaces.imodel import IModel
 from src.pipeline.model.interfaces.imodel_metric import IModelMetric
-from src.pipeline.model.paths import DEFAULT_SAVED_MODEL_PATH
 
 
 class BankMarketingProductionModel(IModel):
@@ -20,8 +16,14 @@ class BankMarketingProductionModel(IModel):
 
     def train(self, X_train: pd.DataFrame, y_train: pd.DataFrame):
         self._model.fit(X_train, y_train)
-        with open(DEFAULT_SAVED_MODEL_PATH, 'wb') as handle:
+
+        self._save_model_as_pickle(self.__class__.__name__)
+
+    def _save_model_as_pickle(self, model_class_name: str):
+        path = os.path.abspath(os.path.join(__file__, "..", "..", f"{model_class_name}.sav"))
+        with open(path, 'wb') as handle:
             pickle.dump({}, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
         print("... save model ...")
 
     def tune_hyperparameters(self, X_validation: pd.DataFrame, y_validation: pd.DataFrame):
@@ -33,11 +35,12 @@ class BankMarketingProductionModel(IModel):
         print(f'test accuracy score is: {round(metrics.accuracy_score(y_test, y_pred), 2)}%')
 
         model_metric = IModelMetric()
-        metric_type = ModelMetricType(0)
+        metric_type = ModelMetricType.Accuracy
 
         return {metric_type: model_metric}
 
-    def load(self, path: str):
+    def load(self, model_class_name: str):
+        path = os.path.abspath(os.path.join(__file__, "..", "..", f"{model_class_name}.sav"))
         with open(path, 'rb') as handle:
             self._model = pickle.load(handle)
         print("... load model ...")
