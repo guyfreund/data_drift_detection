@@ -46,7 +46,7 @@ class ScikitMultiflowDataDriftDetector(IDataDriftDetector):
         return DataDrift(is_drifted=self._is_drifted())
 
     def _is_drifted(self) -> bool:
-        num_instances, _ = self._processed_df.shape
+        num_instances, _ = self._deployment_dataset.num_instances
         overlapping_instances_idx: Set[int] = set()
         percent_of_instances_list: List[float] = [
             Config().data.drift.scikit_multiflow.modules.DDM.percent_of_instances,
