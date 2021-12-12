@@ -11,6 +11,7 @@ matplotlib = "*"
 easydict = "*"
 scikit-multiflow = "*"
 cython = "*"
+pipenv = "*"
 
 [dev-packages]
 pytest = "*"
