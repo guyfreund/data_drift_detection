@@ -18,7 +18,7 @@ setup(
     long_description=LONG_DESCRIPTION,
     packages=find_packages(),
     install_requires=[],
-    python_requires=">=3.7.12",
+    python_requires=">=3.8.12",
     url="https://github.com/guyfreund/data_drift_detctor/",
     classifiers=[
         "Intended Audience :: Education",

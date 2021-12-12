@@ -36,9 +36,9 @@ class StatisticalBasedDetector(IDataDriftDetector):
         percent_features_mean_drifted = len(mean_drifted_feature_names) / len(feature_names)
         percent_features_num_nulls_drifted = len(num_nulls_drifted_feature_names) / len(feature_names)
 
-        is_variance_drifted = percent_features_variance_drifted <= Config().data_drift.internal_data_drift_detector.variance.percent_of_features
-        is_mean_drifted = percent_features_mean_drifted <= Config().data_drift.internal_data_drift_detector.mean.percent_of_features
-        is_num_nulls_drifted = percent_features_num_nulls_drifted <= Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_of_features
+        is_variance_drifted = percent_features_variance_drifted >= Config().data_drift.internal_data_drift_detector.variance.percent_of_features
+        is_mean_drifted = percent_features_mean_drifted >= Config().data_drift.internal_data_drift_detector.mean.percent_of_features
+        is_num_nulls_drifted = percent_features_num_nulls_drifted >= Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_of_features
 
         weighted_sum_on_all_data_drift_types = np.dot(
             np.array([is_variance_drifted, is_mean_drifted, is_num_nulls_drifted]),

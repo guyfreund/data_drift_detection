@@ -1,5 +1,5 @@
 from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
-from src.pipeline.preprocessing.interfaces.constants import FeatureType
+from src.pipeline.preprocessing.constants import FeatureType
 from src.pipeline.datasets.constants import DatasetType
 
 

@@ -14,7 +14,6 @@ class Dataset:
         assert os.path.exists(path)
         self._path = path
         self._raw_df = self.load()
-        # TODO: think if shape is the right thing here
         self._num_instances, self._num_features = self._raw_df.shape
         self._dtype = dtype
 
