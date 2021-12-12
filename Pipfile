@@ -12,6 +12,7 @@ easydict = "*"
 scikit-multiflow = "*"
 cython = "*"
 pipenv = "*"
+pyyaml = "*"
 
 [dev-packages]
 pytest = "*"
