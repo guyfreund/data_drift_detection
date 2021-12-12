@@ -40,7 +40,7 @@ class DataGenerator(IDataGenerator):
         # return self.synthesizer.sample(n_samples)
         return g_z
 
-    def generate_data_drift(self, dataset: pd.DataFrame, drifted_feature: ):
+    def generate_data_drift(self, dataset: pd.DataFrame, drifted_feature):
         pass
 
 
