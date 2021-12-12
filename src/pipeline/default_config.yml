@@ -45,3 +45,15 @@ data_drift:
       HDDM_W:
         weight: 1
         percent_of_instances: 1e-1  # number of instances that indicates on a data drift
+
+data_generation:
+  data_drift:
+    variance:
+      features: ["feature_1", "...", "feature_k"]
+      generation_percent: 200  # means to generate a dataset of double size
+    mean:
+      features: ["feature_1", "...", "feature_k"]
+      generation_percent: 200  # means to generate a dataset of double size
+    number_of_nulls:
+      features: ["feature_1", "...", "feature_k"]
+      generation_percent: 200  # means to generate a dataset of double size
