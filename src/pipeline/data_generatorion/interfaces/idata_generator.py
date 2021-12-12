@@ -36,7 +36,7 @@ class IDataGenerator(ABC):  # TODO: Implement DataGenerator per DataDriftType.
 
     @generation_percent.setter
     def generation_percent(self, value: float):
-        """ sets tthe proportional percent of the new generated dataset. For a double size generated dataset, use: 200 """
+        """ sets the proportional percent of the new generated dataset. For a double size generated dataset, use: 200 """
         raise NotImplementedError
 
     @property
