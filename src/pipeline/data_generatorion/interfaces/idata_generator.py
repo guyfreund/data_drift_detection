@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Set
+from typing import List
 
 from src.pipeline.data_drift_detection.constants import DataDriftType
 from src.pipeline.datasets.dataset import Dataset
