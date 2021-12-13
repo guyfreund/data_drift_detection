@@ -82,8 +82,8 @@ class StatisticalBasedDetector(IDataDriftDetector):
             training_mean = training_fm.mean
             deployment_mean = deployment_fm.mean
             min_mean = min(training_mean, deployment_mean)
-            max_max = max(training_mean, deployment_mean)
-            is_mean_drifted = (1 - (min_mean / max_max)) > Config().data_drift.internal_data_drift_detector.mean.percent_threshold
+            max_mean = max(training_mean, deployment_mean)
+            is_mean_drifted = (1 - (min_mean / max_mean)) > Config().data_drift.internal_data_drift_detector.mean.percent_threshold
             data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: MeanDataDrift(is_drifted=is_mean_drifted)}
 
             # handle number of nulls
