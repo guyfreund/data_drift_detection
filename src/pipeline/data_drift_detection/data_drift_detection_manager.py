@@ -3,12 +3,12 @@ import numpy as np
 
 from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.data_drift import DataDrift
-from src.pipeline.data_drift_detection.detector.data_drift_detector import DataDriftDetector
-from src.pipeline.data_drift_detection.detector.model_based_detector import ModelBasedDetector
-from src.pipeline.data_drift_detection.detector.scikit_multiflow_data_drift_detector import \
+from src.pipeline.data_drift_detection.detectors.data_drift_detector import DataDriftDetector
+from src.pipeline.data_drift_detection.detectors.model_based_detector import ModelBasedDetector
+from src.pipeline.data_drift_detection.detectors.scikit_multiflow_data_drift_detector import \
     ScikitMultiflowDataDriftDetector
-from src.pipeline.data_drift_detection.detector.statistical_based_detector import StatisticalBasedDetector
-from src.pipeline.data_drift_detection.detector.tensorflow_data_drift_detector import \
+from src.pipeline.data_drift_detection.detectors.statistical_based_detector import StatisticalBasedDetector
+from src.pipeline.data_drift_detection.detectors.tensorflow_data_drift_detector import \
     TensorflowDataValidationDataDriftDetector
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.datasets.dataset import Dataset
