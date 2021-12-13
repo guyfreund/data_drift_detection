@@ -3,8 +3,6 @@ import os
 from typing import List
 
 from src.pipeline.data_drift_detection.data_drift import DataDrift
-from src.pipeline.datasets.constants import DatasetType
-from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_generation.data_generation_manager import DataGenerationManager
 from src.pipeline.data_drift_detection.data_drift_detection_manager import MultipleDatasetDataDriftDetectionManager, \
@@ -12,12 +10,12 @@ from src.pipeline.data_drift_detection.data_drift_detection_manager import Multi
 from src.pipeline.model.interfaces.imodel import IModel
 from src.pipeline.model.model_trainining_manager import ModelTrainingManager
 from src.pipeline.constants import PipelineMode
-from src.pipeline.datasets.paths import GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, \
-    GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, \
+from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, \
     GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH, GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH, \
-    BANK_MARKETING_DEPLOYMENT_DATASET_PATH, BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, \
     BANK_MARKETING_TRAINING_PROCESSED_DF_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH, \
     BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH
+from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDataset, \
+    BankMarketingDeploymentDatasetPlus, GermanCreditDeploymentDataset, GermanCreditDeploymentDatasetPlus
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 
 
@@ -47,33 +45,29 @@ def args_handler():
 
 
 def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
-    assert os.path.exists(GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH)
-    assert os.path.exists(GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH)
     assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH)
     assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH)
     assert os.path.exists(GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH)
-    assert os.path.exists(BANK_MARKETING_DEPLOYMENT_DATASET_PATH)
-    assert os.path.exists(BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH)
     assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PATH)
     assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH)
     assert os.path.exists(BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH)
 
     german_credit_info = DataDriftDetectionManagerInfo(
-        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH),  # TODO: move to specific dataset
+        deployment_dataset_plus=GermanCreditDeploymentDatasetPlus(),
         training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
         preprocessor=IPreprocessor(),  # TODO: fix
         model=IModel(),  # TODO: fix
-        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH),  # TODO: move to specific dataset
+        deployment_dataset=GermanCreditDeploymentDataset(),
         training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
         training_processed_df_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
     )
 
     bank_marketing_info = DataDriftDetectionManagerInfo(
-        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH),  # TODO: move to specific dataset
+        deployment_dataset_plus=BankMarketingDeploymentDatasetPlus(),
         training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
         preprocessor=IPreprocessor(),  # TODO: fix
         model=IModel(),  # TODO: fix
-        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH),  # TODO: move to specific dataset
+        deployment_dataset=BankMarketingDeploymentDataset(),
         training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
         training_processed_df_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
     )
