@@ -59,21 +59,21 @@ def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
     assert os.path.exists(BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH)
 
     german_credit_info = DataDriftDetectionManagerInfo(
-        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH),
+        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH),  # TODO: move to specific dataset
         training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
         preprocessor=IPreprocessor(),  # TODO: fix
         model=IModel(),  # TODO: fix
-        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH),
+        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH),  # TODO: move to specific dataset
         training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
         training_processed_df_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
     )
 
     bank_marketing_info = DataDriftDetectionManagerInfo(
-        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH),
+        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH),  # TODO: move to specific dataset
         training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
         preprocessor=IPreprocessor(),  # TODO: fix
         model=IModel(),  # TODO: fix
-        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH),
+        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH),  # TODO: move to specific dataset
         training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
         training_processed_df_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
     )
