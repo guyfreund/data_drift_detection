@@ -12,7 +12,7 @@ class BankMarketingDeploymentDataset(Dataset):
         super().__init__(dtype=DatasetType.Training, path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH)
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path)
+        return pd.read_csv(self._path, delimiter=';')
 
 
 class BankMarketingDeploymentDatasetPlus(Dataset):
@@ -20,7 +20,7 @@ class BankMarketingDeploymentDatasetPlus(Dataset):
         super().__init__(dtype=DatasetType.Training, path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH)
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path)
+        return pd.read_csv(self._path, delimiter=';')
 
 
 class GermanCreditDeploymentDataset(Dataset):
@@ -28,7 +28,7 @@ class GermanCreditDeploymentDataset(Dataset):
         super().__init__(dtype=DatasetType.Training, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH)
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path)
+        raise NotImplementedError  # TODO: implement
 
 
 class GermanCreditDeploymentDatasetPlus(Dataset):
@@ -36,4 +36,4 @@ class GermanCreditDeploymentDatasetPlus(Dataset):
         super().__init__(dtype=DatasetType.Training, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH)
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path)
+        raise NotImplementedError  # TODO: implement
