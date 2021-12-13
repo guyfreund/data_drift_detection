@@ -4,11 +4,11 @@ from typing import List
 
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.interfaces.imanager import IManager
-from src.pipeline.data_generation.data_generation_manager import DataGenerationManager
+from src.pipeline.data_generation.data_generation_manager import MultipleDatasetGenerationManager
 from src.pipeline.data_drift_detection.data_drift_detection_manager import MultipleDatasetDataDriftDetectionManager, \
     DataDriftDetectionManagerInfo
 from src.pipeline.model.interfaces.imodel import IModel
-from src.pipeline.model.model_trainining_manager import ModelTrainingManager
+from src.pipeline.model.model_trainining_manager import MultipleDatasetModelTrainingManager
 from src.pipeline.constants import PipelineMode
 from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, \
     GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH, GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH, \
@@ -22,9 +22,9 @@ from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo]):
         self._mode = pipeline_mode
-        self._data_generation_manager = DataGenerationManager()
-        self._multiple_dataset_data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=data_drift_info_list)
-        self._model_training_manager = ModelTrainingManager()
+        self._data_generation_manager = MultipleDatasetGenerationManager()
+        self._data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=data_drift_info_list)
+        self._model_training_manager = MultipleDatasetModelTrainingManager()
         self._data_drifts: List[DataDrift] = []
 
     def manage(self):
@@ -32,7 +32,7 @@ class PipelineManager(IManager):
             self._model_training_manager.manage()
         elif self._mode == PipelineMode.Monitoring:
             self._data_generation_manager.manage()
-            self._data_drifts = self._multiple_dataset_data_drift_detection_manager.manage()
+            self._data_drifts = self._data_drift_detection_manager.manage()
             # TODO: retrain
         else:
             raise NotImplementedError
