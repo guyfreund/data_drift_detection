@@ -1,4 +1,3 @@
-import os
 from typing import List
 import numpy as np
 
@@ -11,15 +10,8 @@ from src.pipeline.data_drift_detection.detector.scikit_multiflow_data_drift_dete
 from src.pipeline.data_drift_detection.detector.statistical_based_detector import StatisticalBasedDetector
 from src.pipeline.data_drift_detection.detector.tensorflow_data_drift_detector import \
     TensorflowDataValidationDataDriftDetector
-from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.datasets.dataset import Dataset
-from src.pipeline.datasets.paths import GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, \
-    GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, \
-    GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH, GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH, \
-    BANK_MARKETING_DEPLOYMENT_DATASET_PATH, BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, \
-    BANK_MARKETING_TRAINING_PROCESSED_DF_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH, \
-    BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.model.interfaces.imodel import IModel
 
@@ -86,38 +78,3 @@ class MultipleDatasetDataDriftDetectionManager(IManager):
     def manage(self) -> List[DataDrift]:
         data_drifts: List[DataDrift] = [manager.manage() for manager in self.data_drift_detection_managers]
         return data_drifts
-
-
-def run_multiple_dataset_data_drift_detection() -> List[DataDrift]:
-    assert os.path.exists(GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH)
-    assert os.path.exists(GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH)
-    assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH)
-    assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH)
-    assert os.path.exists(GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH)
-    assert os.path.exists(BANK_MARKETING_DEPLOYMENT_DATASET_PATH)
-    assert os.path.exists(BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH)
-    assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PATH)
-    assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH)
-    assert os.path.exists(BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH)
-
-    german_credit_info = DataDriftDetectionManagerInfo(
-        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH),
-        training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
-        preprocessor=IPreprocessor(),  # TODO: fix
-        model=IModel(),  # TODO: fix
-        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH),
-        training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
-        training_processed_df_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
-    )
-
-    bank_marketing_info = DataDriftDetectionManagerInfo(
-        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH),
-        training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
-        preprocessor=IPreprocessor(),  # TODO: fix
-        model=IModel(),  # TODO: fix
-        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH),
-        training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
-        training_processed_df_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
-    )
-
-    return MultipleDatasetDataDriftDetectionManager([german_credit_info, bank_marketing_info]).manage()
