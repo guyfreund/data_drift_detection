@@ -17,9 +17,11 @@ class PipelineManager(IManager):
     def manage(self):
         if self._mode == PipelineMode.Training:
             self._model_training_manager.manage()
-        else:
+        elif self._mode == PipelineMode.Monitoring:
             self._data_generation_manager.manage()
             self._data_drift_detection_manager.manage()
+        else:
+            raise NotImplementedError
 
 
 def args_handler():
