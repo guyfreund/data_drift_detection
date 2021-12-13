@@ -13,9 +13,9 @@ from src.pipeline.config import Config
 
 
 class StatisticalBasedDetector(IDataDriftDetector):
-    def __init__(self, deployment_dataset: Dataset, training_feature_metric_list_path: str, preprocessor: IPreprocessor):
-        assert os.path.exists(training_feature_metric_list_path)
-        self._training_feature_metric_list_path: str = training_feature_metric_list_path
+    def __init__(self, deployment_dataset: Dataset, training_feature_metrics_list_path: str, preprocessor: IPreprocessor):
+        assert os.path.exists(training_feature_metrics_list_path)
+        self._training_feature_metric_list_path: str = training_feature_metrics_list_path
         self._deployment_dataset: Dataset = deployment_dataset
         self._preprocessor: IPreprocessor = preprocessor
 

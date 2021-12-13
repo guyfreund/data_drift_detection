@@ -1,3 +1,5 @@
+import os
+from typing import List
 import numpy as np
 
 from src.pipeline.config import Config
@@ -9,17 +11,53 @@ from src.pipeline.data_drift_detection.detector.scikit_multiflow_data_drift_dete
 from src.pipeline.data_drift_detection.detector.statistical_based_detector import StatisticalBasedDetector
 from src.pipeline.data_drift_detection.detector.tensorflow_data_drift_detector import \
     TensorflowDataValidationDataDriftDetector
+from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.interfaces.imanager import IManager
+from src.pipeline.datasets.dataset import Dataset
+from src.pipeline.datasets.paths import GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, \
+    GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, \
+    GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH, GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH, \
+    BANK_MARKETING_DEPLOYMENT_DATASET_PATH, BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, \
+    BANK_MARKETING_TRAINING_PROCESSED_DF_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH, \
+    BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH
+from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
+from src.pipeline.model.interfaces.imodel import IModel
+
+
+class DataDriftDetectionManagerInfo:
+    def __init__(self, deployment_dataset_plus: Dataset, training_processed_df_plus_path: str,
+                 preprocessor: IPreprocessor, model: IModel, deployment_dataset: Dataset,
+                 training_feature_metrics_list_path: str, training_processed_df_path: str):
+        self.deployment_dataset: Dataset = deployment_dataset
+        self.deployment_dataset_plus: Dataset = deployment_dataset_plus
+        self.training_processed_df_path: str = training_processed_df_path
+        self.training_processed_df_plus_path: str = training_processed_df_plus_path
+        self.training_feature_metrics_list_path: str = training_feature_metrics_list_path
+        self.preprocessor: IPreprocessor = preprocessor
+        self.model: IModel = model
 
 
 class DataDriftDetectionManager(IManager):
-    def __init__(self):
-        self._internal_statistical_based_data_drift_detector = self._initiate_internal_statistical_based_data_drift_detector()
-        self._internal_model_based_data_drift_detector = self._initiate_internal_model_based_data_drift_detector()
+    def __init__(self, info: DataDriftDetectionManagerInfo):
+        self._internal_statistical_based_data_drift_detector = StatisticalBasedDetector(
+            deployment_dataset=info.deployment_dataset,
+            training_feature_metrics_list_path=info.training_feature_metrics_list_path,
+            preprocessor=info.preprocessor
+        )
+        self._internal_model_based_data_drift_detector = ModelBasedDetector(
+            deployment_dataset_plus=info.deployment_dataset_plus,
+            training_processed_df_plus_path=info.training_processed_df_plus_path,
+            preprocessor=info.preprocessor,
+            model=info.model
+        )
         detectors = [self._internal_statistical_based_data_drift_detector, self._internal_model_based_data_drift_detector]
         self._internal_data_drift_detector = DataDriftDetector(detectors=detectors)
         self._tensorflow_data_drift_detector = TensorflowDataValidationDataDriftDetector()
-        self._scikit_multiflow_data_drift_detector = ScikitMultiflowDataDriftDetector()
+        self._scikit_multiflow_data_drift_detector = ScikitMultiflowDataDriftDetector(
+            deployment_dataset=info.deployment_dataset,
+            training_processed_df_path=info.training_processed_df_path,
+            preprocessor=info.preprocessor
+        )
         self._internal_data_drift = None
         self._tensorflow_data_drift = None
         self._scikit_multiflow_data_drift = None
@@ -40,8 +78,46 @@ class DataDriftDetectionManager(IManager):
 
         return DataDrift(is_drifted=is_drifted)
 
-    def _initiate_internal_model_based_data_drift_detector(self) -> ModelBasedDetector:
-        pass
 
-    def _initiate_internal_statistical_based_data_drift_detector(self) -> StatisticalBasedDetector:
-        pass
+class MultipleDatasetDataDriftDetectionManager(IManager):
+    def __init__(self, info_list: List[DataDriftDetectionManagerInfo]):
+        self.data_drift_detection_managers: List[DataDriftDetectionManager] = [DataDriftDetectionManager(info) for info in info_list]
+
+    def manage(self) -> List[DataDrift]:
+        data_drifts: List[DataDrift] = [manager.manage() for manager in self.data_drift_detection_managers]
+        return data_drifts
+
+
+def run_multiple_dataset_data_drift_detection() -> List[DataDrift]:
+    assert os.path.exists(GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH)
+    assert os.path.exists(GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH)
+    assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH)
+    assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH)
+    assert os.path.exists(GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH)
+    assert os.path.exists(BANK_MARKETING_DEPLOYMENT_DATASET_PATH)
+    assert os.path.exists(BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH)
+    assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PATH)
+    assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH)
+    assert os.path.exists(BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH)
+
+    german_credit_info = DataDriftDetectionManagerInfo(
+        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH),
+        training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
+        preprocessor=IPreprocessor(),  # TODO: fix
+        model=IModel(),  # TODO: fix
+        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH),
+        training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
+        training_processed_df_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
+    )
+
+    bank_marketing_info = DataDriftDetectionManagerInfo(
+        deployment_dataset_plus=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH),
+        training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
+        preprocessor=IPreprocessor(),  # TODO: fix
+        model=IModel(),  # TODO: fix
+        deployment_dataset=Dataset(dtype=DatasetType.Deployment, path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH),
+        training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
+        training_processed_df_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
+    )
+
+    return MultipleDatasetDataDriftDetectionManager([german_credit_info, bank_marketing_info]).manage()
