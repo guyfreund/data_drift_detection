@@ -3,7 +3,7 @@ from abc import ABC
 
 class IFeatureMetrics(ABC):
     """
-    Interface for a feature metric object
+    Interface for a feature metrics object
     """
 
     @property

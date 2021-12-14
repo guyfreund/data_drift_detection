@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 VERSION = '0.0.1'
 DESCRIPTION = 'Data Drift Detection - MLOps project, Reichman University 2022\n'
 LONG_DESCRIPTION = 'Implementation of a Machine Learning Operations pipeline, which consists of: model training, ' \
-                   'data drift detection & data slicing with regards to fairness.\n' \
+                   'data drift detection & data generation to generate data drift.\n' \
                    'Databases being used are: \n' \
                    '- https://archive.ics.uci.edu/ml/datasets/bank+marketing\n' \
                    '- https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)\n'

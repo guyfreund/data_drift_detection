@@ -62,3 +62,5 @@ class BankMarketingProductionModel(IModel):
         return self._is_tuned
 
 
+class GermanCreditProductionModel(IModel):
+    pass

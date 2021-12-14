@@ -10,8 +10,12 @@ seaborn = "*"
 matplotlib = "*"
 easydict = "*"
 scikit-multiflow = "*"
+cython = "*"
+pipenv = "*"
+pyyaml = "*"
 
 [dev-packages]
+pytest = "*"
 
 [requires]
 python_version = "3.8"
