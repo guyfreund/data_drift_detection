@@ -1,4 +1,3 @@
-import argparse
 import os
 from typing import List
 
@@ -37,11 +36,13 @@ class PipelineManager(IManager):
         else:
             raise NotImplementedError
 
+    @property
+    def mode(self) -> PipelineMode:
+        return self._mode
 
-def args_handler():
-    parser = argparse.ArgumentParser(description='Running the pipeline manager')
-    parser.add_argument('-m', '--mode', default=PipelineMode.Training, type=int, help='Pipeline mode: 0=Training, 1=Monitoring')
-    return parser.parse_args()
+    @mode.setter
+    def mode(self, value: PipelineMode):
+        self._mode = value
 
 
 def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
@@ -76,14 +77,17 @@ def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
 
 
 def main():
-    args = args_handler()
-    mode = args.mode
-
+    # training
     pipeline_manager = PipelineManager(
-        pipeline_mode=mode,
+        pipeline_mode=PipelineMode.Training,
         data_drift_info_list=prepare_data_drift_config()
     )
     pipeline_manager.manage()
+
+    # monitoring
+    pipeline_manager.mode = PipelineMode.Monitoring
+    for _ in range(10):
+        pipeline_manager.manage()
 
 
 if __name__ == '__main__':
