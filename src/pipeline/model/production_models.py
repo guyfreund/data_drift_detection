@@ -8,15 +8,19 @@ import os
 from src.pipeline.model.constants import ModelMetricType
 from src.pipeline.model.interfaces.imodel import IModel
 from src.pipeline.model.interfaces.imodel_metric import IModelMetric
+from src.pipeline.model.model_metrics import Accuracy
 
 
 class BankMarketingProductionModel(IModel):
     def __init__(self):
         self._model = XGBClassifier()
+        self._is_trained = False
+        self._is_tuned = False
+        self._model_metrics: Dict[ModelMetricType, IModelMetric] = {}
 
     def train(self, X_train: pd.DataFrame, y_train: pd.DataFrame):
         self._model.fit(X_train, y_train)
-
+        self._is_trained = True
         self._save_model_as_pickle(self.__class__.__name__)
 
     def _save_model_as_pickle(self, model_class_name: str):
@@ -32,12 +36,11 @@ class BankMarketingProductionModel(IModel):
     def evaluate(self, X_test: pd.DataFrame, y_test: pd.DataFrame) -> Dict[ModelMetricType, IModelMetric]:
         y_pred = self._model.predict(X_test)
 
-        print(f'test accuracy score is: {round(metrics.accuracy_score(y_test, y_pred), 2)}%')
+        accuracy = metrics.accuracy_score(y_test, y_pred)
+        print(f'test accuracy score is: {round(accuracy, 2)}%')
 
-        model_metric = IModelMetric()
-        metric_type = ModelMetricType.Accuracy
-
-        return {metric_type: model_metric}
+        self._model_metrics = {ModelMetricType.Accuracy: Accuracy(value=accuracy)}
+        return self._model_metrics
 
     def load(self, model_class_name: str):
         path = os.path.abspath(os.path.join(__file__, "..", "..", f"{model_class_name}.sav"))

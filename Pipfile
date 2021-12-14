@@ -13,6 +13,7 @@ scikit-multiflow = "*"
 cython = "*"
 pipenv = "*"
 pyyaml = "*"
+xgboost = "*"
 
 [dev-packages]
 pytest = "*"

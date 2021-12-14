@@ -7,7 +7,6 @@ from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDat
 from src.pipeline.datasets.paths import BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH, \
     BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
 from src.pipeline.datasets.training_datasets import BankMarketingDataset
-from src.pipeline.model.interfaces.imodel import IModel
 from src.pipeline.model.production_models import BankMarketingProductionModel
 from src.pipeline.preprocessing.preprocessor import Preprocessor
 
