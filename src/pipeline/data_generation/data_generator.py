@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import Any
 
 import pandas as pd
@@ -12,13 +13,13 @@ from ydata_synthetic.synthesizers import ModelParameters, TrainParameters
 from ydata_synthetic.preprocessing.regular.credit_fraud import *
 
 
-class DataGenerator(IDataGenerator):
+class DataGenerator(IDataGenerator, ABC):
     def __init__(self, synthesizer_model: Any, model_params, training_params):
         self.model_params = ModelParameters(model_params)
         self.training_params = TrainParameters(training_params)
         self.synthesizer = synthesizer_model
 
-    def train(self, dataset):
+    def train(self, dataset: pd.DataFrame):
         # Before training the GAN we apply data transformation
         # PowerTransformation - make data distribution more Gaussian-like.
         dataset = transformations(dataset)
@@ -26,7 +27,7 @@ class DataGenerator(IDataGenerator):
         print("Dataset info: Number of records - {} Number of variables - {}".format(dataset.shape[0],
                                                                                      dataset.shape[1]))
 
-    def generate(self, n_samples, vector_dim, path=None, seed=0):
+    def generate(self, n_samples: int, vector_dim: int, path=None, seed=0) -> pd.DataFrame:
 
         np.random.seed(seed)
 
@@ -35,7 +36,7 @@ class DataGenerator(IDataGenerator):
         # Generate features' values based on random noise
         z = np.random.normal(size=(n_samples, vector_dim))
         g_z = generator_model.predict(z)
-        assert len(g_z) == len(n_samples)
+        assert len(g_z) == len(z)
 
         # return self.synthesizer.sample(n_samples)
         return g_z
