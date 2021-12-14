@@ -19,7 +19,7 @@ class IDataGenerator(ABC):  # TODO: Implement DataGenerator per DataDriftType.
         raise NotImplementedError
 
     @property
-    def generated_dataset(self) -> Dataset:
+    def generated_dataset(self, n_samples: int, do_drift: bool = False, seed: int = 0) -> Dataset:
         raise NotImplementedError
 
     @property

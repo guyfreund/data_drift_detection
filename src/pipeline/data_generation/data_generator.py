@@ -1,9 +1,8 @@
 from abc import ABC
 from typing import Any
-
-import pandas as pd
-
 from src.pipeline.data_generation.interfaces.idata_generator import IDataGenerator
+from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
+from src.pipeline.datasets.dataset import Dataset
 from ydata_synthetic.synthesizers.gan import BaseModel
 # from imblearn.over_sampling import SMOTE, ADASYN
 from ydata_synthetic.synthesizers.regular import WGAN_GP
@@ -14,32 +13,40 @@ from ydata_synthetic.preprocessing.regular.credit_fraud import *
 
 
 class DataGenerator(IDataGenerator, ABC):
-    def __init__(self, synthesizer_model: Any, model_params, training_params):
+    def __init__(self, dataset: Dataset, preprocessor: IPreprocessor, gen_model: Any, model_params: dict, path: str):
+        self.origin_dataset = preprocessor(dataset)
         self.model_params = ModelParameters(model_params)
-        self.training_params = TrainParameters(training_params)
-        self.synthesizer = synthesizer_model
+        self.gen_model = gen_model
+        self.train_params = None
+        self.saving_path = path
 
-    def train(self, dataset: pd.DataFrame):
+    def train(self, dataset: pd.DataFrame, train_params):
         # Before training the GAN we apply data transformation
         # PowerTransformation - make data distribution more Gaussian-like.
-        dataset = transformations(dataset)
-        self.synthesizer.train(dataset, self.training_params)
-        print("Dataset info: Number of records - {} Number of variables - {}".format(dataset.shape[0],
-                                                                                     dataset.shape[1]))
+        self.train_params = TrainParameters(train_params)
+        print('Training generative model.')
+        self.gen_model.train(self.origin_dataset, self.train_params)
+        print('Done training.')
 
-    def generate(self, n_samples: int, vector_dim: int, path=None, seed=0) -> pd.DataFrame:
 
+    def generated_dataset(self, n_samples: int, do_drift: bool = False, seed: int = 0) -> pd.DataFrame:
         np.random.seed(seed)
-
-        generator_model = self.synthesizer.generator
-
+        generator = self.gen_model.generator
+        vector_dim = self.origin_dataset.raw_df.shape[1]
         # Generate features' values based on random noise
         z = np.random.normal(size=(n_samples, vector_dim))
-        g_z = generator_model.predict(z)
+        g_z = generator.predict(z)
         assert len(g_z) == len(z)
-
         # return self.synthesizer.sample(n_samples)
+        if do_drift:
+            self.add_data_drift(g_z)
+
+        self.save_dataset(g_z)
         return g_z
 
-    def generate_data_drift(self, dataset: pd.DataFrame, drifted_feature):
+    def add_data_drift(self, dataset):
         pass
+
+
+    def save_datset(self, dataset):
+        dataset.raw_df.to_csv(self.saving_path+'generated_data') # TODO add configs and names suit what has been saved
