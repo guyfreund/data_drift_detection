@@ -48,12 +48,10 @@ data_drift:
 
 data_generation:
   data_drift:
+    generation_percent: 200  # means to generate a dataset of double size
     variance:
       features: ["feature_1", "...", "feature_k"]
-      generation_percent: 200  # means to generate a dataset of double size
     mean:
       features: ["feature_1", "...", "feature_k"]
-      generation_percent: 200  # means to generate a dataset of double size
     number_of_nulls:
       features: ["feature_1", "...", "feature_k"]
-      generation_percent: 200  # means to generate a dataset of double size
