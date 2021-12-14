@@ -13,9 +13,9 @@ from src.pipeline.config import Config
 
 
 class StatisticalBasedDetector(IDataDriftDetector):
-    def __init__(self, deployment_dataset: Dataset, training_feature_metric_list_path: str, preprocessor: IPreprocessor):
-        assert os.path.exists(training_feature_metric_list_path)
-        self._training_feature_metric_list_path: str = training_feature_metric_list_path
+    def __init__(self, deployment_dataset: Dataset, training_feature_metrics_list_path: str, preprocessor: IPreprocessor):
+        assert os.path.exists(training_feature_metrics_list_path)
+        self._training_feature_metric_list_path: str = training_feature_metrics_list_path
         self._deployment_dataset: Dataset = deployment_dataset
         self._preprocessor: IPreprocessor = preprocessor
 
@@ -73,19 +73,25 @@ class StatisticalBasedDetector(IDataDriftDetector):
             # extract variance
             training_variance = training_fm.variance
             deployment_variance = deployment_fm.variance
-            is_variance_drifted = np.abs(training_variance - deployment_variance) > Config().data_drift.internal_data_drift_detector.variance.threshold
+            min_variance = min(training_variance, deployment_variance)
+            max_variance = max(training_variance, deployment_variance)
+            is_variance_drifted = (1 - (min_variance / max_variance)) > Config().data_drift.internal_data_drift_detector.variance.percent_threshold
             data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: VarianceDataDrift(is_drifted=is_variance_drifted)}
 
             # extract mean
             training_mean = training_fm.mean
             deployment_mean = deployment_fm.mean
-            is_mean_drifted = np.abs(training_mean - deployment_mean) > Config().data_drift.internal_data_drift_detector.mean.threshold
+            min_mean = min(training_mean, deployment_mean)
+            max_mean = max(training_mean, deployment_mean)
+            is_mean_drifted = (1 - (min_mean / max_mean)) > Config().data_drift.internal_data_drift_detector.mean.percent_threshold
             data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: MeanDataDrift(is_drifted=is_mean_drifted)}
 
             # handle number of nulls
             training_num_nulls = training_fm.number_of_nulls
             deployment_num_nulls = deployment_fm.number_of_nulls
-            is_num_nulls_drifted = np.abs(training_num_nulls - deployment_num_nulls) > Config().data_drift.internal_data_drift_detector.number_of_nulls.threshold
+            min_num_nulls = min(training_num_nulls, deployment_num_nulls)
+            max_num_nulls = max(training_num_nulls, deployment_num_nulls)
+            is_num_nulls_drifted = (1 - (min_num_nulls / max_num_nulls)) > Config().data_drift.internal_data_drift_detector.number_of_nulls.threshold
             data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: NumNullsDataDrift(is_drifted=is_num_nulls_drifted)}
 
         return data_drifts_per_feature_dict

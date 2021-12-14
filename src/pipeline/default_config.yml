@@ -12,15 +12,15 @@ data_drift:
 
     # feature thresholds
     mean:
-      threshold: 1e-1
+      percent_threshold: 1e-1  # percent of change
       percent_of_features: 1e-1  # number of features that indicates on a data drift
       weight: .33333
     variance:
-      threshold: 1e-1
+      percent_threshold: 1e-1   # percent of change
       percent_of_features: 1e-1  # number of features that indicates on a data drift
       weight: .33333
     number_of_nulls:
-      threshold: 5
+      percent_threshold: 1e-1  # percent of change
       percent_of_features: 1e-1  # number of features that indicates on a data drift
       weight: .33333
 
