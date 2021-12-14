@@ -25,9 +25,17 @@ class NumericFeatureMetrics(IFeatureMetrics):
     def dataset_type(self) -> DatasetType:
         return self._dataset_type
 
+    @dataset_type.setter
+    def dataset_type(self, dataset_type):
+        self._dataset_type = dataset_type
+
     @property
     def feature_type(self) -> FeatureType:
         return self._feature_type
+
+    @feature_type.setter
+    def feature_type(self, feature_type):
+        self._feature_type = feature_type
 
     @property
     def mean(self) -> float:
