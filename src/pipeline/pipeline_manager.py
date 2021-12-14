@@ -15,7 +15,7 @@ from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
     BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH
 from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDataset, \
     BankMarketingDeploymentDatasetPlus, GermanCreditDeploymentDataset, GermanCreditDeploymentDatasetPlus
-from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
+from src.pipeline.preprocessing.preprocessor import Preprocessor
 
 
 class PipelineManager(IManager):
@@ -56,7 +56,7 @@ def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
     german_credit_info = DataDriftDetectionManagerInfo(
         deployment_dataset_plus=GermanCreditDeploymentDatasetPlus(),
         training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
-        preprocessor=IPreprocessor(),  # TODO: fix
+        preprocessor=Preprocessor(),  # TODO: fix
         model=IModel(),  # TODO: fix
         deployment_dataset=GermanCreditDeploymentDataset(),
         training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
@@ -66,7 +66,7 @@ def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
     bank_marketing_info = DataDriftDetectionManagerInfo(
         deployment_dataset_plus=BankMarketingDeploymentDatasetPlus(),
         training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
-        preprocessor=IPreprocessor(),  # TODO: fix
+        preprocessor=Preprocessor(),  # TODO: fix
         model=IModel(),  # TODO: fix
         deployment_dataset=BankMarketingDeploymentDataset(),
         training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
