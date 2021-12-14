@@ -28,6 +28,10 @@ def test_data():
     return data
 
 
+class DataGenerationManagerInfo:
+    pass
+
+
 class DataGenerationManager(IManager):
     def __init__(self, dataset: pd.DataFrame, gen_model: Any, gen_model_args: List[Any], train_args: List[Any]):
         self.__origin_dataset = dataset
@@ -47,6 +51,11 @@ class DataGenerationManager(IManager):
 
     def get_generated_dataset(self):
         return self.__generated_dataset
+
+
+class MultipleDatasetGenerationManager(IManager):
+    pass
+
 
 
 if __name__ == '__main__':
