@@ -8,5 +8,5 @@ class IManager(ABC):
     """
 
     @abstractmethod
-    def manage(self, dataset) -> Any:
+    def manage(self) -> Any:
         raise NotImplementedError
