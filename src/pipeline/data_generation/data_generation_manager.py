@@ -4,12 +4,11 @@ from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_generation.data_generator import DataGenerator
 from ydata_synthetic.synthesizers.regular import WGAN_GP
 
+
 class DataGenerationManager(IManager):
     pass
 
-
     def manage(self, dataset: pd.DataFrame) -> Any:
-
 
         # Define the GAN and training parameters
         noise_dim = 32
