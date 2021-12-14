@@ -4,7 +4,7 @@ from src.pipeline.model.production_model.production_model_bank_marketing import 
 from src.pipeline.preprocessing.preprocessor import Preprocessor
 
 
-class ModelTrainingManager(IManager):
+class ProductionModelTrainingManager(IManager):
 
     def manage(self):
         preprocessor = Preprocessor()
