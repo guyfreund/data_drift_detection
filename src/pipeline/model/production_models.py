@@ -8,7 +8,7 @@ import os
 from src.pipeline.model.constants import ModelMetricType
 from src.pipeline.model.interfaces.imodel import IModel
 from src.pipeline.model.interfaces.imodel_metric import IModelMetric
-from src.pipeline.model.model_metrics import Accuracy
+from src.pipeline.model.model_metrics import Accuracy, Precision, Recall, F1, AUC
 
 
 class BankMarketingProductionModel(IModel):
@@ -37,9 +37,22 @@ class BankMarketingProductionModel(IModel):
         y_pred = self._model.predict(X_test)
 
         accuracy = metrics.accuracy_score(y_test, y_pred)
-        print(f'test accuracy score is: {round(accuracy, 2)}%')
+        precision = metrics.precision_score(y_test, y_pred)
+        recall = metrics.recall_score(y_test, y_pred)
+        f1 = metrics.f1_score(y_test, y_pred)
+        fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
+        auc = metrics.auc(fpr, tpr)
+        print(f'test accuracy score is: {round(accuracy * 100, 2)}%\n'
+              f'test precision score is: {round(precision * 100, 2)}%\n'
+              f'test recall score is: {round(recall * 100, 2)}%\n'
+              f'test f1 score is: {round(f1 * 100, 2)}%\n'
+              f'test auc is: {round(auc, 2)}')
 
-        self._model_metrics = {ModelMetricType.Accuracy: Accuracy(value=accuracy)}
+        self._model_metrics = {ModelMetricType.Accuracy: Accuracy(value=accuracy),
+                               ModelMetricType.Precision: Precision(value=precision),
+                               ModelMetricType.Recall: Recall(value=recall),
+                               ModelMetricType.F1: F1(value=f1),
+                               ModelMetricType.AUC: AUC(value=auc)}
         return self._model_metrics
 
     def load(self, model_class_name: str):
