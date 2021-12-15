@@ -17,7 +17,6 @@ class TestMultipleDatasetModelTrainingManager(TestCase):
         )
 
     def test_manage(self):
-        result = MultipleDatasetModelTrainingManager([self.bank_marketing_info]).manage()
-        for record in result:
-            info, feature_metrics_list, model_metrics_dict = record
+        info_list, feature_metrics_list_of_lists, model_metrics_list = MultipleDatasetModelTrainingManager([self.bank_marketing_info]).manage()
+        for info, feature_metrics_list, model_metrics_dict in zip(info_list, feature_metrics_list_of_lists, model_metrics_list):
             self.assertEqual(model_metrics_dict, info.model.model_metrics)
