@@ -37,7 +37,7 @@ class BankMarketingProductionModel(IModel):
         y_pred = self._model.predict(X_test)
 
         accuracy = metrics.accuracy_score(y_test, y_pred)
-        print(f'test accuracy score is: {round(accuracy, 2)}%')
+        print(f'test accuracy score is: {round(accuracy*100, 2)}%')
 
         self._model_metrics = {ModelMetricType.Accuracy: Accuracy(value=accuracy)}
         return self._model_metrics
