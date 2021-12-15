@@ -26,7 +26,7 @@ class ModelTrainingManager(IManager):
 
         self._info.model.train(X_train, y_train)
         self._info.model.tune_hyperparameters(X_validation, y_validation)
-        model_metrics_dict = self._info.model.evaluate(X_test, y_test)
+        model_metrics_dict: Dict[ModelMetricType, IModelMetric] = self._info.model.evaluate(X_test, y_test)
 
         self._info.model.load(self._info.model.__class__.__name__)
         return self._info, feature_metrics_list, model_metrics_dict
