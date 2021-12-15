@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from src.pipeline.datasets.training_datasets import BankMarketingDataset
+from src.pipeline.model.constants import ModelMetricType
 from src.pipeline.model.model_trainining_manager import MultipleDatasetModelTrainingManager, ModelTrainingManagerInfo, \
     ModelTrainingManager
 from src.pipeline.model.production_models import BankMarketingProductionModel
@@ -16,4 +17,7 @@ class TestMultipleDatasetModelTrainingManager(TestCase):
         )
 
     def test_manage(self):
-        ModelTrainingManager(self.bank_marketing_info).manage()
+        result = MultipleDatasetModelTrainingManager([self.bank_marketing_info]).manage()
+        for record in result:
+            info, feature_metrics_list, model_metrics_dict = record
+            self.assertEqual(model_metrics_dict, info.model.model_metrics)
