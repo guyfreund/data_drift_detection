@@ -1,9 +1,7 @@
 from unittest import TestCase
 
 from src.pipeline.datasets.training_datasets import BankMarketingDataset
-from src.pipeline.model.constants import ModelMetricType
-from src.pipeline.model.model_trainining_manager import MultipleDatasetModelTrainingManager, ModelTrainingManagerInfo, \
-    ModelTrainingManager
+from src.pipeline.model.model_trainining_manager import MultipleDatasetModelTrainingManager, ModelTrainingManagerInfo
 from src.pipeline.model.production_models import BankMarketingProductionModel
 from src.pipeline.preprocessing.preprocessor import Preprocessor
 
