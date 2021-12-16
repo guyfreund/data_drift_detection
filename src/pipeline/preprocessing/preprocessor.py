@@ -42,11 +42,11 @@ class Preprocessor(IPreprocessor):
         return self._processed_df, self._processed_df_plus, feature_metrics_list
 
     def _save_datasets_as_pickle(self, dataset_class_name: str):
-        path = os.path.abspath(os.path.join(__file__, "", "..", f"{dataset_class_name}.pickle"))
+        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}.pickle"))
         with open(path, 'wb') as output:
             pickle.dump(self._processed_df, output)
 
-        path = os.path.abspath(os.path.join(__file__, "", "..", f"{dataset_class_name}Plus.pickle"))
+        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}Plus.pickle"))
         with open(path, 'wb') as output:
             pickle.dump(self._processed_df_plus, output)
 

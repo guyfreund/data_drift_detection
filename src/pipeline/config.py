@@ -20,9 +20,3 @@ class Config(metaclass=Singleton):
         with open(path, 'r') as f:
             cfg = EasyDict(yaml.load(f, Loader=yaml.FullLoader))
         return cfg
-
-
-if __name__ == '__main__':
-    x = Config()
-    y = Config()
-    assert x == y

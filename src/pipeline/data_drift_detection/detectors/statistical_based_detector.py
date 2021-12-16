@@ -1,3 +1,4 @@
+import pickle
 import os
 from typing import List, Dict, Tuple
 import numpy as np
@@ -54,7 +55,8 @@ class StatisticalBasedDetector(IDataDriftDetector):
         return StatisticalBasedDataDrift(is_drifted=is_drifted)
 
     def _get_data(self) -> Tuple[List[str], List[IFeatureMetrics], List[IFeatureMetrics]]:
-        training_feature_metrics_list: List[IFeatureMetrics] = []
+        with open(self._training_feature_metric_list_path, 'rb') as f:
+            training_feature_metrics_list: List[IFeatureMetrics] = pickle.load(f)
         # TODO: think maybe to use pickle here
         _, _, deployment_feature_metrics_list = self._preprocessor.preprocess(dataset=self._deployment_dataset)
 

@@ -24,7 +24,7 @@ class BankMarketingProductionModel(IModel):
         self._save_model_as_pickle(self.__class__.__name__)
 
     def _save_model_as_pickle(self, model_class_name: str):
-        path = os.path.abspath(os.path.join(__file__, "..", "..", f"{model_class_name}.sav"))
+        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{model_class_name}.sav"))
         with open(path, 'wb') as handle:
             pickle.dump({}, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
