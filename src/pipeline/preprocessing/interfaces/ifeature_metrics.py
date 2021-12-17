@@ -36,10 +36,14 @@ class IFeatureMetrics(ABC):
         raise NotImplementedError
 
     def __eq__(self, other: 'IFeatureMetrics'):
-        assert all([
-            self.mean == other.mean,
-            self.variance == other.variance,
+        answer = all([
             self.number_of_nulls == other.number_of_nulls,
-            self.feature_type == other.feature_type,
+            self.ftype == other.ftype,
             self.name == other.name
         ])
+        if self.mean is not None and other.mean is not None:
+            answer = answer and self.mean == other.mean
+        if self.variance is not None and other.variance is not None:
+            answer = answer and self.variance == other.variance
+
+        return answer

@@ -8,6 +8,7 @@ from src.pipeline.data_drift_detection.data_drift import StatisticalBasedDataDri
     VarianceDataDrift, NumNullsDataDrift
 from src.pipeline.data_drift_detection.interfaces.idata_drift_detector import IDataDriftDetector
 from src.pipeline.datasets.dataset import Dataset
+from src.pipeline.preprocessing.constants import FeatureType
 from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.config import Config
@@ -72,22 +73,30 @@ class StatisticalBasedDetector(IDataDriftDetector):
         data_drifts_per_feature_dict: Dict[str, Dict[DataDriftType, DataDrift]] = {feature_name: {} for feature_name in feature_names}
 
         for feature_name, training_fm, deployment_fm in zip(feature_names, training_feature_metrics_list, deployment_feature_metrics_list):
+            is_numeric_feature = training_fm.ftype == FeatureType.Numeric
+
             # extract variance
             training_variance = training_fm.variance
             deployment_variance = deployment_fm.variance
-            min_variance = min(training_variance, deployment_variance)
-            max_variance = max(training_variance, deployment_variance)
-            percent_variance = min_variance / max_variance if max_variance else 0  # both are 0
-            is_variance_drifted = (1 - percent_variance) > Config().data_drift.internal_data_drift_detector.variance.percent_threshold
+            if is_numeric_feature:
+                min_variance = min(training_variance, deployment_variance)
+                max_variance = max(training_variance, deployment_variance)
+                percent_variance = min_variance / max_variance if max_variance else 0  # both are 0
+                is_variance_drifted = (1 - percent_variance) > Config().data_drift.internal_data_drift_detector.variance.percent_threshold
+            else:
+                is_variance_drifted = False
             data_drifts_per_feature_dict[feature_name].update({DataDriftType.Variance: VarianceDataDrift(is_drifted=is_variance_drifted)})
 
             # extract mean
             training_mean = training_fm.mean
             deployment_mean = deployment_fm.mean
-            min_mean = min(training_mean, deployment_mean)
-            max_mean = max(training_mean, deployment_mean)
-            percent_mean = min_mean / max_mean if max_mean else 0  # both are 0
-            is_mean_drifted = (1 - percent_mean) > Config().data_drift.internal_data_drift_detector.mean.percent_threshold
+            if is_numeric_feature:
+                min_mean = min(training_mean, deployment_mean)
+                max_mean = max(training_mean, deployment_mean)
+                percent_mean = min_mean / max_mean if max_mean else 0  # both are 0
+                is_mean_drifted = (1 - percent_mean) > Config().data_drift.internal_data_drift_detector.mean.percent_threshold
+            else:
+                is_mean_drifted = False
             data_drifts_per_feature_dict[feature_name].update({DataDriftType.Mean: MeanDataDrift(is_drifted=is_mean_drifted)})
 
             # extract number of nulls
