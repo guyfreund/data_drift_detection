@@ -2,7 +2,7 @@ from typing import Any, List
 import pandas as pd
 from ydata_synthetic.synthesizers.regular import CGAN
 from src.pipeline.interfaces.imanager import IManager
-from src.pipeline.data_generation.data_generator import DataGenerator
+from src.pipeline.data_generation.data_generator import GANDataGenerator
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.model.interfaces.imodel import IModel

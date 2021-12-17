@@ -9,7 +9,6 @@ class Dataset:
     """
     A class that represents a dataset
     """
-
     def __init__(self, dtype: DatasetType, path: str):
         assert os.path.exists(path)
         self._path = path
@@ -37,7 +36,7 @@ class Dataset:
     def raw_df(self) -> pd.DataFrame:
         return self._raw_df
 
-    @abstractmethod
+    @abstractmethod  # TODO: might be not static as using self.path to read the file..
     def load(self) -> pd.DataFrame:
         """ loads the dataset from memory
 
