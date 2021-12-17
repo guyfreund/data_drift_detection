@@ -1,52 +1,24 @@
 from typing import Any, List
 import pandas as pd
+from ydata_synthetic.synthesizers.regular import CGAN
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_generation.data_generator import DataGenerator
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.model.interfaces.imodel import IModel
-from ydata_synthetic.synthesizers.regular import WGAN_GP
+
 # Import transformation function
-
-'''------Utilities------'''
-
-def test_data():
-    import ydata_synthetic.preprocessing.regular.credit_fraud
-    # Read the original data and have it preprocessed
-    data = ydata_synthetic.preprocessing.regular.credit_fraud.pd.read_csv('./data/creditcard.csv', index_col=[0])
-    # Extract list of columns
-    data_cols = list(data.columns)
-    print('Dataset columns: {}'.format(data_cols))
-
-    # We will only synthesize the minority class (=1, aka fraud)
-    # train_data contains 492 entries which had 'Class' value as 1 (which were very few)
-    train_data = data.loc[data['Class'] == 1].copy()
-
-    # Before training the GAN we apply data transformation
-    # PowerTransformation - make data distribution more Gaussian-like.
-    data = ydata_synthetic.preprocessing.regular.credit_fraud.transformations(train_data)
-    print("Dataset info: Number of records - {} Number of variables - {}".format(train_data.shape[0],
-                                                                                 train_data.shape[1]))
-
-    return data
 
 
 class DataGenerationManagerInfo:
 
     def __init__(self, origin_dataset: Dataset,
-                 preprocessor: IPreprocessor,
-                 gen_model: IModel,
-                 gen_model_args: List[Any],
-                 train_args: List[Any]
+                 model_path: str,
                  # training_feature_metrics_list_path: str,
                  # training_processed_df_path: str
                  ):
-        self.origin_dataset: Dataset = origin_dataset
-        self.preprocessor: IPreprocessor = preprocessor
-        self.gen_model: IModel = gen_model
-        self.gen_model_args: List[Any] = gen_model_args
-        self.train_args: List[Any] = train_args
-
+        self.origin_dataset: Dataset = origin_dataset  #TODO ?
+        # self.gan_model: CGAN.load(model_path)
         # self.training_feature_metrics_list_path: str = training_feature_metrics_list_path
         # self.training_processed_df_path: str = training_processed_df_path
 
