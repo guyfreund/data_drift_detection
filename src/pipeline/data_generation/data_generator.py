@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any
+from typing import Any, List
 import tensorflow as tf
 import numpy as np
 from ydata_synthetic.synthesizers.gan import BaseModel
@@ -7,13 +7,13 @@ from ydata_synthetic.synthesizers.gan import BaseModel
 from src.pipeline.data_generation.interfaces.idata_generator import IDataGenerator
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.datasets.dataset import Dataset
-
 # from imblearn.over_sampling import SMOTE, ADASYN
 from ydata_synthetic.synthesizers.regular import WGAN_GP
 from ydata_synthetic.synthesizers import ModelParameters, TrainParameters
 
 # Import transformation function
-
+from src.pipeline.config import Config
+from src.pipeline.data_drift_detection.constants import DataDriftType
 
 class GANDataGenerator(IDataGenerator, ABC):
     ''''this class loads a GAN model trained on the dataset'''
@@ -31,52 +31,50 @@ class GANDataGenerator(IDataGenerator, ABC):
         generated_data = self._synthesizer.generator([z, label_z])
         return self._inverse_preprocesser(generated_data) if self._inverse_preprocesser else generated_data
 
-    def generate_drifted_samples(self, n_samples):
+    def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]):
         generated_data = self.generate_normal_samples(n_samples)
+        num_of_features = Config().data_drift.internal_data_drift_detector.mean.percent_of_features * len(self._origin_dataset.raw_df)
+        num_drift_features = min(num_of_features, n_samples)
+
         # Do Drifting
+        self.add_data_drift(generated_data, num_drift_features, drift_types_list)
 
 
-    def add_data_drift(self, dataset):
-        pass
 
-
-    def drift(self, dataset: Dataset, precentage_drift_mean=20.0, precentage_drift_std=0.0, time_drift=None):
+    def add_data_drift(self, dataset: Dataset, num_drift_features: int, drift_types_list: List[DataDriftType]):
         """
-        Introduces data drift
-
-        Args:
-        pct_drift_mean (float): Percentage of mean drift.
-        pct_drift_spread (float): Percentage change in the spread of the data.
-        time_drift (str): The time at which drift starts in the format 'YYYY-MM-DD hh:mm:ss'.
-        Will be converted and processed internally as a numpy.datetime64 object.
-
-        Returns:
 
         from source: https://stats.stackexchange.com/questions/46429/transform-data-to-desired-mean-and-standard-deviation
-        suppose we start with {x_i} with mean m_1 and non-zero std s_1:
+
+        Suppose we start with {x_i} with mean m_1 and non-zero std s_1:
         We do the following transformation:
-        y_i = m_2 + (x_i - m_1) * s_2/s_1
-        to get a new mean m_2 with std s_2
+            y_i = m_2 + (x_i - m_1) * s_2/s_1
+        Then, we get a new mean m_2 with std s_2
+
         """
-        drifted_features = []
+        # TODO only supports numeric variables.
+        percentage_drift_mean = Config().data_drift.internal_data_drift_detector.mean.percent_threshold
+        percentage_drift_std = Config().data_drift.internal_data_drift_detector.variance.percent_threshold
+        percentage_drift_nulls = Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold
+        dataset.raw_df.columns
+        numeric_drifted_features = np.random.choice(, num_drift_features, replace=False)
+        df = dataset.raw_df
         for feature in drifted_features:
-            before_drift_data = dataset.raw_df[feature]
-            before_drift_mean = before_drift_data.mean()
-            before_drift_std = before_drift_data.std()
-            new_drift_mean = before_drift_mean * precentage_drift_mean
-            new_drift_std = before_drift_std * precentage_drift_std
-            drifted_data = new_drift_mean + (before_drift_data - before_drift_mean) * (new_drift_std/before_drift_std)
+            before_drift_data = df[feature]
+            # drifted_data = before_drift_data
+            for drift_type in drift_types_list:
+                if drift_type == DataDriftType.Statistical:
+                    before_drift_mean = before_drift_data.mean()
+                    before_drift_std = before_drift_data.std()
+                    new_drift_mean = before_drift_mean * percentage_drift_mean
+                    new_drift_std = before_drift_std * percentage_drift_std
+                    drifted_data = new_drift_mean + (before_drift_data - before_drift_mean) * (new_drift_std/before_drift_std)
+                    df[feature] = drifted_data
+                if drift_type == DataDriftType.NumNulls:   # TODO note if we do together with stat drift we might mask with nulls and change the desired drift..**
+                    df.loc[df[feature].sample(frac=percentage_drift_nulls).index, feature] = np.nan
 
-
-        self._drifted_flag_ = True
-
-        if return_df:
-            df = pd.DataFrame(
-                {"time": self.time_arr, "drifted_data": self.drifted_data}
-            )
-            return df
-        else:
-            return self.drifted_data
+        dataset.raw_df = df
+        return dataset
 
 
     def save_datset(self, dataset, path):

@@ -16,6 +16,8 @@ class Dataset:
         self._num_instances, self._num_features = self._raw_df.shape
         self._dtype = dtype
         self._drifted_flag_= is_drifted
+        self._numeric_features = [] # TODO implement
+        self._categorical_features = [] # TODO implement
 
     @property
     def num_features(self) -> int:
@@ -34,6 +36,14 @@ class Dataset:
         return self._path
 
     @property
+    def numeric_features(self):
+        self.__numeric_features
+
+    @property
+    def _categorical_features(self):
+        self._categorical_features
+
+    @property
     def raw_df(self) -> pd.DataFrame:
         return self._raw_df
 
@@ -46,3 +56,10 @@ class Dataset:
 
         """
         raise NotImplementedError
+
+    @raw_df.setter
+    def raw_df(self, value):
+        self._raw_df = value
+
+
+
