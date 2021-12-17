@@ -74,7 +74,7 @@ class Preprocessor(IPreprocessor):
 
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_FeatureMetricsList.pickle"))
         with open(path, 'wb') as output:
-            pickle.dump(self._processed_df_plus, output)
+            pickle.dump(self._feature_metrics_list, output)
 
     def split(self, processed_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         data_y = processed_df['y']
