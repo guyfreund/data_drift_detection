@@ -5,6 +5,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from src.pipeline.datasets.dataset import Dataset
+from src.pipeline.preprocessing.feature_metrics.feature_metrics_categorical import CategoricalFeatureMetrics
+from src.pipeline.preprocessing.feature_metrics.feature_metrics_numeric import NumericFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 
@@ -24,6 +26,9 @@ class Preprocessor(IPreprocessor):
 
     def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
 
+        feature_metrics_list: List[IFeatureMetrics] = self.build_feature_metrics_list(dataset)
+        self._feature_metrics_list = feature_metrics_list
+
         self._processed_df = pd.get_dummies(dataset.raw_df, columns=['job', 'marital',
                                                                      'education', 'default',
                                                                      'housing', 'loan',
@@ -36,10 +41,26 @@ class Preprocessor(IPreprocessor):
 
         self._save_datasets_as_pickle(dataset.__class__.__name__)
 
-        feature_metrics_list: List[IFeatureMetrics] = []
-        self._feature_metrics_list = feature_metrics_list
+        return self._processed_df, self._processed_df_plus, self._feature_metrics_list
 
-        return self._processed_df, self._processed_df_plus, feature_metrics_list
+    def build_feature_metrics_list(self, dataset):
+        feature_metrics_list = []
+
+        categorical_cols = dataset.raw_df.select_dtypes(include=['bool', 'object']).columns
+        for col in categorical_cols:
+            feature_metric = CategoricalFeatureMetrics(col, dataset.dtype)
+            feature_metric.number_of_nulls = int(dataset.raw_df[col].isna().sum())
+            feature_metrics_list.append(feature_metric)
+
+        numerical_cols = dataset.raw_df.select_dtypes(include=['int64', 'float64']).columns
+        for col in numerical_cols:
+            feature_metric = NumericFeatureMetrics(col, dataset.dtype)
+            feature_metric.mean = dataset.raw_df[col].mean()
+            feature_metric.variance = dataset.raw_df[col].var()
+            feature_metric.number_of_nulls = int(dataset.raw_df[col].isna().sum())
+            feature_metrics_list.append(feature_metric)
+
+        return feature_metrics_list
 
     def _save_datasets_as_pickle(self, dataset_class_name: str):
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}.pickle"))
