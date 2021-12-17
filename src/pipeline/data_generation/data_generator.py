@@ -52,27 +52,32 @@ class GANDataGenerator(IDataGenerator, ABC):
         Then, we get a new mean m_2 with std s_2
 
         """
-        # TODO only supports numeric variables.
+        # TODO only supports numeric variables.??
         percentage_drift_mean = Config().data_drift.internal_data_drift_detector.mean.percent_threshold
         percentage_drift_std = Config().data_drift.internal_data_drift_detector.variance.percent_threshold
         percentage_drift_nulls = Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold
-        dataset.raw_df.columns
-        numeric_drifted_features = np.random.choice(, num_drift_features, replace=False)
+
+        drifted_features_all_types = np.random.choice(dataset.raw_df.columns, num_drift_features, replace=False)
         df = dataset.raw_df
-        for feature in drifted_features:
-            before_drift_data = df[feature]
-            # drifted_data = before_drift_data
-            for drift_type in drift_types_list:
-                if drift_type == DataDriftType.Statistical:
+        for drift_type in drift_types_list:
+            if drift_type == DataDriftType.Statistical:
+                drifted_features_numeric_only = np.random.choice(dataset.numeric_features,
+                                                                 num_drift_features,
+                                                                 replace=False)
+                for feature in drifted_features_numeric_only:
+                    before_drift_data = df[feature]
                     before_drift_mean = before_drift_data.mean()
                     before_drift_std = before_drift_data.std()
                     new_drift_mean = before_drift_mean * percentage_drift_mean
                     new_drift_std = before_drift_std * percentage_drift_std
                     drifted_data = new_drift_mean + (before_drift_data - before_drift_mean) * (new_drift_std/before_drift_std)
                     df[feature] = drifted_data
-                if drift_type == DataDriftType.NumNulls:   # TODO note if we do together with stat drift we might mask with nulls and change the desired drift..**
+
+            if drift_type == DataDriftType.NumNulls:   # TODO note if we do together with stat drift we might mask with nulls and change the desired drift..**
+                for feature in drifted_features_all_types:
                     df.loc[df[feature].sample(frac=percentage_drift_nulls).index, feature] = np.nan
 
+            # TODO optional: add drift of new unseen values of categorical feature
         dataset.raw_df = df
         return dataset
 

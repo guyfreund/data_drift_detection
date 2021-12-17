@@ -14,6 +14,8 @@ from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.config import Config
 
 
+# TODO: add detector for new unseen values of categorical features
+
 class StatisticalBasedDetector(IDataDriftDetector):
     def __init__(self, deployment_dataset: Dataset, training_feature_metrics_list_path: str, preprocessor: IPreprocessor):
         assert os.path.exists(training_feature_metrics_list_path)

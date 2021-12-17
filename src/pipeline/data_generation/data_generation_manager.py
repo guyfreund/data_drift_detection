@@ -13,7 +13,7 @@ from src.pipeline.model.interfaces.imodel import IModel
 class DataGenerationManagerInfo:
 
     def __init__(self, origin_dataset: Dataset,
-                 model_path: str,
+                 model_path: str
                  # training_feature_metrics_list_path: str,
                  # training_processed_df_path: str
                  ):
