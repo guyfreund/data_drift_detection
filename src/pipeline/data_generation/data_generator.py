@@ -40,7 +40,6 @@ class GANDataGenerator(IDataGenerator, ABC):
         self.add_data_drift(generated_data, num_drift_features, drift_types_list)
 
 
-
     def add_data_drift(self, dataset: Dataset, num_drift_features: int, drift_types_list: List[DataDriftType]):
         """
 
@@ -56,7 +55,6 @@ class GANDataGenerator(IDataGenerator, ABC):
         percentage_drift_mean = Config().data_drift.internal_data_drift_detector.mean.percent_threshold
         percentage_drift_std = Config().data_drift.internal_data_drift_detector.variance.percent_threshold
         percentage_drift_nulls = Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold
-
         drifted_features_all_types = np.random.choice(dataset.raw_df.columns, num_drift_features, replace=False)
         df = dataset.raw_df
         for drift_type in drift_types_list:
@@ -71,6 +69,7 @@ class GANDataGenerator(IDataGenerator, ABC):
                     new_drift_mean = before_drift_mean * percentage_drift_mean
                     new_drift_std = before_drift_std * percentage_drift_std
                     drifted_data = new_drift_mean + (before_drift_data - before_drift_mean) * (new_drift_std/before_drift_std)
+                    # TODO add check if variable is distinct to round the values
                     df[feature] = drifted_data
 
             if drift_type == DataDriftType.NumNulls:   # TODO note if we do together with stat drift we might mask with nulls and change the desired drift..**
