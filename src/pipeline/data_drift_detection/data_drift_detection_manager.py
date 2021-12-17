@@ -31,19 +31,19 @@ class DataDriftDetectionManagerInfo:
 
 class DataDriftDetectionManager(IManager):
     def __init__(self, info: DataDriftDetectionManagerInfo):
-        self._internal_statistical_based_data_drift_detector = StatisticalBasedDetector(
-            deployment_dataset=info.deployment_dataset,
-            training_feature_metrics_list_path=info.training_feature_metrics_list_path,
-            preprocessor=info.preprocessor
-        )
-        self._internal_model_based_data_drift_detector = ModelBasedDetector(
-            deployment_dataset_plus=info.deployment_dataset_plus,
-            training_processed_df_plus_path=info.training_processed_df_plus_path,
-            preprocessor=info.preprocessor,
-            model=info.model
-        )
-        detectors = [self._internal_statistical_based_data_drift_detector, self._internal_model_based_data_drift_detector]
-        self._internal_data_drift_detector = DataDriftDetector(detectors=detectors)
+        self._internal_data_drift_detector = DataDriftDetector(detectors=[
+            StatisticalBasedDetector(
+                deployment_dataset=info.deployment_dataset,
+                training_feature_metrics_list_path=info.training_feature_metrics_list_path,
+                preprocessor=info.preprocessor
+            ),
+            ModelBasedDetector(
+                deployment_dataset_plus=info.deployment_dataset_plus,
+                training_processed_df_plus_path=info.training_processed_df_plus_path,
+                preprocessor=info.preprocessor,
+                model=info.model
+            )
+        ])
         self._tensorflow_data_drift_detector = TensorflowDataValidationDataDriftDetector()
         self._scikit_multiflow_data_drift_detector = ScikitMultiflowDataDriftDetector(
             deployment_dataset=info.deployment_dataset,
