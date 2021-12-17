@@ -21,6 +21,7 @@ class GANDataGenerator(IDataGenerator, ABC):
 
         self._synthesizer = model_class.load(trained_model_path)  # for now we use CGAN class only
         self._origin_dataset = dataset
+        self._generated_dataset = None
         self._labels = dataset.raw_df[label_col].unique()
         self._inverse_preprocesser = inverse_preprocesser
 
@@ -39,7 +40,7 @@ class GANDataGenerator(IDataGenerator, ABC):
         pass
 
 
-    def drift(self, precentage_drift_mean=20.0, precentage_drift_spread=0.0, time_drift=None):
+    def drift(self, dataset: Dataset, precentage_drift_mean=20.0, precentage_drift_std=0.0, time_drift=None):
         """
         Introduces data drift
 
@@ -51,28 +52,22 @@ class GANDataGenerator(IDataGenerator, ABC):
 
         Returns:
 
+        from source: https://stats.stackexchange.com/questions/46429/transform-data-to-desired-mean-and-standard-deviation
+        suppose we start with {x_i} with mean m_1 and non-zero std s_1:
+        We do the following transformation:
+        y_i = m_2 + (x_i - m_1) * s_2/s_1
+        to get a new mean m_2 with std s_2
         """
-        self._precentage_drift_mean_ = precentage_drift_mean
-        self._precentage_drift_spread_ = precentage_drift_spread
-        if time_drift is None:
-            drift_time = np.datetime64(self.end_time) - (self._duration_ / 2)
-            self._drift_time_ = drift_time
-        else:
-            self._drift_time_ = np.datetime64(time_drift)
+        drifted_features = []
+        for feature in drifted_features:
+            before_drift_data = dataset.raw_df[feature]
+            before_drift_mean = before_drift_data.mean()
+            before_drift_std = before_drift_data.std()
+            new_drift_mean = before_drift_mean * precentage_drift_mean
+            new_drift_std = before_drift_std * precentage_drift_std
+            drifted_data = new_drift_mean + (before_drift_data - before_drift_mean) * (new_drift_std/before_drift_std)
 
-        self._duration_before_drift_ = self._drift_time_ - np.datetime64(
-            self.start_time
-        )
-        self._drift_idx_ = int(
-            self._duration_before_drift_
-            / (np.timedelta64(1, "m") * (self.process_time))
-        )
-        self.before_drift_data = self.anomalized_data[: self._drift_idx_]
-        self.after_drift_data = self.anomalized_data[self._drift_idx_:]
-        self.after_drift_data = self.after_drift_data + self.after_drift_data.mean() * (
-                self._pct_drift_mean_ / 100
-        ) * (1 + self._pct_drift_spread_ / 100)
-        self.drifted_data = np.append(self.before_drift_data, self.after_drift_data)
+
         self._drifted_flag_ = True
 
         if return_df:

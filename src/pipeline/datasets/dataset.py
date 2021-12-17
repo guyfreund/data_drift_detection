@@ -9,12 +9,13 @@ class Dataset:
     """
     A class that represents a dataset
     """
-    def __init__(self, dtype: DatasetType, path: str):
+    def __init__(self, dtype: DatasetType, path: str, is_drifted: bool = False):
         assert os.path.exists(path)
         self._path = path
         self._raw_df = self.load()
         self._num_instances, self._num_features = self._raw_df.shape
         self._dtype = dtype
+        self._drifted_flag_= is_drifted
 
     @property
     def num_features(self) -> int:
