@@ -18,6 +18,9 @@ from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDat
 from src.pipeline.preprocessing.preprocessor import Preprocessor
 
 
+import logging
+
+
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo]):
         self._mode = pipeline_mode
@@ -91,4 +94,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logging.warning('This will get logged to a file')
