@@ -77,24 +77,27 @@ class StatisticalBasedDetector(IDataDriftDetector):
             deployment_variance = deployment_fm.variance
             min_variance = min(training_variance, deployment_variance)
             max_variance = max(training_variance, deployment_variance)
-            is_variance_drifted = (1 - (min_variance / max_variance)) > Config().data_drift.internal_data_drift_detector.variance.percent_threshold
-            data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: VarianceDataDrift(is_drifted=is_variance_drifted)}
+            percent_variance = min_variance / max_variance if max_variance else 0  # both are 0
+            is_variance_drifted = (1 - percent_variance) > Config().data_drift.internal_data_drift_detector.variance.percent_threshold
+            data_drifts_per_feature_dict[feature_name].update({DataDriftType.Variance: VarianceDataDrift(is_drifted=is_variance_drifted)})
 
             # extract mean
             training_mean = training_fm.mean
             deployment_mean = deployment_fm.mean
             min_mean = min(training_mean, deployment_mean)
             max_mean = max(training_mean, deployment_mean)
-            is_mean_drifted = (1 - (min_mean / max_mean)) > Config().data_drift.internal_data_drift_detector.mean.percent_threshold
-            data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: MeanDataDrift(is_drifted=is_mean_drifted)}
+            percent_mean = min_mean / max_mean if max_mean else 0  # both are 0
+            is_mean_drifted = (1 - percent_mean) > Config().data_drift.internal_data_drift_detector.mean.percent_threshold
+            data_drifts_per_feature_dict[feature_name].update({DataDriftType.Mean: MeanDataDrift(is_drifted=is_mean_drifted)})
 
-            # handle number of nulls
+            # extract number of nulls
             training_num_nulls = training_fm.number_of_nulls
             deployment_num_nulls = deployment_fm.number_of_nulls
             min_num_nulls = min(training_num_nulls, deployment_num_nulls)
             max_num_nulls = max(training_num_nulls, deployment_num_nulls)
-            is_num_nulls_drifted = (1 - (min_num_nulls / max_num_nulls)) > Config().data_drift.internal_data_drift_detector.number_of_nulls.threshold
-            data_drifts_per_feature_dict[feature_name] |= {DataDriftType.Mean: NumNullsDataDrift(is_drifted=is_num_nulls_drifted)}
+            percent_num_nulls = min_num_nulls / max_num_nulls if max_num_nulls else 0  # both are 0
+            is_num_nulls_drifted = (1 - percent_num_nulls) > Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold
+            data_drifts_per_feature_dict[feature_name].update({DataDriftType.NumNulls: NumNullsDataDrift(is_drifted=is_num_nulls_drifted)})
 
         return data_drifts_per_feature_dict
 
