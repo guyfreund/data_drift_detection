@@ -1,17 +1,18 @@
+from typing import Optional
+
 from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.preprocessing.constants import FeatureType
 from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
-import numpy as np
 
 
 class CategoricalFeatureMetrics(IFeatureMetrics):
     def __init__(self, name: str, dataset_type: DatasetType):
         self._name = name
         self._dataset_type = dataset_type
-        self._feature_type = FeatureType.Categorical
+        self._ftype = FeatureType.Categorical
         self._number_of_nulls = 0
-        self._mean = np.inf
-        self._variance = np.inf
+        self._mean = None
+        self._variance = None
         self._is_important_feature = False
 
     @property
@@ -27,19 +28,19 @@ class CategoricalFeatureMetrics(IFeatureMetrics):
         self._dataset_type = dataset_type
 
     @property
-    def feature_type(self) -> FeatureType:
-        return self._feature_type
+    def ftype(self) -> FeatureType:
+        return self._ftype
 
-    @feature_type.setter
-    def feature_type(self, feature_type):
-        self._feature_type = feature_type
+    @ftype.setter
+    def ftype(self, value: FeatureType):
+        self._ftype = value
 
     @property
-    def mean(self) -> float:
+    def mean(self) -> Optional[float]:
         return self._mean
 
     @property
-    def variance(self) -> float:
+    def variance(self) -> Optional[float]:
         return self._variance
 
     @property

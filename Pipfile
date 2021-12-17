@@ -13,6 +13,8 @@ scikit-multiflow = "*"
 cython = "*"
 pipenv = "*"
 pyyaml = "*"
+xgboost = "*"
+"ruamel.yaml" = "*"
 
 [dev-packages]
 pytest = "*"

@@ -1,4 +1,3 @@
-import argparse
 import os
 from typing import List
 
@@ -16,7 +15,7 @@ from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
     BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH
 from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDataset, \
     BankMarketingDeploymentDatasetPlus, GermanCreditDeploymentDataset, GermanCreditDeploymentDatasetPlus
-from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
+from src.pipeline.preprocessing.preprocessor import Preprocessor
 
 
 class PipelineManager(IManager):
@@ -37,11 +36,13 @@ class PipelineManager(IManager):
         else:
             raise NotImplementedError
 
+    @property
+    def mode(self) -> PipelineMode:
+        return self._mode
 
-def args_handler():
-    parser = argparse.ArgumentParser(description='Running the pipeline manager')
-    parser.add_argument('-m', '--mode', default=PipelineMode.Training, type=int, help='Pipeline mode: 0=Training, 1=Monitoring')
-    return parser.parse_args()
+    @mode.setter
+    def mode(self, value: PipelineMode):
+        self._mode = value
 
 
 def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
@@ -55,7 +56,7 @@ def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
     german_credit_info = DataDriftDetectionManagerInfo(
         deployment_dataset_plus=GermanCreditDeploymentDatasetPlus(),
         training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
-        preprocessor=IPreprocessor(),  # TODO: fix
+        preprocessor=Preprocessor(),  # TODO: fix
         model=IModel(),  # TODO: fix
         deployment_dataset=GermanCreditDeploymentDataset(),
         training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
@@ -65,7 +66,7 @@ def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
     bank_marketing_info = DataDriftDetectionManagerInfo(
         deployment_dataset_plus=BankMarketingDeploymentDatasetPlus(),
         training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
-        preprocessor=IPreprocessor(),  # TODO: fix
+        preprocessor=Preprocessor(),  # TODO: fix
         model=IModel(),  # TODO: fix
         deployment_dataset=BankMarketingDeploymentDataset(),
         training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
@@ -76,14 +77,17 @@ def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
 
 
 def main():
-    args = args_handler()
-    mode = args.mode
-
+    # training
     pipeline_manager = PipelineManager(
-        pipeline_mode=mode,
+        pipeline_mode=PipelineMode.Training,
         data_drift_info_list=prepare_data_drift_config()
     )
     pipeline_manager.manage()
+
+    # monitoring
+    pipeline_manager.mode = PipelineMode.Monitoring
+    for _ in range(10):
+        pipeline_manager.manage()
 
 
 if __name__ == '__main__':

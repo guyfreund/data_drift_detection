@@ -1,10 +1,12 @@
 import pickle
 import os
-from typing import Tuple, List, Type
+from typing import Tuple, List
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from src.pipeline.datasets.dataset import Dataset
+from src.pipeline.preprocessing.feature_metrics.feature_metrics_categorical import CategoricalFeatureMetrics
+from src.pipeline.preprocessing.feature_metrics.feature_metrics_numeric import NumericFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 
@@ -12,17 +14,20 @@ from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 class Preprocessor(IPreprocessor):
 
     def __init__(self):
-        self._processed_df = None
-        self._processed_df_plus = None
-        self._X_train = None
-        self._X_validation = None
-        self._X_test = None
-        self._y_train = None
-        self._y_validation = None
-        self._y_test = None
-        self._feature_metrics_list = []
+        self._processed_df: pd.DataFrame = pd.DataFrame()
+        self._processed_df_plus: pd.DataFrame = pd.DataFrame()
+        self._X_train: pd.DataFrame = pd.DataFrame()
+        self._X_validation: pd.DataFrame = pd.DataFrame()
+        self._X_test: pd.DataFrame = pd.DataFrame()
+        self._y_train: pd.DataFrame = pd.DataFrame()
+        self._y_validation: pd.DataFrame = pd.DataFrame()
+        self._y_test: pd.DataFrame = pd.DataFrame()
+        self._feature_metrics_list: List[IFeatureMetrics] = []
 
     def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
+
+        feature_metrics_list: List[IFeatureMetrics] = self._build_feature_metrics_list(dataset)
+        self._feature_metrics_list = feature_metrics_list
 
         self._processed_df = pd.get_dummies(dataset.raw_df, columns=['job', 'marital',
                                                                      'education', 'default',
@@ -34,21 +39,42 @@ class Preprocessor(IPreprocessor):
         self._processed_df_plus = self._processed_df.copy()
         self._processed_df_plus['datasetType'] = dataset.dtype
 
-        self._save_datasets_as_pickle(dataset.__class__.__name__)
+        self._save_data_as_pickle(dataset.__class__.__name__)
 
+        return self._processed_df, self._processed_df_plus, self._feature_metrics_list
+
+    @staticmethod    
+    def _build_feature_metrics_list(dataset) -> List[IFeatureMetrics]:
         feature_metrics_list: List[IFeatureMetrics] = []
-        self._feature_metrics_list = feature_metrics_list
 
-        return self._processed_df, self._processed_df_plus, feature_metrics_list
+        categorical_cols = dataset.raw_df.select_dtypes(include=['bool', 'object']).columns
+        for col in categorical_cols:
+            feature_metric = CategoricalFeatureMetrics(col, dataset.dtype)
+            feature_metric.number_of_nulls = int(dataset.raw_df[col].isna().sum())
+            feature_metrics_list.append(feature_metric)
 
-    def _save_datasets_as_pickle(self, dataset_class_name: str):
-        path = os.path.abspath(os.path.join(__file__, "", "..", f"{dataset_class_name}.pickle"))
+        numerical_cols = dataset.raw_df.select_dtypes(include=['int64', 'float64']).columns
+        for col in numerical_cols:
+            feature_metric = NumericFeatureMetrics(col, dataset.dtype)
+            feature_metric.mean = dataset.raw_df[col].mean()
+            feature_metric.variance = dataset.raw_df[col].var()
+            feature_metric.number_of_nulls = int(dataset.raw_df[col].isna().sum())
+            feature_metrics_list.append(feature_metric)
+
+        return feature_metrics_list
+
+    def _save_data_as_pickle(self, dataset_class_name: str):
+        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}.pickle"))
         with open(path, 'wb') as output:
             pickle.dump(self._processed_df, output)
 
-        path = os.path.abspath(os.path.join(__file__, "", "..", f"{dataset_class_name}Plus.pickle"))
+        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}Plus.pickle"))
         with open(path, 'wb') as output:
             pickle.dump(self._processed_df_plus, output)
+
+        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_FeatureMetricsList.pickle"))
+        with open(path, 'wb') as output:
+            pickle.dump(self._feature_metrics_list, output)
 
     def split(self, processed_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         data_y = processed_df['y']

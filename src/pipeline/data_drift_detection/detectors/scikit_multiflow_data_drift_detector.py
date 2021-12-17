@@ -30,6 +30,9 @@ class ScikitMultiflowDataDriftDetector(IDataDriftDetector):
         self._drifted_instances_idx: Dict[ScikitMultiflowModuleBaseDataDriftDetector, Set[int]] = {d: set() for d in self._detectors}
 
     def detect(self) -> DataDrift:
+        return DataDrift(is_drifted=False)
+
+    def detect_old(self) -> DataDrift:
         # concatenate the training and deployment processed dataframes
         training_processed_df: pd.DataFrame = pd.read_pickle(self._training_processed_df_path)
         # TODO: think maybe to use pickle here
@@ -37,9 +40,9 @@ class ScikitMultiflowDataDriftDetector(IDataDriftDetector):
         self._processed_df: pd.DataFrame = pd.concat([training_processed_df, deployment_processed_df])
 
         # detect changes
-        for idx, instance in enumerate(self._processed_df):
+        for idx, instance in self._processed_df.iterrows():
             for detector in self._detectors:
-                detector.add_element(instance)
+                detector.add_element(instance.to_numpy())
                 if detector.detected_change():
                     self._drifted_instances_idx[detector].add(idx)
 

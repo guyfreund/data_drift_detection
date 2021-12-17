@@ -11,7 +11,7 @@ class NumericFeatureMetrics(IFeatureMetrics):
     def __init__(self, name: str, dataset_type: DatasetType):
         self._name = name
         self._dataset_type = dataset_type
-        self._feature_type = FeatureType.Numeric
+        self._ftype = FeatureType.Numeric
         self._number_of_nulls = 0
         self._mean = 0
         self._variance = 0
@@ -30,12 +30,12 @@ class NumericFeatureMetrics(IFeatureMetrics):
         self._dataset_type = dataset_type
 
     @property
-    def feature_type(self) -> FeatureType:
-        return self._feature_type
+    def ftype(self) -> FeatureType:
+        return self._ftype
 
-    @feature_type.setter
-    def feature_type(self, feature_type):
-        self._feature_type = feature_type
+    @ftype.setter
+    def ftype(self, value: FeatureType):
+        self._ftypee = value
 
     @property
     def mean(self) -> float:
