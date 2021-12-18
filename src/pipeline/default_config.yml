@@ -47,11 +47,17 @@ data_drift:
         percent_of_instances: 1e-1  # number of instances that indicates on a data drift
 
 data_generation:
-  data_drift:
-    generation_percent: 200  # means to generate a dataset of double size
-    variance:
-      features: ["feature_1", "...", "feature_k"]
-    mean:
-      features: ["feature_1", "...", "feature_k"]
-    number_of_nulls:
-      features: ["feature_1", "...", "feature_k"]
+  generation_percent: 200  # means to generate a dataset of double size
+
+preprocessing:
+  data_drift_model_label_column_name: 'datasetType'
+
+  german_credit:
+    numeric_features: []
+    categorical_features: []
+    original_label_column_name: 'classification'
+
+  bank_martketing:
+    numeric_features: []
+    categorical_features: []
+    original_label_column_name: 'y'
