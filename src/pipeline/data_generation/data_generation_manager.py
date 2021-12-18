@@ -2,6 +2,7 @@ from typing import Any, List
 import pandas as pd
 from ydata_synthetic.synthesizers.regular import CGAN
 from src.pipeline.interfaces.imanager import IManager
+from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.data_generation.data_generator import GANDataGenerator
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
@@ -14,7 +15,8 @@ class DataGenerationManagerInfo:
 
     def __init__(self, origin_dataset: Dataset,
                  label_col: str,
-                 model_path: str
+                 model_path: str,
+
                  # training_feature_metrics_list_path: str,
                  # training_processed_df_path: str
                  ):
@@ -29,21 +31,22 @@ class DataGenerationManager(IManager):
     def __init__(self, info: DataGenerationManagerInfo):
         self._origin_dataset = info.origin_dataset
         self._generated_dataset = None
-        self._label_col
+        self._label_col = self._origin_dataset.label_column_name
         self._data_generator = GANDataGenerator(dataset=self._origin_dataset,
-                                                label_col=info.label_col,
-             model_class: BaseModel,
-             trained_model_path: str,
+                                                label_col=self._label_col,
+                                                model_class=CGAN,
+                                                trained_model_path=str,
              inverse_preprocesser: Optional[Any] = None) -> None)
         self._gen_model_args = info.gen_model_args
         self._train_args = train_args
 
 
 
-    def manage(self, sample_size_to_generate: int) -> None:
+    def manage(self, sample_size_to_generate: int) -> DataDrift:
         # Training the GAN model
         self._data_generator.train(self._origin_dataset)
         self.__generated_dataset = self._data_generator.generate(n_samples=sample_size_to_generate, vector_dim=dataset.shape[1])
+        return
 
 
     def get_generated_dataset(self):
@@ -51,31 +54,12 @@ class DataGenerationManager(IManager):
 
 
 class MultipleDatasetGenerationManager(IManager):
-    pass
+    def __init__(self, info_list: List[DataGenerationManagerInfo]):
+        self.data_generation_managers: List[DataGenerationManager] = [DataGenerationManager(info) for info in info_list]
+
+    def manage(self) -> List[DataDrift]:
+        data_drifts: List[DataDrift] = [manager.manage() for manager in self.data_generation_managers]
+        return data_drifts
 
 
-
-if __name__ == '__main__':
-    # Define the GAN and training parameters
-    ##### FOR NOW ######
-    noise_dim = 32
-    dim = 128
-    batch_size = 128
-
-    log_step = 20
-    epochs = 60 + 1
-    learning_rate = 5e-4
-    beta_1 = 0.5
-    beta_2 = 0.9
-
-    n_samples = 100
-    # dataset = get_data()
-    gen_model = WGAN_GP
-
-    gan_args = [batch_size, learning_rate, beta_1, beta_2, noise_dim, dataset.shape[1], dim]
-    train_args = ['', epochs, log_step]
-
-    data_gen_manager = DataGenerationManager()
-    data_gen_manager.manage(sample_size_to_generate=n_samples)
-    gen_samples = data_gen_manager.get_generated_dataset()
 

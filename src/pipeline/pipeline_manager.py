@@ -29,13 +29,14 @@ class PipelineManager(IManager):
         self._data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=data_drift_info_list)
         self._model_training_manager = MultipleDatasetModelTrainingManager()
         self._data_drifts: List[DataDrift] = []
+        self._data_drifts_detections: List[DataDrift] = []
 
     def manage(self):
         if self._mode == PipelineMode.Training:
             self._model_training_manager.manage()
         elif self._mode == PipelineMode.Monitoring:
-            self._data_generation_manager.manage()
-            self._data_drifts = self._data_drift_detection_manager.manage()
+            self._data_drifts = self._data_generation_manager.manage()
+            self._data_drifts_detections = self._data_drift_detection_manager.manage()
             # TODO: retrain
         else:
             raise NotImplementedError
