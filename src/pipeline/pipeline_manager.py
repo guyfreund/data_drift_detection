@@ -27,6 +27,7 @@ from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.constants import DataDriftType
 from src.pipeline.model.paths import BANK_MARKETING_GEN_CGAN_MODEL_PATH, GERMAN_CREDIT_GEN_CGAN_MODEL_PATH
 
+
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo],
                  training_info_list: List[ModelTrainingManagerInfo],
