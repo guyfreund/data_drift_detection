@@ -48,6 +48,7 @@ data_drift:
 
 data_generation:
   generation_percent: 200  # means to generate a dataset of double size
+  generate_model: CGAN # model class we load
 
 preprocessing:
   data_drift_model_label_column_name: 'datasetType'

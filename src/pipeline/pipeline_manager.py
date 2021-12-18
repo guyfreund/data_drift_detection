@@ -87,8 +87,19 @@ def prepare_model_training_info() -> List[ModelTrainingManagerInfo]:
 # TODO add the sampke to generatd
 def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
     return [
-        DataGenerationManagerInfo(),  # Bank Marketing
-        DataGenerationManagerInfo()   # German Credit
+        DataGenerationManagerInfo(
+            origin_dataset=BankMarketingDataset(),
+            model_class=CGAN,
+
+        ),  # Bank Marketing
+        DataGenerationManagerInfo(
+            origin_dataset=BankMarketingDataset(),
+            model_class=CGAN,
+            sample_size_to_generate=Config().data_generation.generation_percent,
+            model_path = BANK_MARKETING_GEN_CGAN_MODEL_PATH,
+            data_drift_types =
+
+        )   # German Credit
     ]
 
 

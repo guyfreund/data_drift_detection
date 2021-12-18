@@ -65,3 +65,6 @@ class MultipleDatasetGenerationManager(IManager):
 
 
 
+DataGenerationManagerInfo(origin_dataset=, model_class=CGAN,
+                        sample_size_to_generate=Config().data_generation.generation_percent,
+                        model_path=BANK_MARKETING_GEN_CGAN_MODEL_PATH, data_drift_types=)
