@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import Any, List
 import tensorflow as tf
+import time
+import os
 import numpy as np
 from ydata_synthetic.synthesizers.gan import BaseModel
 
@@ -8,12 +10,10 @@ from src.pipeline.data_generation.interfaces.idata_generator import IDataGenerat
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.datasets.dataset import Dataset
 # from imblearn.over_sampling import SMOTE, ADASYN
-from ydata_synthetic.synthesizers.regular import WGAN_GP
-from ydata_synthetic.synthesizers import ModelParameters, TrainParameters
 
-# Import transformation function
 from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.constants import DataDriftType
+
 
 class GANDataGenerator(IDataGenerator, ABC):
     ''''this class loads a GAN model trained on the dataset'''
@@ -21,6 +21,7 @@ class GANDataGenerator(IDataGenerator, ABC):
 
         self._synthesizer = model_class.load(trained_model_path)  # for now we use CGAN class only
         self._origin_dataset = dataset
+        self._dataset_name = type(dataset).__name__
         self._generated_dataset = None
         self._labels = dataset.raw_df[label_col].unique()
         self._inverse_preprocesser = inverse_preprocesser
@@ -42,7 +43,6 @@ class GANDataGenerator(IDataGenerator, ABC):
 
     def add_data_drift(self, dataset: Dataset, num_drift_features: int, drift_types_list: List[DataDriftType]):
         """
-
         from source: https://stats.stackexchange.com/questions/46429/transform-data-to-desired-mean-and-standard-deviation
 
         Suppose we start with {x_i} with mean m_1 and non-zero std s_1:
@@ -77,12 +77,14 @@ class GANDataGenerator(IDataGenerator, ABC):
                     df.loc[df[feature].sample(frac=percentage_drift_nulls).index, feature] = np.nan
 
             # TODO optional: add drift of new unseen values of categorical feature
+
         dataset.raw_df = df
         return dataset
 
 
-    def save_datset(self, dataset, path):
-        dataset.raw_df.to_csv(path + 'generated_data') # TODO add configs and names suit what has been saved
+    def save_dataset(self, dataset: Dataset, path: str, file_name: str = 'generated_data'):
+        file_name = file_name + self._dataset_name + time.strftime("%Y%m%d-%H%M%S") + '.csv'
+        dataset.raw_df.to_csv(os.path.join(path, file_name))
 
 
 class BASICDataGenerator(IDataGenerator, ABC):
