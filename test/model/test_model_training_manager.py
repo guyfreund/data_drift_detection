@@ -11,7 +11,7 @@ class TestBankMarketingDatasetModelTrainingManager(TestCase):
     def setUp(self) -> None:
         logging.basicConfig(
             format='%(asctime)s - %(message)s',
-            level='DEBUG',
+            level='INFO',
             datefmt='%d-%b-%y %H:%M:%S'
         )
 
@@ -31,7 +31,7 @@ class TestGermanCreditDatasetModelTrainingManager(TestCase):
     def setUp(self) -> None:
         logging.basicConfig(
             format='%(asctime)s - %(message)s',
-            level='DEBUG',
+            level='INFO',
             datefmt='%d-%b-%y %H:%M:%S'
         )
 

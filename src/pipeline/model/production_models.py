@@ -24,7 +24,7 @@ class BankMarketingProductionModel(IModel):
         self._model.fit(X_train, y_train)
         self._is_trained = True
 
-        logging.debug(f'Train Model: model was trained successfully')
+        logging.info(f'Train Model: model was trained successfully')
 
         self._save_model_as_pickle(self.__class__.__name__)
 
@@ -33,7 +33,7 @@ class BankMarketingProductionModel(IModel):
         with open(path, 'wb') as handle:
             pickle.dump({}, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-        logging.debug(f'Save Data: {model_class_name}.save model has been saved')
+        logging.info(f'Save Data: {model_class_name}.save model has been saved')
 
     def tune_hyperparameters(self, X_validation: pd.DataFrame, y_validation: pd.DataFrame):
         pass
@@ -48,8 +48,8 @@ class BankMarketingProductionModel(IModel):
         fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
         auc = metrics.auc(fpr, tpr)
 
-        logging.debug(f'Model Evaluation: model was evaluated successfully. results are as follows: ')
-        logging.debug(f'Evaluation Info: accuracy: {round(accuracy * 100, 2)}% | '
+        logging.info(f'Model Evaluation: model was evaluated successfully. results are as follows: ')
+        logging.info(f'Evaluation Info: accuracy: {round(accuracy * 100, 2)}% | '
                       f'precision: {round(precision * 100, 2)}% | '
                       f'recall: {round(recall * 100, 2)}% | '
                       f'f1: {round(f1 * 100, 2)}% | '
@@ -70,7 +70,7 @@ class BankMarketingProductionModel(IModel):
         with open(path, 'rb') as handle:
             self._model = pickle.load(handle)
 
-        logging.debug(f'Load Data: {model_class_name}.sav model has been loaded')
+        logging.info(f'Load Data: {model_class_name}.sav model has been loaded')
 
     @property
     def model(self) -> Any:
@@ -100,7 +100,7 @@ class GermanCreditProductionModel(IModel):
         self._model.fit(X_train, y_train)
         self._is_trained = True
 
-        logging.debug(f'Train Model: model was trained successfully')
+        logging.info(f'Train Model: model was trained successfully')
 
         self._save_model_as_pickle(self.__class__.__name__)
 
@@ -109,7 +109,7 @@ class GermanCreditProductionModel(IModel):
         with open(path, 'wb') as handle:
             pickle.dump({}, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-        logging.debug(f'Save Data: {model_class_name}.save model has been saved')
+        logging.info(f'Save Data: {model_class_name}.save model has been saved')
 
     def tune_hyperparameters(self, X_validation: pd.DataFrame, y_validation: pd.DataFrame):
         pass
@@ -124,7 +124,7 @@ class GermanCreditProductionModel(IModel):
         fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
         auc = metrics.auc(fpr, tpr)
 
-        logging.debug(f'Model Evaluation: model was evaluated successfully. results are as follows: '
+        logging.info(f'Model Evaluation: model was evaluated successfully. results are as follows: '
                       f'Accuracy: {round(accuracy * 100, 2)}%, '
                       f'Precision: {round(precision * 100, 2)}%, '
                       f'Recall: {round(recall * 100, 2)}%, '
@@ -146,7 +146,7 @@ class GermanCreditProductionModel(IModel):
         with open(path, 'rb') as handle:
             self._model = pickle.load(handle)
 
-        logging.debug(f'Load Data: {model_class_name}.sav model has been loaded')
+        logging.info(f'Load Data: {model_class_name}.sav model has been loaded')
 
     @property
     def model(self) -> Any:

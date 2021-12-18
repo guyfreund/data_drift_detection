@@ -29,9 +29,9 @@ class Preprocessor(IPreprocessor):
 
     def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
 
-        logging.debug(f'Dataset Info: num of total features: {len(dataset.categorical_feature_names) + len(dataset.numeric_feature_names)} | '
-                      f'num of categorical features: {len(dataset.categorical_feature_names)} | '
-                      f'num of numerical features: {len(dataset.numeric_feature_names)}')
+        logging.info(f'Dataset Info: num of total features: {len(dataset.categorical_feature_names) + len(dataset.numeric_feature_names)} | '
+                     f'num of categorical features: {len(dataset.categorical_feature_names)} | '
+                     f'num of numerical features: {len(dataset.numeric_feature_names)}')
 
         feature_metrics_list: List[IFeatureMetrics] = self._build_feature_metrics_list(dataset)
         self._feature_metrics_list = feature_metrics_list
@@ -43,9 +43,9 @@ class Preprocessor(IPreprocessor):
 
         self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
 
-        logging.debug(f"Preprocessing: data was preprocessed successfully.")
-        logging.debug(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
-                      f"num of numerical features: {len(self._processed_df.select_dtypes(exclude=['bool', 'object']).columns)}")
+        logging.info(f"Preprocessing: data was preprocessed successfully.")
+        logging.info(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
+                     f"num of numerical features: {len(self._processed_df.select_dtypes(exclude=['bool', 'object']).columns)}")
 
         self._processed_df_plus = self._processed_df.copy()
         self._processed_df_plus['datasetType'] = dataset.dtype
@@ -87,8 +87,8 @@ class Preprocessor(IPreprocessor):
         with open(path, 'wb') as output:
             pickle.dump(self._feature_metrics_list, output)
 
-        logging.debug(f'Save Data: {dataset_class_name}.pickle, {dataset_class_name}Plus.pickle, '
-                      f'{dataset_class_name}_FeatureMetricsList.pickle files has been saved')
+        logging.info(f'Save Data: {dataset_class_name}.pickle, {dataset_class_name}Plus.pickle, '
+                     f'{dataset_class_name}_FeatureMetricsList.pickle files has been saved')
 
     def split(self, processed_df: pd.DataFrame, label_column_name: str) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         data_y = processed_df[label_column_name]
@@ -103,10 +103,10 @@ class Preprocessor(IPreprocessor):
         self._y_validation = y_validation
         self._y_test = y_test
 
-        logging.debug(f"Split Data: processed_df has been splitted by the '{label_column_name}' column")
-        logging.debug(f"Split Info: train size: {round(len(self._X_train)/len(processed_df), 2)}% | "
-                      f"validation size: {round(len(self._X_validation)/len(processed_df), 2)}% | "
-                      f"test size: {round(len(self._X_test)/len(processed_df), 2)}%")
+        logging.info(f"Split Data: processed_df has been splitted by the '{label_column_name}' column")
+        logging.info(f"Split Info: train size: {round(len(self._X_train)/len(processed_df), 2)*100}% | "
+                     f"validation size: {round(len(self._X_validation)/len(processed_df), 2)*100}% | "
+                     f"test size: {round(len(self._X_test)/len(processed_df), 2)*100}%")
 
         return X_train, X_validation, X_test, y_train, y_validation, y_test
 
