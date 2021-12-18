@@ -1,5 +1,6 @@
 from typing import Any, List
 import pandas as pd
+import numpy as np
 from ydata_synthetic.synthesizers.regular import CGAN
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_drift_detection.data_drift import DataDrift
@@ -36,21 +37,24 @@ class DataGenerationManager(IManager):
                                                 label_col=self._label_col,
                                                 model_class=CGAN,
                                                 trained_model_path=str,
-             inverse_preprocesser: Optional[Any] = None) -> None)
-        self._gen_model_args = info.gen_model_args
-        self._train_args = train_args
-
+                                                inverse_preprocesser=None)
+        self._data_drift_types = info.data_drift_types
 
 
     def manage(self, sample_size_to_generate: int) -> DataDrift:
-        # Training the GAN model
-        self._data_generator.train(self._origin_dataset)
-        self.__generated_dataset = self._data_generator.generate(n_samples=sample_size_to_generate, vector_dim=dataset.shape[1])
-        return
+        is_drifted = np.random.choice([False, True])
+        self._get_generated_dataset(sample_size_to_generate, is_drifted)
+        return DataDrift(is_drifted=is_drifted)
 
 
-    def get_generated_dataset(self):
-        return self.__generated_dataset
+    def _get_generated_dataset(self, sample_size_to_generate: int, is_drifted: bool) -> None:
+        if is_drifted:
+            drift_types_list = np.random.choice(self._data_drift_types,
+                                                size=np.random.randint(1, len(self._data_drift_types) + 1))
+            self._data_generator.generate_drifted_samples(sample_size_to_generate, drift_types_list)
+        else:
+            self._data_generator.generate_normal_samples(sample_size_to_generate)
+
 
 
 class MultipleDatasetGenerationManager(IManager):

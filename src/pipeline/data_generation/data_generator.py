@@ -50,6 +50,7 @@ class GANDataGenerator(IDataGenerator, ABC):
         Then, we get a new mean m_2 with std s_2
 
         """
+        # TODO add random sample for the drift percentages
         percentage_drift_mean = Config().data_drift.internal_data_drift_detector.mean.percent_threshold
         percentage_drift_std = Config().data_drift.internal_data_drift_detector.variance.percent_threshold
         percentage_drift_nulls = Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold
