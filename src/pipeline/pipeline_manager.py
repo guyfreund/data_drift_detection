@@ -84,7 +84,7 @@ def prepare_model_training_info() -> List[ModelTrainingManagerInfo]:
         )
     ]
 
-
+# TODO add the sampke to generatd
 def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
     return [
         DataGenerationManagerInfo(),  # Bank Marketing

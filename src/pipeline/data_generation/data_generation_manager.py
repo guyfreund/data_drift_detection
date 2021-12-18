@@ -42,13 +42,14 @@ class DataGenerationManager(IManager):
     def manage(self) -> DataDrift:
         is_drifted = np.random.choice([False, True])
         generated_data = self._get_generated_dataset(is_drifted)
-        #TODO: do saving dataset call from utils function
+        # TODO: do saving dataset call from utils function !!!
         return DataDrift(is_drifted=is_drifted)
 
     def _get_generated_dataset(self, is_drifted: bool) -> Union[np.array, pd.DataFrame]:
         if is_drifted:
             drift_types_list = np.random.choice(self._data_drift_types,
-                                                size=np.random.randint(1, len(self._data_drift_types) + 1))
+                                                size=np.random.randint(1, len(self._data_drift_types) + 1),
+                                                replace=False)
             return self._data_generator.generate_drifted_samples(self._sample_size_to_generate, drift_types_list)
         else:
             return self._data_generator.generate_normal_samples(self._sample_size_to_generate)

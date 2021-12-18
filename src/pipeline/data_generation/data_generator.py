@@ -21,11 +21,11 @@ class GANDataGenerator(IDataGenerator):
 
         self._synthesizer = model_class.load(trained_model_path)  # for now we use CGAN class only
         self._origin_dataset = dataset
-        self._dataset_name = type(dataset).__name__
-        self._generated_dataset = None
+        self._dataset_name = dataset.__class__.__name__
         self._labels = dataset.raw_df[label_col].unique()
         self._inverse_preprocessor = inverse_preprocesser
 
+    # TODO: n_samples from config
     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
         z = tf.random.normal((n_samples, self._synthesizer.noise_dim))
         label_z = tf.random.uniform((n_samples,), minval=min(self._labels), maxval=max(self._labels) + 1, dtype=tf.dtypes.int32)
@@ -34,7 +34,9 @@ class GANDataGenerator(IDataGenerator):
 
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[np.ndarray, pd.DataFrame]:
         generated_data = self.generate_normal_samples(n_samples)
-        num_of_drift_features = Config().data_drift.internal_data_drift_detector.mean.percent_of_features * len(self._origin_dataset.raw_df)
+        # TODO add sampling and change the config
+        num_features = self._origin_dataset.numeric_feature_names+self._origin_dataset.categorical_feature_names
+        num_of_drift_features = Config().data_drift.internal_data_drift_detector.mean.percent_of_features * num_features
         num_drift_features = min(num_of_drift_features, n_samples)
         # Do Drifting
         return self._add_data_drift(generated_data, num_drift_features, drift_types_list)
@@ -51,10 +53,12 @@ class GANDataGenerator(IDataGenerator):
         Then, we get a new mean m_2 with std s_2
         """
         # TODO add random sample for the drift percentages
+        drifted_features_all_types = np.random.choice(dataset.numeric_feature_names + dataset.categorical_feature_names,
+                                                      num_drift_features, replace=False)
         percentage_drift_mean = np.random.uniform(Config().data_drift.internal_data_drift_detector.mean.percent_threshold, 1.)
         percentage_drift_std = np.random.uniform(Config().data_drift.internal_data_drift_detector.variance.percent_threshold, 1.)
         percentage_drift_nulls = np.random.uniform(Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold, 1.)
-        drifted_features_all_types = np.random.choice(dataset.numeric_feature_names+dataset.categorical_feature_names, num_drift_features, replace=False)
+
         logging.debug(f'Features to drift are: {drifted_features_all_types}. '
                       f'number of features: {num_drift_features}. The drift types are: {drift_types_list}.'
                       f'\npercentage_drift_mean: {percentage_drift_mean}, '
