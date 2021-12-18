@@ -1,3 +1,5 @@
+from typing import List
+
 import pandas as pd
 
 from src.pipeline.datasets.dataset import Dataset
@@ -18,4 +20,9 @@ class GermanCreditDataset(Dataset):
         super().__init__(dtype=DatasetType.Training, path=GERMAN_CREDIT_DATASET_PATH)
 
     def load(self) -> pd.DataFrame:
-        raise NotImplementedError  # TODO: implement
+        names = ['existingchecking', 'duration', 'credithistory', 'purpose', 'creditamount',
+                 'savings', 'employmentsince', 'installmentrate', 'statussex', 'otherdebtors',
+                 'residencesince', 'property', 'age', 'otherinstallmentplans', 'housing',
+                 'existingcredits', 'job', 'peopleliable', 'telephone', 'foreignworker', 'classification']
+
+        return pd.read_csv(self._path, names=names, delimiter=' ')

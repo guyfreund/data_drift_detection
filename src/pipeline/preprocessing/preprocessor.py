@@ -1,8 +1,10 @@
 import pickle
 import os
+from collections import defaultdict
 from typing import Tuple, List, Type
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder, label_binarize, StandardScaler, MinMaxScaler
 
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.preprocessing.feature_metrics.feature_metrics_categorical import CategoricalFeatureMetrics
@@ -23,18 +25,32 @@ class Preprocessor(IPreprocessor):
         self._y_validation = None
         self._y_test = None
         self._feature_metrics_list = []
+        self._y_col = None
 
     def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
 
         feature_metrics_list: List[IFeatureMetrics] = self.build_feature_metrics_list(dataset)
         self._feature_metrics_list = feature_metrics_list
+        dataset_columns = dataset.raw_df.columns
 
-        self._processed_df = pd.get_dummies(dataset.raw_df, columns=['job', 'marital',
-                                                                     'education', 'default',
-                                                                     'housing', 'loan',
-                                                                     'contact', 'month',
-                                                                     'poutcome'])
-        self._processed_df.y.replace(('yes', 'no'), (1, 0), inplace=True)
+        if 'y' in list(dataset_columns):
+            self.y_col = 'y'
+            dataset.raw_df[self.y_col].replace(('yes', 'no'), (1, 0), inplace=True)
+
+        if 'classification' in list(dataset_columns):
+            self.y_col = 'classification'
+            dataset.raw_df[self.y_col].replace([1, 2], [1, 0], inplace=True)
+            numvars = ['creditamount', 'duration', 'installmentrate', 'residencesince', 'age',
+                       'existingcredits', 'peopleliable']
+            pd.DataFrame(StandardScaler().fit_transform(dataset.raw_df[numvars]))
+            catvars = ['existingchecking', 'credithistory', 'purpose', 'savings', 'employmentsince',
+             'statussex', 'otherdebtors', 'property', 'otherinstallmentplans', 'housing', 'job',
+             'telephone', 'foreignworker']
+            d = defaultdict(LabelEncoder)
+            dataset.raw_df[catvars].apply(lambda x: d[x.name].fit_transform(x))
+
+        categorical_columns = dataset.raw_df.select_dtypes(include=['bool', 'object']).columns
+        self._processed_df = pd.get_dummies(dataset.raw_df, columns=categorical_columns)
 
         self._processed_df_plus = self._processed_df.copy()
         self._processed_df_plus['datasetType'] = dataset.dtype
@@ -72,10 +88,10 @@ class Preprocessor(IPreprocessor):
             pickle.dump(self._processed_df_plus, output)
 
     def split(self, processed_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-        data_y = processed_df['y']
-        data_X = processed_df.drop('y', axis=1)
+        data_y = processed_df[self.y_col]
+        data_X = processed_df.drop(self.y_col, axis=1)
         X_train, X_test, y_train, y_test = train_test_split(data_X, data_y, test_size=0.3)
-        X_test, X_validation, y_test, y_validation = train_test_split(X_test, y_test, test_size=0.5)
+        X_test, X_validation, y_test, y_validation = train_test_split(X_test, y_test, test_size=1)
 
         self._X_train = X_train
         self._X_validation = X_validation
@@ -141,6 +157,14 @@ class Preprocessor(IPreprocessor):
     @y_test.setter
     def y_test(self, y_test):
         self._y_test = y_test
+
+    @property
+    def y_col(self) -> str:
+        return self._y_col
+
+    @y_col.setter
+    def y_col(self, y_col):
+        self._y_col = y_col
 
     @property
     def feature_metrics_list(self) -> List[IFeatureMetrics]:

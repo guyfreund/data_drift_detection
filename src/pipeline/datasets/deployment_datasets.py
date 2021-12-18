@@ -5,6 +5,7 @@ from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.datasets.paths import BANK_MARKETING_DEPLOYMENT_DATASET_PATH, \
     BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, \
     GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
+from src.pipeline.datasets.training_datasets import GermanCreditDataset
 
 
 class BankMarketingDeploymentDataset(Dataset):
@@ -28,7 +29,7 @@ class GermanCreditDeploymentDataset(Dataset):
         super().__init__(dtype=DatasetType.Training, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH)
 
     def load(self) -> pd.DataFrame:
-        raise NotImplementedError  # TODO: implement
+        return pd.read_csv(self._path, names=GermanCreditDataset.names, delimiter=' ')
 
 
 class GermanCreditDeploymentDatasetPlus(Dataset):
@@ -36,4 +37,4 @@ class GermanCreditDeploymentDatasetPlus(Dataset):
         super().__init__(dtype=DatasetType.Training, path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH)
 
     def load(self) -> pd.DataFrame:
-        raise NotImplementedError  # TODO: implement
+        return pd.read_csv(self._path, names=GermanCreditDataset.names, delimiter=' ')
