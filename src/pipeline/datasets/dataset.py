@@ -1,6 +1,6 @@
 import pickle
 from abc import abstractmethod
-from typing import List, Type, Set, Optional
+from typing import List, Set, Optional
 import pandas as pd
 import os
 
