@@ -36,10 +36,12 @@ class Preprocessor(IPreprocessor):
         feature_metrics_list: List[IFeatureMetrics] = self._build_feature_metrics_list(dataset)
         self._feature_metrics_list = feature_metrics_list
 
-        pd.DataFrame(StandardScaler().fit_transform(dataset.raw_df[dataset.numeric_feature_names]))
+        self._processed_df = dataset.raw_df.copy()
+
+        pd.DataFrame(StandardScaler().fit_transform(self._processed_df[dataset.numeric_feature_names]))
         d = defaultdict(LabelEncoder)
-        dataset.raw_df[dataset.categorical_feature_names].apply(lambda x: d[x.name].fit_transform(x))
-        self._processed_df = pd.get_dummies(dataset.raw_df, columns=dataset.categorical_feature_names)
+        self._processed_df[dataset.categorical_feature_names].apply(lambda x: d[x.name].fit_transform(x))
+        self._processed_df = pd.get_dummies(self._processed_df, columns=dataset.categorical_feature_names)
 
         self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
 

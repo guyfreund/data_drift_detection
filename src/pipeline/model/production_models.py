@@ -48,7 +48,7 @@ class BankMarketingProductionModel(IModel):
         fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
         auc = metrics.auc(fpr, tpr)
 
-        logging.info(f'Model Evaluation: model was evaluated successfully. results are as follows: ')
+        logging.info(f'Model Evaluation: model was evaluated successfully. ')
         logging.info(f'Evaluation Info: accuracy: {round(accuracy * 100, 2)}% | '
                       f'precision: {round(precision * 100, 2)}% | '
                       f'recall: {round(recall * 100, 2)}% | '
