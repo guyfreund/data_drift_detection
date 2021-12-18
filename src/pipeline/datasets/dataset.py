@@ -1,3 +1,4 @@
+import pickle
 from abc import abstractmethod
 from typing import List, Type, Set, Optional
 import pandas as pd
@@ -16,12 +17,12 @@ class Dataset:
         assert os.path.exists(path)
         self._path = path
         self._to_load = to_load
-        if self._to_load:
-            self._raw_df = self.load()
-            print('loading dataset')
         if raw_df is not None:
             self._raw_df = raw_df
             print('using raw_df')
+        if self._to_load:
+            self._raw_df = self.load()
+            print('loading dataset')
         self._num_instances, self._num_features = self._raw_df.shape
         self._dtype = dtype
         self._label_column_name = label_column_name
@@ -109,7 +110,8 @@ class Dataset:
         assert numeric_feature_names == dataset_list[0].numeric_feature_names
 
         raw_df: pd.DataFrame = pd.concat([ds.raw_df for ds in dataset_list])
-        pd.to_pickle(raw_df)  # TODO: pickle the new dataset
+        with open(path, 'wb') as output:
+            pickle.dump(raw_df, output)
 
         return cls(
             dtype=dataset_types.pop(),
@@ -129,4 +131,7 @@ class Dataset:
             (pd.DataFrame): the raw dataframe
 
         """
+        if self._raw_df is not None:
+            return self._raw_df
+
         raise NotImplementedError

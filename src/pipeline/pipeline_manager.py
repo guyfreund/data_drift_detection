@@ -35,15 +35,30 @@ class PipelineManager(IManager):
         self._model_training_manager = MultipleDatasetModelTrainingManager(info_list=training_info_list)
         self._model_retraining_manager = MultipleDatasetModelTrainingManager(info_list=retraining_info_list)
         self._data_drifts: List[DataDrift] = []
+        self._retraining_info_list: List[ModelTrainingManagerInfo] = retraining_info_list
 
     def manage(self):
         if self._mode == PipelineMode.Training:
+            # training all models
             self._model_training_manager.manage()
+
         elif self._mode == PipelineMode.Monitoring:
+            # generating deployment datasets
             self._data_generation_manager.manage()
+
+            # detecting data drifts in each of the deployment datasets
             self._data_drifts = self._data_drift_detection_manager.manage()
+
+            # training only if a data drift was detected
+            for idx, data_drift in enumerate(self._data_drifts):
+                self._retraining_info_list[idx].to_train = data_drift.is_drifted
+                self._model_retraining_manager.info_list = self._retraining_info_list  # no need, but more readable
+
+            # retraining all models that a data drift has detected for their corresponding deployment dataset
             self._model_retraining_manager.manage()  # TODO: train by the result od data drifts
+
         else:
+            # pipeline running mode is not supported
             raise NotImplementedError
 
     @property
