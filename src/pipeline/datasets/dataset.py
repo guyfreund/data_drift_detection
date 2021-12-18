@@ -17,9 +17,7 @@ class Dataset:
         assert os.path.exists(path)
         self._path = path
         self._to_load = to_load
-        if raw_df is not None:
-            self._raw_df = raw_df
-            print('using raw_df')
+        self._raw_df = raw_df
         if self._to_load:
             self._raw_df = self.load()
             print('loading dataset')
