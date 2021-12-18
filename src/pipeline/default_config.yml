@@ -47,13 +47,22 @@ data_drift:
         percent_of_instances: 1e-1  # number of instances that indicates on a data drift
 
 data_generation:
-  data_drift:
-    variance:
-      features: ["feature_1", "...", "feature_k"]
-      generation_percent: 200  # means to generate a dataset of double size
-    mean:
-      features: ["feature_1", "...", "feature_k"]
-      generation_percent: 200  # means to generate a dataset of double size
-    number_of_nulls:
-      features: ["feature_1", "...", "feature_k"]
-      generation_percent: 200  # means to generate a dataset of double size
+  generation_percent: 200  # means to generate a dataset of double size
+
+preprocessing:
+  data_drift_model_label_column_name: 'datasetType'
+
+  german_credit:
+    numeric_features: [ 'creditamount', 'duration', 'installmentrate', 'residencesince', 'age',
+                        'existingcredits', 'peopleliable' ]
+    categorical_features: [ 'existingchecking', 'credithistory', 'purpose', 'savings', 'employmentsince',
+                            'statussex', 'otherdebtors', 'property', 'otherinstallmentplans', 'housing', 'job',
+                            'telephone', 'foreignworker' ]
+    original_label_column_name: 'classification'
+
+  bank_marketing:
+    numeric_features: ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
+    categorical_features: [ 'job', 'marital', 'education', 'default', 'housing', 'loan',
+                            'contact', 'month', 'poutcome' ]
+
+    original_label_column_name: 'y'

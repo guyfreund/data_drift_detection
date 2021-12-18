@@ -15,7 +15,11 @@ from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
     BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH
 from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDataset, \
     BankMarketingDeploymentDatasetPlus, GermanCreditDeploymentDataset, GermanCreditDeploymentDatasetPlus
+from src.pipeline.model.production_models import BankMarketingProductionModel
 from src.pipeline.preprocessing.preprocessor import Preprocessor
+
+
+import logging
 
 
 class PipelineManager(IManager):
@@ -56,7 +60,7 @@ def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
     german_credit_info = DataDriftDetectionManagerInfo(
         deployment_dataset_plus=GermanCreditDeploymentDatasetPlus(),
         training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
-        preprocessor=Preprocessor(),  # TODO: fix
+        preprocessor=Preprocessor(),
         model=IModel(),  # TODO: fix
         deployment_dataset=GermanCreditDeploymentDataset(),
         training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
@@ -66,8 +70,8 @@ def prepare_data_drift_config() -> List[DataDriftDetectionManagerInfo]:
     bank_marketing_info = DataDriftDetectionManagerInfo(
         deployment_dataset_plus=BankMarketingDeploymentDatasetPlus(),
         training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
-        preprocessor=Preprocessor(),  # TODO: fix
-        model=IModel(),  # TODO: fix
+        preprocessor=Preprocessor(),
+        model=BankMarketingProductionModel(),
         deployment_dataset=BankMarketingDeploymentDataset(),
         training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
         training_processed_df_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
@@ -92,3 +96,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logging.warning('This will get logged to a file')

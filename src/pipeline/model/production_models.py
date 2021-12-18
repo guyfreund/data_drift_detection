@@ -61,7 +61,7 @@ class BankMarketingProductionModel(IModel):
         return self._model_metrics
 
     def load(self, model_class_name: str):
-        path = os.path.abspath(os.path.join(__file__, "..", "..", f"{model_class_name}.sav"))
+        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{model_class_name}.sav"))
         with open(path, 'rb') as handle:
             self._model = pickle.load(handle)
         print("... load model ...")
