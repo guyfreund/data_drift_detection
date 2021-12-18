@@ -17,9 +17,7 @@ class Dataset:
         assert os.path.exists(path)
         self._path = path
         self._to_load = to_load
-        if raw_df is not None:
-            self._raw_df = raw_df
-            print('using raw_df')
+        self._raw_df = raw_df
         if self._to_load:
             self._raw_df = self.load()
             print('loading dataset')
@@ -91,30 +89,28 @@ class Dataset:
 
     @classmethod
     def concatenate(cls, dataset_list: List['Dataset'], path: str) -> 'Dataset':
-        dataset_types: Set[DatasetType] = {ds.dtype for ds in dataset_list}
-        assert len(dataset_types) == 1
 
         dataset_labels: Set[str] = {ds.label_column_name for ds in dataset_list}
         assert len(dataset_labels) == 1
 
-        dataset_categorical_feature_names: Set[Set[str]] = {set(ds.categorical_feature_names) for ds in dataset_list}
+        dataset_categorical_feature_names: List[List[str]] = [ds.categorical_feature_names for ds in dataset_list]
         categorical_feature_names: Set[str] = set()
-        for inner_set in dataset_categorical_feature_names:
-            categorical_feature_names |= inner_set
-        assert categorical_feature_names == dataset_list[0].categorical_feature_names
+        for inner_list in dataset_categorical_feature_names:
+            categorical_feature_names |= set(inner_list)
+        assert categorical_feature_names == set(dataset_list[0].categorical_feature_names)
 
-        dataset_numeric_feature_names: Set[Set[str]] = {set(ds.numeric_feature_names) for ds in dataset_list}
+        dataset_numeric_feature_names: List[List[str]] = [ds.numeric_feature_names for ds in dataset_list]
         numeric_feature_names: Set[str] = set()
-        for inner_set in dataset_numeric_feature_names:
-            numeric_feature_names |= inner_set
-        assert numeric_feature_names == dataset_list[0].numeric_feature_names
+        for inner_list in dataset_numeric_feature_names:
+            numeric_feature_names |= set(inner_list)
+        assert numeric_feature_names == set(dataset_list[0].numeric_feature_names)
 
         raw_df: pd.DataFrame = pd.concat([ds.raw_df for ds in dataset_list])
         with open(path, 'wb') as output:
             pickle.dump(raw_df, output)
 
         return cls(
-            dtype=dataset_types.pop(),
+            dtype=DatasetType.NewTraining,
             path=path,
             label_column_name=dataset_labels.pop(),
             categorical_feature_names=list(categorical_feature_names),

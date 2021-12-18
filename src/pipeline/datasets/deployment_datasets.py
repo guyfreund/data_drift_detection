@@ -12,7 +12,7 @@ from src.pipeline.datasets.training_datasets import GermanCreditDataset
 class BankMarketingDeploymentDataset(Dataset):
     def __init__(self):
         super().__init__(
-            dtype=DatasetType.Training,
+            dtype=DatasetType.Deployment,
             path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH,
             numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features,
             categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
@@ -27,7 +27,7 @@ class BankMarketingDeploymentDatasetPlus(Dataset):
     def __init__(self):
         data_drift_model_label_column_name = Config().preprocessing.data_drift_model_label_column_name
         super().__init__(
-            dtype=DatasetType.Training,
+            dtype=DatasetType.Deployment,
             path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH,
             numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features + [data_drift_model_label_column_name],
             categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
@@ -41,7 +41,7 @@ class BankMarketingDeploymentDatasetPlus(Dataset):
 class GermanCreditDeploymentDataset(Dataset):
     def __init__(self):
         super().__init__(
-            dtype=DatasetType.Training,
+            dtype=DatasetType.Deployment,
             path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,
             numeric_feature_names=Config().preprocessing.german_credit.numeric_features,
             categorical_feature_names=Config().preprocessing.german_credit.categorical_features,
@@ -56,7 +56,7 @@ class GermanCreditDeploymentDatasetPlus(Dataset):
     def __init__(self):
         data_drift_model_label_column_name = Config().preprocessing.data_drift_model_label_column_name
         super().__init__(
-            dtype=DatasetType.Training,
+            dtype=DatasetType.Deployment,
             path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH,
             numeric_feature_names=Config().preprocessing.german_credit.numeric_features + [data_drift_model_label_column_name],
             categorical_feature_names=Config().preprocessing.german_credit.categorical_features,
