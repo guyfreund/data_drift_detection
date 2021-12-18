@@ -1,14 +1,17 @@
+import logging
+import os
+import pickle
 from typing import Any, List, Union
 import pandas as pd
 import numpy as np
 from ydata_synthetic.synthesizers.gan import BaseModel
-from ydata_synthetic.synthesizers.regular import CGAN
 
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.data_drift_detection.constants import DataDriftType
 from src.pipeline.data_generation.data_generator import GANDataGenerator
 from src.pipeline.datasets.dataset import Dataset
+from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.model.interfaces.imodel import IModel
 
@@ -46,8 +49,24 @@ class DataGenerationManager(IManager):
     def manage(self) -> DataDrift:
         is_drifted = np.random.choice([False, True])
         generated_data = self._get_generated_dataset(is_drifted)
-        # TODO: do saving dataset call from utils function !!!
+        logging.info(f'Finished generating data. (is_drifted={is_drifted}).')
+        self._save_data_as_pickle(generated_data)
+        logging.info('Done saving generated data.')
         return DataDrift(is_drifted=is_drifted)
+
+    def _save_data_as_pickle(self, generated_dataset):
+        dataset_class_name = self._origin_dataset.__class__.__name__
+
+        generated_dataset_plus = generated_dataset.copy()
+        generated_dataset_plus['datasetType'] = DatasetType.Deployment,
+
+        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"generated_{dataset_class_name}.pickle"))
+        with open(path, 'wb') as output:
+            pickle.dump(generated_dataset, output)
+
+        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"generated_{dataset_class_name}_Plus.pickle"))
+        with open(path, 'wb') as output:
+            pickle.dump(generated_dataset_plus, output)
 
     def _get_generated_dataset(self, is_drifted: bool) -> Union[np.array, pd.DataFrame]:
         if is_drifted:
