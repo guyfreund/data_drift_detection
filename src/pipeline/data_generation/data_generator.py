@@ -1,5 +1,5 @@
 from typing import Any, List, Union
-
+import logging
 import pandas as pd
 import tensorflow as tf
 import time
@@ -39,8 +39,9 @@ class GANDataGenerator(IDataGenerator):
         # Do Drifting
         return self._add_data_drift(generated_data, num_drift_features, drift_types_list)
 
+    #TODO: OPTIONAL add the statistics and features to drift somwhere and not only printing them.
     @staticmethod
-    def _add_data_drift(dataset: pd.DataFrame, num_drift_features: int, drift_types_list: List[DataDriftType]):
+    def _add_data_drift(dataset: pd.DataFrame, num_drift_features: int, drift_types_list: List[DataDriftType]) -> pd.DataFrame:
         """
         from source: https://stats.stackexchange.com/questions/46429/transform-data-to-desired-mean-and-standard-deviation
 
@@ -54,6 +55,12 @@ class GANDataGenerator(IDataGenerator):
         percentage_drift_std = np.random.uniform(Config().data_drift.internal_data_drift_detector.variance.percent_threshold, 1.)
         percentage_drift_nulls = np.random.uniform(Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold, 1.)
         drifted_features_all_types = np.random.choice(dataset.numeric_feature_names+dataset.categorical_feature_names, num_drift_features, replace=False)
+        logging.debug(f'Features to drift are: {drifted_features_all_types}. '
+                      f'number of features: {num_drift_features}. The drift types are: {drift_types_list}.'
+                      f'\npercentage_drift_mean: {percentage_drift_mean}, '
+                      f'percentage_drift_std: {percentage_drift_std}, '
+                      f'percentage_drift_nulls: {percentage_drift_nulls}.')
+
         # df = dataset.raw_df
         df = dataset.copy()
         for drift_type in drift_types_list:
@@ -61,6 +68,7 @@ class GANDataGenerator(IDataGenerator):
                 drifted_features_numeric_only = np.random.choice(dataset.numeric_feature_names,
                                                                  num_drift_features,
                                                                  replace=False)
+                logging.debug(f'numeric features to drift are: {drifted_features_numeric_only}')
                 for feature in drifted_features_numeric_only:
                     before_drift_data = df[feature]
                     before_drift_mean = before_drift_data.mean()
