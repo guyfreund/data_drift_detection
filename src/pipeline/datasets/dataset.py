@@ -97,17 +97,17 @@ class Dataset:
         dataset_labels: Set[str] = {ds.label_column_name for ds in dataset_list}
         assert len(dataset_labels) == 1
 
-        dataset_categorical_feature_names: Set[Set[str]] = {set(ds.categorical_feature_names) for ds in dataset_list}
+        dataset_categorical_feature_names: List[List[str]] = [ds.categorical_feature_names for ds in dataset_list]
         categorical_feature_names: Set[str] = set()
-        for inner_set in dataset_categorical_feature_names:
-            categorical_feature_names |= inner_set
-        assert categorical_feature_names == dataset_list[0].categorical_feature_names
+        for inner_list in dataset_categorical_feature_names:
+            categorical_feature_names |= set(inner_list)
+        assert categorical_feature_names == set(dataset_list[0].categorical_feature_names)
 
-        dataset_numeric_feature_names: Set[Set[str]] = {set(ds.numeric_feature_names) for ds in dataset_list}
+        dataset_numeric_feature_names: List[List[str]] = [ds.numeric_feature_names for ds in dataset_list]
         numeric_feature_names: Set[str] = set()
-        for inner_set in dataset_numeric_feature_names:
-            numeric_feature_names |= inner_set
-        assert numeric_feature_names == dataset_list[0].numeric_feature_names
+        for inner_list in dataset_numeric_feature_names:
+            numeric_feature_names |= set(inner_list)
+        assert numeric_feature_names == set(dataset_list[0].numeric_feature_names)
 
         raw_df: pd.DataFrame = pd.concat([ds.raw_df for ds in dataset_list])
         with open(path, 'wb') as output:

@@ -11,9 +11,9 @@ class BankMarketingDataset(Dataset):
         super().__init__(
             dtype=DatasetType.Training,
             path=BANK_MARKETING_DATASET_PATH,
-            numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features,
-            categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
-            label_column_name=Config().preprocessing.bank_marketing.original_label_column_name
+            numeric_feature_names=Config().preprocessing.bank_martketing.numeric_features,
+            categorical_feature_names=Config().preprocessing.bank_martketing.categorical_features,
+            label_column_name=Config().preprocessing.bank_martketing.original_label_column_name
         )
 
     def load(self) -> pd.DataFrame:
