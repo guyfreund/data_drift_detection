@@ -123,6 +123,7 @@ def prepare_data_drift_info() -> List[DataDriftDetectionManagerInfo]:
 
 
 def prepare_model_retraining_info() -> List[ModelTrainingManagerInfo]:
+    # TODO: think of weighting
     return [
         ModelTrainingManagerInfo(
             preprocessor=Preprocessor(),
