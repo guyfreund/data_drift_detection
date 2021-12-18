@@ -89,8 +89,6 @@ class Dataset:
 
     @classmethod
     def concatenate(cls, dataset_list: List['Dataset'], path: str) -> 'Dataset':
-        dataset_types: Set[DatasetType] = {ds.dtype for ds in dataset_list}
-        assert len(dataset_types) == 1
 
         dataset_labels: Set[str] = {ds.label_column_name for ds in dataset_list}
         assert len(dataset_labels) == 1
@@ -112,7 +110,7 @@ class Dataset:
             pickle.dump(raw_df, output)
 
         return cls(
-            dtype=dataset_types.pop(),
+            dtype=DatasetType.NewTraining,
             path=path,
             label_column_name=dataset_labels.pop(),
             categorical_feature_names=list(categorical_feature_names),
