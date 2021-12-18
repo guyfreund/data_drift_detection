@@ -16,21 +16,23 @@ from src.pipeline.model.interfaces.imodel import IModel
 class DataGenerationManagerInfo:
 
     def __init__(self, origin_dataset: Dataset, model_class: BaseModel,
-                 sample_size_to_generate: int, model_path: str, data_drift_types: List[DataDriftType]):
+                 sample_size_to_generate: int, model_path: str,
+                 data_drift_types: List[DataDriftType],
+                 save_data_path: str, save_data_plus_path: str):
         self.origin_dataset: Dataset = origin_dataset
         # self.dataset_name = type(origin_dataset.__name__)
         self.model_class: BaseModel = model_class
         self.model_path: str = model_path
         self.sample_size_to_generate: int = sample_size_to_generate
         self.data_drift_types: List[DataDriftType] = data_drift_types
+        self.save_data_path: str = save_data_path
+        self.save_data_plus_path: str = save_data_plus_path
 
 
 class DataGenerationManager(IManager):
     def __init__(self, info: DataGenerationManagerInfo):
         self._origin_dataset = info.origin_dataset
         self._label_col = self._origin_dataset.label_column_name
-        # self._model_class = info.model_class
-        # self._model_path = info.model_path
         self._data_generator = GANDataGenerator(dataset=self._origin_dataset,
                                                 label_col=self._label_col,
                                                 model_class=info.model_class,
@@ -38,6 +40,8 @@ class DataGenerationManager(IManager):
                                                 inverse_preprocesser=None) # TODO add inverse
         self._sample_size_to_generate = info.sample_size_to_generate
         self._data_drift_types = info.data_drift_types
+        self._save_data_path = info.save_data_path
+        self._save_data_plus_path = info.save_data_plus_path
 
     def manage(self) -> DataDrift:
         is_drifted = np.random.choice([False, True])
@@ -63,8 +67,3 @@ class MultipleDatasetGenerationManager(IManager):
         data_drifts: List[DataDrift] = [manager.manage() for manager in self.data_generation_managers]
         return data_drifts
 
-
-
-DataGenerationManagerInfo(origin_dataset=, model_class=CGAN,
-                        sample_size_to_generate=Config().data_generation.generation_percent,
-                        model_path=BANK_MARKETING_GEN_CGAN_MODEL_PATH, data_drift_types=)
