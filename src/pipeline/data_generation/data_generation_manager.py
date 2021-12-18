@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Union
 import pandas as pd
 import numpy as np
 from ydata_synthetic.synthesizers.gan import BaseModel
@@ -41,18 +41,17 @@ class DataGenerationManager(IManager):
 
     def manage(self) -> DataDrift:
         is_drifted = np.random.choice([False, True])
-        self._get_generated_dataset(is_drifted)
-
+        generated_data = self._get_generated_dataset(is_drifted)
+        #TODO: do saving dataset call from utils function
         return DataDrift(is_drifted=is_drifted)
 
-    def _get_generated_dataset(self, is_drifted: bool) -> None:
+    def _get_generated_dataset(self, is_drifted: bool) -> Union[np.array, pd.DataFrame]:
         if is_drifted:
             drift_types_list = np.random.choice(self._data_drift_types,
                                                 size=np.random.randint(1, len(self._data_drift_types) + 1))
             return self._data_generator.generate_drifted_samples(self._sample_size_to_generate, drift_types_list)
         else:
             return self._data_generator.generate_normal_samples(self._sample_size_to_generate)
-
 
 
 class MultipleDatasetGenerationManager(IManager):

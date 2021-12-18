@@ -26,7 +26,7 @@ class GANDataGenerator(IDataGenerator):
         self._labels = dataset.raw_df[label_col].unique()
         self._inverse_preprocessor = inverse_preprocesser
 
-    def generate_normal_samples(self, n_samples) -> Union[np.ndarray, pd.DataFrame]:
+    def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
         z = tf.random.normal((n_samples, self._synthesizer.noise_dim))
         label_z = tf.random.uniform((n_samples,), minval=min(self._labels), maxval=max(self._labels) + 1, dtype=tf.dtypes.int32)
         generated_data = self._synthesizer.generator([z, label_z])
@@ -39,7 +39,8 @@ class GANDataGenerator(IDataGenerator):
         # Do Drifting
         return self._add_data_drift(generated_data, num_drift_features, drift_types_list)
 
-    def _add_data_drift(self, dataset: Dataset, num_drift_features: int, drift_types_list: List[DataDriftType]):
+    @staticmethod
+    def _add_data_drift(dataset: pd.DataFrame, num_drift_features: int, drift_types_list: List[DataDriftType]):
         """
         from source: https://stats.stackexchange.com/questions/46429/transform-data-to-desired-mean-and-standard-deviation
 
@@ -47,14 +48,14 @@ class GANDataGenerator(IDataGenerator):
         We do the following transformation:
             y_i = m_2 + (x_i - m_1) * s_2/s_1
         Then, we get a new mean m_2 with std s_2
-
         """
         # TODO add random sample for the drift percentages
-        percentage_drift_mean = Config().data_drift.internal_data_drift_detector.mean.percent_threshold
-        percentage_drift_std = Config().data_drift.internal_data_drift_detector.variance.percent_threshold
-        percentage_drift_nulls = Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold
+        percentage_drift_mean = np.random.uniform(Config().data_drift.internal_data_drift_detector.mean.percent_threshold, 1.)
+        percentage_drift_std = np.random.uniform(Config().data_drift.internal_data_drift_detector.variance.percent_threshold, 1.)
+        percentage_drift_nulls = np.random.uniform(Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold, 1.)
         drifted_features_all_types = np.random.choice(dataset.numeric_feature_names+dataset.categorical_feature_names, num_drift_features, replace=False)
-        df = dataset.raw_df
+        # df = dataset.raw_df
+        df = dataset.copy()
         for drift_type in drift_types_list:
             if drift_type == DataDriftType.Statistical:
                 drifted_features_numeric_only = np.random.choice(dataset.numeric_feature_names,
@@ -76,14 +77,15 @@ class GANDataGenerator(IDataGenerator):
 
             # TODO optional: add drift of new unseen values of categorical feature
 
-        dataset.raw_df = df
-        return dataset
+        # dataset.raw_df = df
+        return df
 
     def save_generated_dataset(self, dataset: Dataset, path: str, file_name: str = 'generated_data'):
         file_name = file_name + self._dataset_name + time.strftime("%Y%m%d-%H%M%S") + '.csv'
         dataset.raw_df.to_csv(os.path.join(path, file_name))
 
 
+# TODO: OPTIONAL
 class BASICDataGenerator(IDataGenerator):
     ''''this class loads a GAN model trained on the dataset'''
     def __init__(self, dataset: Dataset, inverse_preprocesser: Any, model_class: Any, trained_model_path: str):
@@ -93,16 +95,13 @@ class BASICDataGenerator(IDataGenerator):
     def generate_normal_samples(self, n_samples):
         pass
 
-
     def generate_drifted_samples(self, n_samples):
         # generated_data = self.generate_normal_samples(n_samples)
         # Do Drifting
         pass
 
-
     def add_data_drift(self, dataset):
         pass
-
 
     def save_generated_dataset(self, dataset, path):
         pass

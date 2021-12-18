@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Any
 
 from src.pipeline.data_drift_detection.constants import DataDriftType
 from src.pipeline.datasets.dataset import Dataset
@@ -10,9 +10,12 @@ class IDataGenerator(ABC):  # TODO: Implement DataGenerator per DataDriftType.
     Interface for a data generator object
     """
 
-    @abstractmethod
-    def generate(self) -> Dataset:
+    def generate_normal_samples(self, n_samples: int) -> Any:
         raise NotImplementedError
+
+    def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Any:
+        raise NotImplementedError
+
 
     @property
     def raw_dataset(self) -> Dataset:
