@@ -44,7 +44,7 @@ class Preprocessor(IPreprocessor):
         self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
 
         logging.debug(f"Preprocessing: data was preprocessed successfully.")
-        logging.debug(f"num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
+        logging.debug(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
                       f"num of numerical features: {len(self._processed_df.select_dtypes(exclude=['bool', 'object']).columns)}")
 
         self._processed_df_plus = self._processed_df.copy()
