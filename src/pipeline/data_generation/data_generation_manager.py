@@ -13,11 +13,13 @@ from src.pipeline.model.interfaces.imodel import IModel
 class DataGenerationManagerInfo:
 
     def __init__(self, origin_dataset: Dataset,
+                 label_col: str,
                  model_path: str
                  # training_feature_metrics_list_path: str,
                  # training_processed_df_path: str
                  ):
         self.origin_dataset: Dataset = origin_dataset  #TODO ?
+        self.label_col: str = label_col
         # self.gan_model: CGAN.load(model_path)
         # self.training_feature_metrics_list_path: str = training_feature_metrics_list_path
         # self.training_processed_df_path: str = training_processed_df_path
@@ -27,9 +29,12 @@ class DataGenerationManager(IManager):
     def __init__(self, info: DataGenerationManagerInfo):
         self._origin_dataset = info.origin_dataset
         self._generated_dataset = None
-        self._data_generator = DataGenerator(synthesizer_model=info.gen_model,
-                                             model_params=info.gen_model_args,
-                                             training_params=info.train_args)
+        self._label_col
+        self._data_generator = GANDataGenerator(dataset=self._origin_dataset,
+                                                label_col=info.label_col,
+             model_class: BaseModel,
+             trained_model_path: str,
+             inverse_preprocesser: Optional[Any] = None) -> None)
         self._gen_model_args = info.gen_model_args
         self._train_args = train_args
 

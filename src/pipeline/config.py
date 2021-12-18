@@ -1,5 +1,4 @@
 import os
-import yaml
 import ruamel.yaml as ryaml
 from easydict import EasyDict as edict
 

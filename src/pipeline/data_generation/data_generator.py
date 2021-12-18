@@ -24,24 +24,23 @@ class GANDataGenerator(IDataGenerator, ABC):
         self._dataset_name = type(dataset).__name__
         self._generated_dataset = None
         self._labels = dataset.raw_df[label_col].unique()
-        self._inverse_preprocesser = inverse_preprocesser
+        self._inverse_preprocessor = inverse_preprocesser
 
     def generate_normal_samples(self, n_samples):
         z = tf.random.normal((n_samples, self._synthesizer.noise_dim))
         label_z = tf.random.uniform((n_samples,), minval=min(self._labels), maxval=max(self._labels) + 1, dtype=tf.dtypes.int32)
         generated_data = self._synthesizer.generator([z, label_z])
-        return self._inverse_preprocesser(generated_data) if self._inverse_preprocesser else generated_data
+        return self._inverse_preprocessor(generated_data) if self._inverse_preprocessor else generated_data
 
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]):
         generated_data = self.generate_normal_samples(n_samples)
-        num_of_features = Config().data_drift.internal_data_drift_detector.mean.percent_of_features * len(self._origin_dataset.raw_df)
-        num_drift_features = min(num_of_features, n_samples)
+        num_of_drift_features = Config().data_drift.internal_data_drift_detector.mean.percent_of_features * len(self._origin_dataset.raw_df)
+        num_drift_features = min(num_of_drift_features, n_samples)
 
         # Do Drifting
-        self.add_data_drift(generated_data, num_drift_features, drift_types_list)
+        self._add_data_drift(generated_data, num_drift_features, drift_types_list)
 
-
-    def add_data_drift(self, dataset: Dataset, num_drift_features: int, drift_types_list: List[DataDriftType]):
+    def _add_data_drift(self, dataset: Dataset, num_drift_features: int, drift_types_list: List[DataDriftType]):
         """
         from source: https://stats.stackexchange.com/questions/46429/transform-data-to-desired-mean-and-standard-deviation
 
@@ -51,7 +50,6 @@ class GANDataGenerator(IDataGenerator, ABC):
         Then, we get a new mean m_2 with std s_2
 
         """
-        # TODO only supports numeric variables.??
         percentage_drift_mean = Config().data_drift.internal_data_drift_detector.mean.percent_threshold
         percentage_drift_std = Config().data_drift.internal_data_drift_detector.variance.percent_threshold
         percentage_drift_nulls = Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold
@@ -81,8 +79,7 @@ class GANDataGenerator(IDataGenerator, ABC):
         dataset.raw_df = df
         return dataset
 
-
-    def save_dataset(self, dataset: Dataset, path: str, file_name: str = 'generated_data'):
+    def save_generated_dataset(self, dataset: Dataset, path: str, file_name: str = 'generated_data'):
         file_name = file_name + self._dataset_name + time.strftime("%Y%m%d-%H%M%S") + '.csv'
         dataset.raw_df.to_csv(os.path.join(path, file_name))
 
@@ -107,5 +104,5 @@ class BASICDataGenerator(IDataGenerator, ABC):
         pass
 
 
-    def save_datset(self, dataset, path):
-        dataset.raw_df.to_csv(path + 'generated_data') # TODO add configs and names suit what has been saved
+    def save_generated_dataset(self, dataset, path):
+        pass
