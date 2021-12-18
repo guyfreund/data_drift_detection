@@ -1,4 +1,5 @@
 from unittest import TestCase
+import logging
 
 from src.pipeline.datasets.training_datasets import BankMarketingDataset, GermanCreditDataset
 from src.pipeline.model.model_trainining_manager import MultipleDatasetModelTrainingManager, ModelTrainingManagerInfo
@@ -8,6 +9,12 @@ from src.pipeline.preprocessing.preprocessor import Preprocessor
 
 class TestBankMarketingDatasetModelTrainingManager(TestCase):
     def setUp(self) -> None:
+        logging.basicConfig(
+            format='%(asctime)s - %(message)s',
+            level='DEBUG',
+            datefmt='%d-%b-%y %H:%M:%S'
+        )
+
         self.bank_marketing_info = ModelTrainingManagerInfo(
             preprocessor=Preprocessor(),
             dataset=BankMarketingDataset(),
@@ -22,6 +29,12 @@ class TestBankMarketingDatasetModelTrainingManager(TestCase):
 
 class TestGermanCreditDatasetModelTrainingManager(TestCase):
     def setUp(self) -> None:
+        logging.basicConfig(
+            format='%(asctime)s - %(message)s',
+            level='DEBUG',
+            datefmt='%d-%b-%y %H:%M:%S'
+        )
+
         self.german_credit_info = ModelTrainingManagerInfo(
             preprocessor=Preprocessor(),
             dataset=GermanCreditDataset(),

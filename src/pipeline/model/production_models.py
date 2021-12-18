@@ -1,3 +1,4 @@
+import logging
 from xgboost import XGBClassifier
 from typing import Dict, Any
 from sklearn import metrics
@@ -22,6 +23,9 @@ class BankMarketingProductionModel(IModel):
     def train(self, X_train: pd.DataFrame, y_train: pd.DataFrame):
         self._model.fit(X_train, y_train)
         self._is_trained = True
+
+        logging.debug(f'Train Model: model was trained successfully')
+
         self._save_model_as_pickle(self.__class__.__name__)
 
     def _save_model_as_pickle(self, model_class_name: str):
@@ -29,7 +33,7 @@ class BankMarketingProductionModel(IModel):
         with open(path, 'wb') as handle:
             pickle.dump({}, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-        print("... save model ...")
+        logging.debug(f'Save Data: {model_class_name}.save model has been saved')
 
     def tune_hyperparameters(self, X_validation: pd.DataFrame, y_validation: pd.DataFrame):
         pass
@@ -44,11 +48,12 @@ class BankMarketingProductionModel(IModel):
         fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
         auc = metrics.auc(fpr, tpr)
 
-        print(f'test accuracy score is: {round(accuracy * 100, 2)}%\n'
-              f'test precision score is: {round(precision * 100, 2)}%\n'
-              f'test recall score is: {round(recall * 100, 2)}%\n'
-              f'test f1 score is: {round(f1 * 100, 2)}%\n'
-              f'test auc is: {round(auc, 2)}')
+        logging.debug(f'Model Evaluation: model was evaluated successfully. results are as follows: ')
+        logging.debug(f'Evaluation Info: accuracy: {round(accuracy * 100, 2)}% | '
+                      f'precision: {round(precision * 100, 2)}% | '
+                      f'recall: {round(recall * 100, 2)}% | '
+                      f'f1: {round(f1 * 100, 2)}% | '
+                      f'auc: {round(auc, 2)}')
 
         self._model_metrics = {
             ModelMetricType.Accuracy: Accuracy(value=accuracy),
@@ -64,7 +69,8 @@ class BankMarketingProductionModel(IModel):
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{model_class_name}.sav"))
         with open(path, 'rb') as handle:
             self._model = pickle.load(handle)
-        print("... load model ...")
+
+        logging.debug(f'Load Data: {model_class_name}.sav model has been loaded')
 
     @property
     def model(self) -> Any:
@@ -93,6 +99,9 @@ class GermanCreditProductionModel(IModel):
     def train(self, X_train: pd.DataFrame, y_train: pd.DataFrame):
         self._model.fit(X_train, y_train)
         self._is_trained = True
+
+        logging.debug(f'Train Model: model was trained successfully')
+
         self._save_model_as_pickle(self.__class__.__name__)
 
     def _save_model_as_pickle(self, model_class_name: str):
@@ -100,7 +109,7 @@ class GermanCreditProductionModel(IModel):
         with open(path, 'wb') as handle:
             pickle.dump({}, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-        print("... save model ...")
+        logging.debug(f'Save Data: {model_class_name}.save model has been saved')
 
     def tune_hyperparameters(self, X_validation: pd.DataFrame, y_validation: pd.DataFrame):
         pass
@@ -115,11 +124,12 @@ class GermanCreditProductionModel(IModel):
         fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
         auc = metrics.auc(fpr, tpr)
 
-        print(f'test accuracy score is: {round(accuracy * 100, 2)}%\n'
-              f'test precision score is: {round(precision * 100, 2)}%\n'
-              f'test recall score is: {round(recall * 100, 2)}%\n'
-              f'test f1 score is: {round(f1 * 100, 2)}%\n'
-              f'test auc is: {round(auc, 2)}')
+        logging.debug(f'Model Evaluation: model was evaluated successfully. results are as follows: '
+                      f'Accuracy: {round(accuracy * 100, 2)}%, '
+                      f'Precision: {round(precision * 100, 2)}%, '
+                      f'Recall: {round(recall * 100, 2)}%, '
+                      f'F1: {round(f1 * 100, 2)}%, '
+                      f'AUC: {round(auc, 2)}')
 
         self._model_metrics = {
             ModelMetricType.Accuracy: Accuracy(value=accuracy),
@@ -135,7 +145,8 @@ class GermanCreditProductionModel(IModel):
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{model_class_name}.sav"))
         with open(path, 'rb') as handle:
             self._model = pickle.load(handle)
-        print("... load model ...")
+
+        logging.debug(f'Load Data: {model_class_name}.sav model has been loaded')
 
     @property
     def model(self) -> Any:
