@@ -10,10 +10,19 @@ from src.pipeline.datasets.dataset import Dataset
 
 
 class ModelTrainingManagerInfo:
-    def __init__(self, preprocessor: IPreprocessor, dataset: Dataset, model: IModel):
+    def __init__(self, preprocessor: IPreprocessor, dataset: Dataset, model: IModel, to_train: bool = True):
         self.preprocessor: IPreprocessor = preprocessor
         self.training_dataset: Dataset = dataset
         self.model: IModel = model
+        self._to_train = to_train
+
+    @property
+    def to_train(self) -> bool:
+        return self._to_train
+
+    @to_train.setter
+    def to_train(self, value: bool):
+        self._to_train = value
 
 
 class ModelTrainingManager(IManager):
@@ -42,9 +51,13 @@ class ModelTrainingManager(IManager):
 
 class MultipleDatasetModelTrainingManager(IManager):
     def __init__(self, info_list: List[ModelTrainingManagerInfo]):
-        self._model_training_managers: List[ModelTrainingManager] = [ModelTrainingManager(info) for info in info_list]
+        self._info_list = info_list
+        self._model_training_managers: List[ModelTrainingManager] = []
 
     def manage(self) -> Tuple[List[ModelTrainingManagerInfo], List[List[IFeatureMetrics]], List[Dict[ModelMetricType, IModelMetric]]]:
+        self._model_training_managers: List[ModelTrainingManager] = [
+            ModelTrainingManager(info) for info in self._info_list if info.to_train
+        ]  # critical for retraining where we want to update the info list - don't move to constructor
         model_training_manger_info_list: List[ModelTrainingManagerInfo] = []
         model_training_manager_feature_metrics_lists: List[List[IFeatureMetrics]] = []
         model_training_model_metrics_list: List[Dict[ModelMetricType, IModelMetric]] = []
@@ -57,3 +70,11 @@ class MultipleDatasetModelTrainingManager(IManager):
             model_training_model_metrics_list.append(model_metrics_dict)
 
         return model_training_manger_info_list, model_training_manager_feature_metrics_lists, model_training_model_metrics_list
+
+    @property
+    def info_list(self) -> List[ModelTrainingManagerInfo]:
+        return self._info_list
+
+    @info_list.setter
+    def info_list(self, value: List[ModelTrainingManagerInfo]):
+        self._info_list = value
