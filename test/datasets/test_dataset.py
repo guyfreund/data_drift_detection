@@ -1,5 +1,6 @@
 import numpy as np
 
+from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.paths import BANK_MARKETING_CONCATENATED_DF
 from src.pipeline.datasets.training_datasets import BankMarketingDataset
@@ -20,5 +21,6 @@ def test_data_set_concatenation():
         dataset.numeric_feature_names == bank_marketing_dataset.numeric_feature_names,
         dataset.categorical_feature_names == bank_marketing_dataset.categorical_feature_names,
         dataset.label_column_name == bank_marketing_dataset.label_column_name,
-        np.all(dataset.load().to_numpy() == dataset.raw_df.to_numpy())
+        np.all(dataset.load().to_numpy() == dataset.raw_df.to_numpy()),
+        dataset.dtype == DatasetType.NewTraining
     ]) is True

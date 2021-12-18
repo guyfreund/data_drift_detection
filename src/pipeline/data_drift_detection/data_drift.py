@@ -6,6 +6,12 @@ class DataDrift:
     def is_drifted(self):
         return self._is_drifted
 
+    def __eq__(self, other: 'DataDrift'):
+        return all([
+            self._is_drifted is other.is_drifted,
+            self.__class__.__name__ == other.__class__.__name__
+        ])
+
 
 class ModelBasedDataDrift(DataDrift):
     def __init__(self, is_drifted: bool):
