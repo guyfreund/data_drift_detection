@@ -17,10 +17,6 @@ class IDataGenerator(ABC):  # TODO: Implement DataGenerator per DataDriftType.
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Any:
         raise NotImplementedError
 
-    @staticmethod
-    def _add_data_drift(dataset: pd.DataFrame, num_drift_features: int, drift_types_list: List[DataDriftType]) -> pd.DataFrame
-        raise NotImplementedError
-
     @property
     def origin_dataset(self) -> Dataset:
         raise NotImplementedError

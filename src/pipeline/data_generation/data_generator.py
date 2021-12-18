@@ -84,7 +84,6 @@ class GANDataGenerator(IDataGenerator):
                     df.loc[df[feature].sample(frac=percentage_drift_nulls).index, feature] = np.nan
 
             # TODO optional: add drift of new unseen values of categorical feature
-
         # dataset.raw_df = df
         return df
 
@@ -100,15 +99,10 @@ class BASICDataGenerator(IDataGenerator):
         # assert (model_class and trained_model_path), 'need to specify model class and model path'
         pass
 
-    def generate_normal_samples(self, n_samples):
+    def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
         pass
 
-    def generate_drifted_samples(self, n_samples):
-        # generated_data = self.generate_normal_samples(n_samples)
-        # Do Drifting
-        pass
-
-    def add_data_drift(self, dataset):
+    def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[np.ndarray, pd.DataFrame]:
         pass
 
     def save_generated_dataset(self, dataset, path):
