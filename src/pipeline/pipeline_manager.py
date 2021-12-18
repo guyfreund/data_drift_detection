@@ -89,7 +89,7 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
     return [
         DataGenerationManagerInfo(
             origin_dataset=BankMarketingDataset(),
-            model_class=CGAN,
+            model_class=Config(),
 
         ),  # Bank Marketing
         DataGenerationManagerInfo(
