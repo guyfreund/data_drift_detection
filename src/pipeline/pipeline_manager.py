@@ -33,9 +33,9 @@ class PipelineManager(IManager):
         self._data_generation_manager = MultipleDatasetGenerationManager()  # TODO: init with info_list=data_generation_info_list
         self._data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=data_drift_info_list)
         self._model_training_manager = MultipleDatasetModelTrainingManager(info_list=training_info_list)
-        self._model_retraining_manager = MultipleDatasetModelTrainingManager(info_list=retraining_info_list)
-        self._data_drifts: List[DataDrift] = []
         self._retraining_info_list: List[ModelTrainingManagerInfo] = retraining_info_list
+        self._model_retraining_manager = MultipleDatasetModelTrainingManager(info_list=self._retraining_info_list)
+        self._data_drifts: List[DataDrift] = []
 
     def manage(self):
         if self._mode == PipelineMode.Training:
