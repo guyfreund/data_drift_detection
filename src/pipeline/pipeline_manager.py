@@ -1,7 +1,6 @@
 import os
 from typing import List
 import logging
-from src.pipeline.config import Config
 
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.datasets.dataset import Dataset
@@ -11,7 +10,6 @@ from src.pipeline.data_generation.data_generation_manager import MultipleDataset
     DataGenerationManagerInfo
 from src.pipeline.data_drift_detection.data_drift_detection_manager import MultipleDatasetDataDriftDetectionManager, \
     DataDriftDetectionManagerInfo
-from src.pipeline.model.interfaces.imodel import IModel
 from src.pipeline.model.model_trainining_manager import MultipleDatasetModelTrainingManager, ModelTrainingManagerInfo
 from src.pipeline.constants import PipelineMode
 from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, \

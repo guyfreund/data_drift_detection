@@ -1,5 +1,3 @@
-from typing import List
-
 import pandas as pd
 
 from src.pipeline.config import Config
@@ -23,6 +21,11 @@ class BankMarketingDataset(Dataset):
 
 
 class GermanCreditDataset(Dataset):
+    NAMES = ['existingchecking', 'duration', 'credithistory', 'purpose', 'creditamount',
+             'savings', 'employmentsince', 'installmentrate', 'statussex', 'otherdebtors',
+             'residencesince', 'property', 'age', 'otherinstallmentplans', 'housing',
+             'existingcredits', 'job', 'peopleliable', 'telephone', 'foreignworker', 'classification']
+
     def __init__(self):
         super().__init__(
             dtype=DatasetType.Training,
@@ -33,9 +36,4 @@ class GermanCreditDataset(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        names = ['existingchecking', 'duration', 'credithistory', 'purpose', 'creditamount',
-                 'savings', 'employmentsince', 'installmentrate', 'statussex', 'otherdebtors',
-                 'residencesince', 'property', 'age', 'otherinstallmentplans', 'housing',
-                 'existingcredits', 'job', 'peopleliable', 'telephone', 'foreignworker', 'classification']
-
-        return pd.read_csv(self._path, names=names, delimiter=' ')
+        return pd.read_csv(self._path, names=GermanCreditDataset.NAMES, delimiter=' ')

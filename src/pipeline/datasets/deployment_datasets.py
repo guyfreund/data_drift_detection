@@ -49,7 +49,7 @@ class GermanCreditDeploymentDataset(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, names=GermanCreditDataset.names, delimiter=' ')
+        return pd.read_csv(self._path, names=GermanCreditDataset.NAMES, delimiter=' ')
 
 
 class GermanCreditDeploymentDatasetPlus(Dataset):
@@ -64,4 +64,4 @@ class GermanCreditDeploymentDatasetPlus(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, names=GermanCreditDataset.names, delimiter=' ')
+        return pd.read_csv(self._path, names=GermanCreditDataset.NAMES, delimiter=' ')
