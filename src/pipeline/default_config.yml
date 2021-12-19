@@ -46,8 +46,11 @@ data_drift:
         weight: 1
         percent_of_instances: 1e-1  # number of instances that indicates on a data drift
 
+
+
 data_generation:
   generation_percent: 200  # means to generate a dataset of double size
+  generate_model_class: CGAN # model class we load
 
 preprocessing:
   data_drift_model_label_column_name: 'datasetType'
