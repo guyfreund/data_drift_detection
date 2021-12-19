@@ -6,7 +6,6 @@ from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.datasets.paths import BANK_MARKETING_DEPLOYMENT_DATASET_PATH, \
     BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, \
     GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
-from src.pipeline.datasets.training_datasets import GermanCreditDataset
 
 
 class BankMarketingDeploymentDataset(Dataset):
@@ -49,7 +48,7 @@ class GermanCreditDeploymentDataset(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, names=GermanCreditDataset.NAMES, delimiter=' ')
+        return pd.read_csv(self._path, names=Config().preprocessing.german_credit.names, delimiter=' ')
 
 
 class GermanCreditDeploymentDatasetPlus(Dataset):
@@ -64,4 +63,4 @@ class GermanCreditDeploymentDatasetPlus(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, names=GermanCreditDataset.NAMES, delimiter=' ')
+        return pd.read_csv(self._path, names=Config().preprocessing.german_credit.names, delimiter=' ')

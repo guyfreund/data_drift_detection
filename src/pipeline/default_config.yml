@@ -56,12 +56,16 @@ preprocessing:
   data_drift_model_label_column_name: 'datasetType'
 
   german_credit:
-    numeric_features: [ 'creditamount', 'duration', 'installmentrate', 'residencesince', 'age',
-                        'existingcredits', 'peopleliable' ]
-    categorical_features: [ 'existingchecking', 'credithistory', 'purpose', 'savings', 'employmentsince',
+    numeric_features: ['creditamount', 'duration', 'installmentrate', 'residencesince', 'age',
+                        'existingcredits', 'peopleliable']
+    categorical_features: ['existingchecking', 'credithistory', 'purpose', 'savings', 'employmentsince',
                             'statussex', 'otherdebtors', 'property', 'otherinstallmentplans', 'housing', 'job',
-                            'telephone', 'foreignworker' ]
+                            'telephone', 'foreignworker']
     original_label_column_name: 'classification'
+    names: ['existingchecking', 'duration', 'credithistory', 'purpose', 'creditamount',
+             'savings', 'employmentsince', 'installmentrate', 'statussex', 'otherdebtors',
+             'residencesince', 'property', 'age', 'otherinstallmentplans', 'housing',
+             'existingcredits', 'job', 'peopleliable', 'telephone', 'foreignworker', 'classification']
 
   bank_marketing:
     numeric_features: ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
