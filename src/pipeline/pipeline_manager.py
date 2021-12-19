@@ -166,7 +166,7 @@ def prepare_model_retraining_info() -> List[ModelTrainingManagerInfo]:
     ]
 
 
-def main():
+def run_pipeline_manager():
     # training
     pipeline_manager = PipelineManager(
         pipeline_mode=PipelineMode.Training,
@@ -184,6 +184,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_pipeline_manager()
     logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
     logging.warning('This will get logged to a file')
