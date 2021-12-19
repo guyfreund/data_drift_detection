@@ -2,7 +2,6 @@ from enum import Enum
 
 
 class DataDriftType(Enum):
-
     Model = 0
     Statistical = 1
     Mean = 2

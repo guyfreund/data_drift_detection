@@ -35,7 +35,7 @@ class PipelineManager(IManager):
                  data_generation_info_list: List[DataGenerationManagerInfo]
                  ):
         self._mode = pipeline_mode
-        self._data_generation_manager = MultipleDatasetGenerationManager(info_list=data_generation_info_list)  # TODO: init with info_list=data_generation_info_list
+        self._data_generation_manager = MultipleDatasetGenerationManager(info_list=data_generation_info_list)
         self._data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=data_drift_info_list)
         self._model_training_manager = MultipleDatasetModelTrainingManager(info_list=training_info_list)
         self._retraining_info_list: List[ModelTrainingManagerInfo] = retraining_info_list
@@ -61,7 +61,8 @@ class PipelineManager(IManager):
                 self._model_retraining_manager.info_list = self._retraining_info_list  # no need, but more readable
 
             # retraining all models that a data drift has detected for their corresponding deployment dataset
-            self._model_retraining_manager.manage()  # TODO: train by the result od data drifts
+            self._model_retraining_manager.manage()
+            # TODO: evaluate
 
         else:
             # pipeline running mode is not supported

@@ -1,19 +1,18 @@
 import logging
 import os
 import pickle
-from typing import Any, List, Union
+from typing import List, Union
 import pandas as pd
 import numpy as np
 from ydata_synthetic.synthesizers.gan import BaseModel
 
+from src.pipeline.config import Config
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.data_drift_detection.constants import DataDriftType
 from src.pipeline.data_generation.data_generator import GANDataGenerator
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.constants import DatasetType
-from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
-from src.pipeline.model.interfaces.imodel import IModel
 
 
 class DataGenerationManagerInfo:
@@ -58,7 +57,7 @@ class DataGenerationManager(IManager):
         dataset_class_name = self._origin_dataset.__class__.__name__
 
         generated_dataset_plus = generated_dataset.copy()
-        generated_dataset_plus['datasetType'] = DatasetType.Deployment,
+        generated_dataset_plus[Config().preprocessing.data_drift_model_label_column_name] = DatasetType.Deployment
 
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"generated_{dataset_class_name}.pickle"))
         with open(path, 'wb') as output:
