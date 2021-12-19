@@ -29,10 +29,8 @@ from src.pipeline.model.paths import BANK_MARKETING_GEN_CGAN_MODEL_PATH, GERMAN_
 
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo],
-                 training_info_list: List[ModelTrainingManagerInfo],
-                 retraining_info_list: List[ModelTrainingManagerInfo],
-                 data_generation_info_list: List[DataGenerationManagerInfo]
-                 ):
+                 training_info_list: List[ModelTrainingManagerInfo], retraining_info_list: List[ModelTrainingManagerInfo],
+                 data_generation_info_list: List[DataGenerationManagerInfo]):
         self._mode = pipeline_mode
         self._data_generation_manager = MultipleDatasetGenerationManager(info_list=data_generation_info_list)
         self._data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=data_drift_info_list)
@@ -57,7 +55,7 @@ class PipelineManager(IManager):
             # training only if a data drift was detected
             for idx, data_drift in enumerate(self._detected_data_drifts):
                 self._retraining_info_list[idx].to_train = data_drift.is_drifted
-                self._model_retraining_manager.info_list = self._retraining_info_list  # no need, but more readable
+            self._model_retraining_manager.info_list = self._retraining_info_list  # no need, but more readable
 
             # retraining all models that a data drift has detected for their corresponding deployment dataset
             self._model_retraining_manager.manage()
