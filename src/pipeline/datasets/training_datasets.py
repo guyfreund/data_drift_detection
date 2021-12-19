@@ -1,3 +1,5 @@
+from typing import List
+
 import pandas as pd
 
 from src.pipeline.config import Config
@@ -11,9 +13,9 @@ class BankMarketingDataset(Dataset):
         super().__init__(
             dtype=DatasetType.Training,
             path=BANK_MARKETING_DATASET_PATH,
-            numeric_feature_names=Config().preprocessing.bank_martketing.numeric_features,
-            categorical_feature_names=Config().preprocessing.bank_martketing.categorical_features,
-            label_column_name=Config().preprocessing.bank_martketing.original_label_column_name
+            numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features,
+            categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
+            label_column_name=Config().preprocessing.bank_marketing.original_label_column_name
         )
 
     def load(self) -> pd.DataFrame:
@@ -31,4 +33,9 @@ class GermanCreditDataset(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        raise NotImplementedError  # TODO: implement
+        names = ['existingchecking', 'duration', 'credithistory', 'purpose', 'creditamount',
+                 'savings', 'employmentsince', 'installmentrate', 'statussex', 'otherdebtors',
+                 'residencesince', 'property', 'age', 'otherinstallmentplans', 'housing',
+                 'existingcredits', 'job', 'peopleliable', 'telephone', 'foreignworker', 'classification']
+
+        return pd.read_csv(self._path, names=names, delimiter=' ')

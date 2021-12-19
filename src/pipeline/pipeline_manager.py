@@ -1,6 +1,7 @@
 import os
 from typing import List
 import logging
+from src.pipeline.config import Config
 
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.datasets.dataset import Dataset
@@ -21,7 +22,7 @@ from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
     BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
 from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDataset, \
     BankMarketingDeploymentDatasetPlus, GermanCreditDeploymentDataset, GermanCreditDeploymentDatasetPlus
-from src.pipeline.model.production_models import BankMarketingProductionModel
+from src.pipeline.model.production_models import BankMarketingProductionModel, GermanCreditProductionModel
 from src.pipeline.preprocessing.preprocessor import Preprocessor
 from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.constants import DataDriftType
@@ -87,7 +88,7 @@ def prepare_model_training_info() -> List[ModelTrainingManagerInfo]:
         ModelTrainingManagerInfo(
             preprocessor=Preprocessor(),
             dataset=GermanCreditDataset(),
-            model=IModel()  # TODO: fix
+            model=GermanCreditProductionModel()
         )
     ]
 
@@ -128,7 +129,7 @@ def prepare_data_drift_info() -> List[DataDriftDetectionManagerInfo]:
             deployment_dataset_plus=GermanCreditDeploymentDatasetPlus(),
             training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
             preprocessor=Preprocessor(),
-            model=IModel(),  # TODO: fix
+            model=GermanCreditProductionModel(),
             deployment_dataset=GermanCreditDeploymentDataset(),
             training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
             training_processed_df_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
@@ -162,7 +163,7 @@ def prepare_model_retraining_info() -> List[ModelTrainingManagerInfo]:
                 dataset_list=[GermanCreditDataset(), GermanCreditDeploymentDataset()],
                 path=GERMAN_CREDIT_CONCATENATED_DF
             ),
-            model=IModel()  # TODO: fix
+            model=GermanCreditProductionModel()
         )
     ]
 

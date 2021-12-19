@@ -56,11 +56,20 @@ preprocessing:
   data_drift_model_label_column_name: 'datasetType'
 
   german_credit:
-    numeric_features: []
-    categorical_features: []
+    numeric_features: [ 'creditamount', 'duration', 'installmentrate', 'residencesince', 'age',
+                        'existingcredits', 'peopleliable' ]
+    categorical_features: [ 'existingchecking', 'credithistory', 'purpose', 'savings', 'employmentsince',
+                            'statussex', 'otherdebtors', 'property', 'otherinstallmentplans', 'housing', 'job',
+                            'telephone', 'foreignworker' ]
     original_label_column_name: 'classification'
 
-  bank_martketing:
-    numeric_features: []
-    categorical_features: []
+  bank_marketing:
+    numeric_features: ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
+    categorical_features: [ 'job', 'marital', 'education', 'default', 'housing', 'loan',
+                            'contact', 'month', 'poutcome' ]
+
     original_label_column_name: 'y'
+
+  split:
+    train_test_split_size: 0.3
+    validation_test_split_size: 1 #TODO: decide
