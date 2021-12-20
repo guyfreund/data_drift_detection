@@ -51,7 +51,7 @@ class Preprocessor(IPreprocessor):
                      f"num of numerical features: {len(self._processed_df.select_dtypes(exclude=['bool', 'object']).columns)}")
 
         self._processed_df_plus = self._processed_df.copy()
-        self._processed_df_plus[Config().preprocessing.data_drift_model_label_column_name] = dataset.dtype
+        self._processed_df_plus[Config().preprocessing.data_drift_model_label_column_name] = dataset.dtype.value
 
         self._save_data_as_pickle(dataset.__class__.__name__)
 
