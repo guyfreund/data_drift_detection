@@ -7,7 +7,7 @@ from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDat
 from src.pipeline.datasets.paths import BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH, \
     BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
 from src.pipeline.datasets.training_datasets import BankMarketingDataset, BankMarketingDatasetPlus
-from src.pipeline.model.production_models import BankMarketingProductionModel
+from src.pipeline.model.data_drift_models import BankMarketingDataDriftModel
 from src.pipeline.preprocessing.preprocessor import Preprocessor
 
 logging.basicConfig(
@@ -26,7 +26,7 @@ class TestDataDriftDetectionManager:
             training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
             training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
             preprocessor=Preprocessor(),
-            model=BankMarketingProductionModel(),  # TODO: fix
+            model=BankMarketingDataDriftModel(),
         )
         data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=[bank_marketing_info])
         data_drift: DataDrift = data_drift_detection_manager.manage()[0]

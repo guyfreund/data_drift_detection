@@ -3,8 +3,7 @@ import pandas as pd
 from src.pipeline.config import Config
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.constants import DatasetType
-from src.pipeline.datasets.paths import BANK_MARKETING_DATASET_PATH, GERMAN_CREDIT_DATASET_PATH, \
-    GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH
+from src.pipeline.datasets.paths import BANK_MARKETING_DATASET_PATH, GERMAN_CREDIT_DATASET_PATH
 
 
 class BankMarketingDataset(Dataset):
