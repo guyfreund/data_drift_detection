@@ -46,8 +46,8 @@ class ModelTrainingManager(IManager):
         return self._info
 
     @info.setter
-    def info(self, info):
-        self._info = info
+    def info(self, value: ModelTrainingManagerInfo):
+        self._info = value
 
 
 class MultipleDatasetModelTrainingManager(IManager):
