@@ -10,6 +10,7 @@ from src.pipeline.data_generation.data_generation_manager import MultipleDataset
     DataGenerationManagerInfo
 from src.pipeline.data_drift_detection.data_drift_detection_manager import MultipleDatasetDataDriftDetectionManager, \
     DataDriftDetectionManagerInfo
+from src.pipeline.model.data_drift_models import BankMarketingDataDriftModel, GermanCreditDataDriftModel
 from src.pipeline.model.model_trainining_manager import MultipleDatasetModelTrainingManager, ModelTrainingManagerInfo
 from src.pipeline.constants import PipelineMode
 from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, \
@@ -125,7 +126,7 @@ def prepare_data_drift_info() -> List[DataDriftDetectionManagerInfo]:
             deployment_dataset_plus=GermanCreditDeploymentDatasetPlus(),
             training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
             preprocessor=Preprocessor(),
-            model=GermanCreditProductionModel(),
+            model=GermanCreditDataDriftModel(),
             deployment_dataset=GermanCreditDeploymentDataset(),
             training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
             training_processed_df_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
@@ -134,7 +135,7 @@ def prepare_data_drift_info() -> List[DataDriftDetectionManagerInfo]:
             deployment_dataset_plus=BankMarketingDeploymentDatasetPlus(),
             training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
             preprocessor=Preprocessor(),
-            model=BankMarketingProductionModel(),
+            model=BankMarketingDataDriftModel(),
             deployment_dataset=BankMarketingDeploymentDataset(),
             training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
             training_processed_df_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
