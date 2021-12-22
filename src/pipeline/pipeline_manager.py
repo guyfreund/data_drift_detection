@@ -10,7 +10,6 @@ from src.pipeline.data_generation.data_generation_manager import MultipleDataset
     DataGenerationManagerInfo
 from src.pipeline.data_drift_detection.data_drift_detection_manager import MultipleDatasetDataDriftDetectionManager, \
     DataDriftDetectionManagerInfo
-from src.pipeline.model.interfaces.imodel import IModel
 from src.pipeline.model.model_trainining_manager import MultipleDatasetModelTrainingManager, ModelTrainingManagerInfo
 from src.pipeline.constants import PipelineMode
 from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, \
@@ -21,7 +20,7 @@ from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
     BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
 from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDataset, \
     BankMarketingDeploymentDatasetPlus, GermanCreditDeploymentDataset, GermanCreditDeploymentDatasetPlus
-from src.pipeline.model.production_models import BankMarketingProductionModel
+from src.pipeline.model.production_models import BankMarketingProductionModel, GermanCreditProductionModel
 from src.pipeline.preprocessing.preprocessor import Preprocessor
 from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.constants import DataDriftType
@@ -30,10 +29,8 @@ from src.pipeline.model.paths import BANK_MARKETING_GEN_CGAN_MODEL_PATH, GERMAN_
 
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo],
-                 training_info_list: List[ModelTrainingManagerInfo],
-                 retraining_info_list: List[ModelTrainingManagerInfo],
-                 data_generation_info_list: List[DataGenerationManagerInfo]
-                 ):
+                 training_info_list: List[ModelTrainingManagerInfo], retraining_info_list: List[ModelTrainingManagerInfo],
+                 data_generation_info_list: List[DataGenerationManagerInfo]):
         self._mode = pipeline_mode
         self._data_generation_manager = MultipleDatasetGenerationManager(info_list=data_generation_info_list)
         self._data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=data_drift_info_list)
@@ -58,7 +55,7 @@ class PipelineManager(IManager):
             # training only if a data drift was detected
             for idx, data_drift in enumerate(self._detected_data_drifts):
                 self._retraining_info_list[idx].to_train = data_drift.is_drifted
-                self._model_retraining_manager.info_list = self._retraining_info_list  # no need, but more readable
+            self._model_retraining_manager.info_list = self._retraining_info_list  # no need, but more readable
 
             # retraining all models that a data drift has detected for their corresponding deployment dataset
             self._model_retraining_manager.manage()
@@ -87,7 +84,7 @@ def prepare_model_training_info() -> List[ModelTrainingManagerInfo]:
         ModelTrainingManagerInfo(
             preprocessor=Preprocessor(),
             dataset=GermanCreditDataset(),
-            model=IModel()  # TODO: fix
+            model=GermanCreditProductionModel()
         )
     ]
 
@@ -128,7 +125,7 @@ def prepare_data_drift_info() -> List[DataDriftDetectionManagerInfo]:
             deployment_dataset_plus=GermanCreditDeploymentDatasetPlus(),
             training_processed_df_plus_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH,
             preprocessor=Preprocessor(),
-            model=IModel(),  # TODO: fix
+            model=GermanCreditProductionModel(),
             deployment_dataset=GermanCreditDeploymentDataset(),
             training_feature_metrics_list_path=GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH,
             training_processed_df_path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
@@ -162,12 +159,12 @@ def prepare_model_retraining_info() -> List[ModelTrainingManagerInfo]:
                 dataset_list=[GermanCreditDataset(), GermanCreditDeploymentDataset()],
                 path=GERMAN_CREDIT_CONCATENATED_DF
             ),
-            model=IModel()  # TODO: fix
+            model=GermanCreditProductionModel()
         )
     ]
 
 
-def main():
+def run_pipeline_manager():
     # training
     pipeline_manager = PipelineManager(
         pipeline_mode=PipelineMode.Training,
@@ -185,6 +182,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_pipeline_manager()
     logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
     logging.warning('This will get logged to a file')

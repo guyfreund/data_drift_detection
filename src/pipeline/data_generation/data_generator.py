@@ -9,14 +9,13 @@ import numpy as np
 from ydata_synthetic.synthesizers.gan import BaseModel
 
 from src.pipeline.data_generation.interfaces.idata_generator import IDataGenerator
-from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.constants import DataDriftType
 
 
 class GANDataGenerator(IDataGenerator):
-    ''''this class loads a GAN model trained on the dataset'''
+    """ this class loads a GAN model trained on the dataset """
 
     def __init__(self, dataset: Dataset, label_col: str, model_class: BaseModel, trained_model_path: str,
                  inverse_preprocesser: Any = None):
@@ -108,10 +107,18 @@ class GANDataGenerator(IDataGenerator):
         file_name = file_name + self._dataset_name + time.strftime("%Y%m%d-%H%M%S") + '.csv'
         dataset.raw_df.to_csv(os.path.join(path, file_name))
 
+    @property
+    def synthesizer(self):
+        return self._synthesizer
+
+    @property
+    def origin_dataset(self) -> Dataset:
+        return self._origin_dataset
+
 
 # TODO: OPTIONAL
 class BASICDataGenerator(IDataGenerator):
-    ''''this class loads a GAN model trained on the dataset'''
+    """ this class loads a GAN model trained on the dataset """
 
     def __init__(self, dataset: Dataset, inverse_preprocesser: Any, model_class: Any, trained_model_path: str):
         # assert (model_class and trained_model_path), 'need to specify model class and model path'
@@ -120,8 +127,7 @@ class BASICDataGenerator(IDataGenerator):
     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
         pass
 
-    def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[
-        np.ndarray, pd.DataFrame]:
+    def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[np.ndarray, pd.DataFrame]:
         pass
 
     def save_generated_dataset(self, dataset, path):

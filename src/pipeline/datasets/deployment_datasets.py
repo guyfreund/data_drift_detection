@@ -48,7 +48,7 @@ class GermanCreditDeploymentDataset(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        raise NotImplementedError  # TODO: implement
+        return pd.read_csv(self._path, names=Config().preprocessing.german_credit.names, delimiter=' ')
 
 
 class GermanCreditDeploymentDatasetPlus(Dataset):
@@ -63,4 +63,4 @@ class GermanCreditDeploymentDatasetPlus(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        raise NotImplementedError  # TODO: implement
+        return pd.read_csv(self._path, names=Config().preprocessing.german_credit.names, delimiter=' ')

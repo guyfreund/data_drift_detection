@@ -1,16 +1,41 @@
-from src.pipeline.data_generation
+import pandas as pd
+from ydata_synthetic.synthesizers.regular import CGAN
+from src.pipeline.model.paths import GERMAN_CREDIT_GEN_CGAN_MODEL_PATH
+from src.pipeline.datasets.training_datasets import GermanCreditDataset
+from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
+from src.pipeline.data_generation.data_generation_manager import DataGenerationManagerInfo, MultipleDatasetGenerationManager
+
 
 class TestDatagenerationManager:
-    def test_data_generatconfion(self):
-        bank_marketing_info = DataDriftDetectionManagerInfo(
-            deployment_dataset_plus=BankMarketingDataset(),
-            training_processed_df_plus_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH,
-            preprocessor=Preprocessor(),  # TODO: fix
-            model=BankMarketingProductionModel(),  # TODO: fix
-            deployment_dataset=BankMarketingDataset(),
-            training_feature_metrics_list_path=BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH,
-            training_processed_df_path=BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
+
+    def __init__(self):
+        # self._german_credit_origin_data = GermanCreditDataset(),
+        self._bank_marketing_info = DataGenerationManagerInfo(
+            origin_dataset=GermanCreditDataset(),
+            model_class=CGAN,
+            sample_size_to_generate=100,
+            model_path=GERMAN_CREDIT_GEN_CGAN_MODEL_PATH,
+            data_drift_types=[],
+            save_data_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,
+            save_data_plus_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
         )
-        data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=[bank_marketing_info])
-        data_drift: DataDrift = data_drift_detection_manager.manage()[0]
-        assert not data_drift.is_driההfted
+        # self._german_credit_origin_data = pd.read_pickle(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH)
+        # self._bank_marketing_info = DataGenerationManagerInfo(
+        #     origin_dataset=self._origin_data,
+        #     model_class=CGAN,
+        #     sample_size_to_generate=100,
+        #     model_path=self._model_path,
+        #     data_drift_types=[],
+        #     save_data_path=self._save_data_path,
+        #     save_data_plus_path=self._save_data_plus_path
+        # )
+
+
+    def test_data_generation(self):
+        data_generation_managers = MultipleDatasetGenerationManager(info_list=[self._bank_marketing_info])
+        res = data_generation_managers.manage()
+
+
+
+test_manager = TestDatagenerationManager()
+test_manager.test_data_generation()

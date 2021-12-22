@@ -2,8 +2,12 @@ import pickle
 import os
 from typing import Tuple, List
 import pandas as pd
+from collections import defaultdict
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
+import logging
 
+from src.pipeline.config import Config
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.preprocessing.feature_metrics.feature_metrics_categorical import CategoricalFeatureMetrics
 from src.pipeline.preprocessing.feature_metrics.feature_metrics_numeric import NumericFeatureMetrics
@@ -26,34 +30,44 @@ class Preprocessor(IPreprocessor):
 
     def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
 
+        logging.info(f'Dataset Info: num of total features: {len(dataset.categorical_feature_names) + len(dataset.numeric_feature_names)} | '
+                     f'num of categorical features: {len(dataset.categorical_feature_names)} | '
+                     f'num of numerical features: {len(dataset.numeric_feature_names)}')
+
         feature_metrics_list: List[IFeatureMetrics] = self._build_feature_metrics_list(dataset)
         self._feature_metrics_list = feature_metrics_list
 
-        self._processed_df = pd.get_dummies(dataset.raw_df, columns=['job', 'marital',
-                                                                     'education', 'default',
-                                                                     'housing', 'loan',
-                                                                     'contact', 'month',
-                                                                     'poutcome'])
-        self._processed_df.y.replace(('yes', 'no'), (1, 0), inplace=True)
+        self._processed_df = dataset.raw_df.copy()
+
+        pd.DataFrame(StandardScaler().fit_transform(self._processed_df[dataset.numeric_feature_names]))
+        d = defaultdict(LabelEncoder)
+        self._processed_df[dataset.categorical_feature_names].apply(lambda x: d[x.name].fit_transform(x))
+        self._processed_df = pd.get_dummies(self._processed_df, columns=dataset.categorical_feature_names)
+
+        self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
+
+        logging.info(f"Preprocessing: data was preprocessed successfully.")
+        logging.info(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
+                     f"num of numerical features: {len(self._processed_df.select_dtypes(exclude=['bool', 'object']).columns)}")
 
         self._processed_df_plus = self._processed_df.copy()
-        self._processed_df_plus['datasetType'] = dataset.dtype
+        self._processed_df_plus[Config().preprocessing.data_drift_model_label_column_name] = dataset.dtype.value
 
         self._save_data_as_pickle(dataset.__class__.__name__)
 
         return self._processed_df, self._processed_df_plus, self._feature_metrics_list
 
     @staticmethod    
-    def _build_feature_metrics_list(dataset) -> List[IFeatureMetrics]:
+    def _build_feature_metrics_list(dataset: Dataset) -> List[IFeatureMetrics]:
         feature_metrics_list: List[IFeatureMetrics] = []
 
-        categorical_cols = dataset.raw_df.select_dtypes(include=['bool', 'object']).columns
+        categorical_cols = dataset.categorical_feature_names
         for col in categorical_cols:
             feature_metric = CategoricalFeatureMetrics(col, dataset.dtype)
             feature_metric.number_of_nulls = int(dataset.raw_df[col].isna().sum())
             feature_metrics_list.append(feature_metric)
 
-        numerical_cols = dataset.raw_df.select_dtypes(include=['int64', 'float64']).columns
+        numerical_cols = dataset.numeric_feature_names
         for col in numerical_cols:
             feature_metric = NumericFeatureMetrics(col, dataset.dtype)
             feature_metric.mean = dataset.raw_df[col].mean()
@@ -76,11 +90,14 @@ class Preprocessor(IPreprocessor):
         with open(path, 'wb') as output:
             pickle.dump(self._feature_metrics_list, output)
 
-    def split(self, processed_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-        data_y = processed_df['y']
-        data_X = processed_df.drop('y', axis=1)
-        X_train, X_test, y_train, y_test = train_test_split(data_X, data_y, test_size=0.3)
-        X_test, X_validation, y_test, y_validation = train_test_split(X_test, y_test, test_size=0.5)
+        logging.info(f'Save Data: {dataset_class_name}.pickle, {dataset_class_name}Plus.pickle, '
+                     f'{dataset_class_name}_FeatureMetricsList.pickle files has been saved')
+
+    def split(self, processed_df: pd.DataFrame, label_column_name: str) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+        data_y = processed_df[label_column_name]
+        data_X = processed_df.drop(label_column_name, axis=1)
+        X_train, X_test, y_train, y_test = train_test_split(data_X, data_y, test_size=Config().preprocessing.split.train_test_split_size)
+        X_test, X_validation, y_test, y_validation = train_test_split(X_test, y_test, test_size=Config().preprocessing.split.validation_test_split_size)
 
         self._X_train = X_train
         self._X_validation = X_validation
@@ -88,6 +105,11 @@ class Preprocessor(IPreprocessor):
         self._y_train = y_train
         self._y_validation = y_validation
         self._y_test = y_test
+
+        logging.info(f"Split Data: processed_df has been splitted by the '{label_column_name}' column")
+        logging.info(f"Split Info: train size: {round(len(self._X_train)/len(processed_df), 2)*100}% | "
+                     f"validation size: {round(len(self._X_validation)/len(processed_df), 2)*100}% | "
+                     f"test size: {round(len(self._X_test)/len(processed_df), 2)*100}%")
 
         return X_train, X_validation, X_test, y_train, y_validation, y_test
 
