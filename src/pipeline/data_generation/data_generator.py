@@ -38,18 +38,18 @@ class GANDataGenerator(IDataGenerator):
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[
         np.ndarray, pd.DataFrame]:
         generated_data = self.generate_normal_samples(n_samples)
-        num_features = self._origin_dataset.numeric_feature_names + self._origin_dataset.categorical_feature_names
-        precentage_features = max(Config().data_generation.internal_data_drift_detector.mean.percent_of_features,
-                                  Config().data_generation.internal_data_drift_detector.variance.percent_of_features,
-                                  Config().data_generation.internal_data_drift_detector.number_of_nulls.percent_of_features)
-        num_of_drift_features = np.random.uniform(precentage_features, 1.) * num_features
-        num_drift_features = min(num_of_drift_features, n_samples)
+        num_features = len(self._origin_dataset.numeric_feature_names) + len(self._origin_dataset.categorical_feature_names)
+        percentage_features = max(Config().data_drift.internal_data_drift_detector.mean.percent_of_features,
+                                  Config().data_drift.internal_data_drift_detector.variance.percent_of_features,
+                                  Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_of_features)
+        num_of_drift_features = np.random.uniform(percentage_features, 1.) * num_features
+        num_drift_features = int(min(num_of_drift_features, n_samples))
         # Do Drifting
         return self._add_data_drift(generated_data, num_drift_features, drift_types_list)
 
     # TODO: OPTIONAL add the statistics and features to drift somwhere and not only printing them.
-    @staticmethod
-    def _add_data_drift(dataset: pd.DataFrame, num_drift_features: int,
+
+    def _add_data_drift(self, dataset: pd.DataFrame, num_drift_features: int,
                         drift_types_list: List[DataDriftType]) -> pd.DataFrame:
         """
         from source: https://stats.stackexchange.com/questions/46429/transform-data-to-desired-mean-and-standard-deviation
@@ -59,8 +59,11 @@ class GANDataGenerator(IDataGenerator):
             y_i = m_2 + (x_i - m_1) * s_2/s_1
         Then, we get a new mean m_2 with std s_2
         """
+        numeric_feature_names = self._origin_dataset.numeric_feature_names
+        categorical_feature_names = self._origin_dataset.categorical_feature_names
+
         # TODO add random sample for the drift percentages
-        drifted_features_all_types = np.random.choice(dataset.numeric_feature_names + dataset.categorical_feature_names,
+        drifted_features_all_types = np.random.choice(numeric_feature_names + categorical_feature_names,
                                                       num_drift_features, replace=False)
         percentage_drift_mean = np.random.uniform(
             Config().data_drift.internal_data_drift_detector.mean.percent_threshold, 1.)
@@ -79,8 +82,8 @@ class GANDataGenerator(IDataGenerator):
         df = dataset.copy()
         for drift_type in drift_types_list:
             if drift_type == DataDriftType.Statistical:
-                drifted_features_numeric_only = np.random.choice(dataset.numeric_feature_names,
-                                                                 min(num_drift_features, len(dataset.numeric_feature_names)),
+                drifted_features_numeric_only = np.random.choice(numeric_feature_names,
+                                                                 min(num_drift_features, len(numeric_feature_names)),
                                                                  replace=False)
                 logging.debug(f'numeric features to drift are: {drifted_features_numeric_only}')
                 for feature in drifted_features_numeric_only:

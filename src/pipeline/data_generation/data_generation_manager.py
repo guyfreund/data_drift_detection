@@ -60,15 +60,8 @@ class DataGenerationManager(IManager):
         generated_dataset_plus = generated_dataset.copy()
         generated_dataset_plus[Config().preprocessing.data_drift_model_label_column_name] = DatasetType.Deployment
 
-        # path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"generated_{dataset_class_name}.csv"))
         generated_dataset.to_csv(self._save_data_path, index=False)
-        # with open(path, 'wb') as output:
-        #     pickle.dump(generated_dataset, output)
-
-        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"generated_{dataset_class_name}_plus.csv"))
         generated_dataset_plus.to_csv(self._save_data_plus_path, index=False)
-        # with open(path, 'wb') as output:
-        #     pickle.dump(generated_dataset_plus, output)
 
 
     def _get_generated_dataset(self, is_drifted: bool) -> Union[np.array, pd.DataFrame]:
