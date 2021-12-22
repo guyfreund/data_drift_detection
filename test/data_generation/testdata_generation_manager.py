@@ -6,7 +6,7 @@ from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
 from src.pipeline.data_generation.data_generation_manager import DataGenerationManagerInfo, MultipleDatasetGenerationManager
 
 
-class TestDatagenerationManager:
+class _TestDatagenerationManager:
 
     def __init__(self):
         # self._german_credit_origin_data = GermanCreditDataset(),
@@ -31,11 +31,11 @@ class TestDatagenerationManager:
         # )
 
 
-    def test_data_generation(self):
+    def _test_data_generation(self):
         data_generation_managers = MultipleDatasetGenerationManager(info_list=[self._bank_marketing_info])
         res = data_generation_managers.manage()
 
 
 
-test_manager = TestDatagenerationManager()
-test_manager.test_data_generation()
+test_manager = _TestDatagenerationManager()
+test_manager._test_data_generation()
