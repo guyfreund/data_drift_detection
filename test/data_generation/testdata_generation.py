@@ -7,7 +7,7 @@ from src.pipeline.data_generation.data_generation_manager import DataGenerationM
     MultipleDatasetGenerationManager, DataGenerationManager
 
 
-class _TestDatagenerationManager:
+class _TestDatageneration:
 
     def __init__(self):
         # self._german_credit_origin_data = GermanCreditDataset(),
@@ -20,29 +20,20 @@ class _TestDatagenerationManager:
             save_data_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,
             save_data_plus_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
         )
-        # self._german_credit_origin_data = pd.read_pickle(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH)
-        # self._bank_marketing_info = DataGenerationManagerInfo(
-        #     origin_dataset=self._origin_data,
-        #     model_class=CGAN,
-        #     sample_size_to_generate=100,
-        #     model_path=self._model_path,
-        #     data_drift_types=[],
-        #     save_data_path=self._save_data_path,
-        #     save_data_plus_path=self._save_data_plus_path
-        # )
+
+    def _test_data_drift_generation(self):
+        data_generation_manager = DataGenerationManager(self._bank_marketing_info)
+        generated_data = data_generation_manager._get_generated_dataset(False)
+        data_generation_manager._save_data_as_pickle(generated_data)
+        return data_generation_manager, generated_data
 
 
-    def _test_multiple_data_generation_manager(self):
-        data_generation_managers = MultipleDatasetGenerationManager(info_list=[self._bank_marketing_info])
-        res = data_generation_managers.manage()
+    def _test_data_normal_generation(self):
+        data_generation_manager = DataGenerationManager(self._bank_marketing_info)
+        generated_data = data_generation_manager._get_generated_dataset(True)
+        return data_generation_manager, generated_data
 
 
-    def _test_data_generation_manager(self):
-        data_generation_managers = DataGenerationManager(self._bank_marketing_info)
-        res = data_generation_managers.manage()
-
-
-
-test_manager = _TestDatagenerationManager()
-test_manager._test_data_generation_manager()
-test_manager._test_multiple_data_generation_manager()
+test_manager = _TestDatageneration()
+data_generation_manager, generated_data = test_manager._test_data_drift_generation()
+print('HELLO')

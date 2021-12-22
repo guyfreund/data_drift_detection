@@ -23,7 +23,7 @@ class GANDataGenerator(IDataGenerator):
         self._synthesizer = model_class.load(trained_model_path)  # for now we use CGAN class only
         self._origin_dataset = dataset
         self._dataset_name = dataset.__class__.__name__
-        self._labels = dataset.raw_df[label_col].unique()
+        self._labels = [0, 1] #dataset.raw_df[label_col].unique() #TODO: for now need to see why we get [1,2]
         self._inverse_preprocessor = inverse_preprocesser
 
     # TODO: n_samples from config
@@ -32,6 +32,7 @@ class GANDataGenerator(IDataGenerator):
         label_z = tf.random.uniform((n_samples,), minval=min(self._labels), maxval=max(self._labels) + 1,
                                     dtype=tf.dtypes.int32)
         generated_data = self._synthesizer.generator([z, label_z])
+        generated_data = tf.make_ndarray(tf.make_tensor_proto(generated_data))
         return self._inverse_preprocessor(generated_data) if self._inverse_preprocessor else generated_data
 
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[
@@ -103,9 +104,6 @@ class GANDataGenerator(IDataGenerator):
         # dataset.raw_df = df
         return df
 
-    def save_generated_dataset(self, dataset: Dataset, path: str, file_name: str = 'generated_data'):
-        file_name = file_name + self._dataset_name + time.strftime("%Y%m%d-%H%M%S") + '.csv'
-        dataset.raw_df.to_csv(os.path.join(path, file_name))
 
     @property
     def synthesizer(self):
