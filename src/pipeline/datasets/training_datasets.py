@@ -1,9 +1,11 @@
 import pandas as pd
-
+import pickle
 from src.pipeline.config import Config
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.constants import DatasetType
-from src.pipeline.datasets.paths import BANK_MARKETING_DATASET_PATH, GERMAN_CREDIT_DATASET_PATH
+from src.pipeline.datasets.paths import BANK_MARKETING_DATASET_PATH, GERMAN_CREDIT_DATASET_PATH, \
+    GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH, \
+    GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PATH
 
 
 class BankMarketingDataset(Dataset):
@@ -32,6 +34,34 @@ class GermanCreditDataset(Dataset):
 
     def load(self) -> pd.DataFrame:
         return pd.read_csv(self._path, names=Config().preprocessing.german_credit.names, delimiter=' ')
+
+
+class BankMarketingProcessedDataset(Dataset):
+    def __init__(self):
+        super().__init__(
+            dtype=DatasetType.Training,
+            path=BANK_MARKETING_TRAINING_PROCESSED_DF_PATH,
+            numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features,
+            categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
+            label_column_name=Config().preprocessing.bank_marketing.original_label_column_name
+        )
+
+    def load(self) -> pickle:
+        return pd.read_pickle(self._path)
+
+
+class GermanCreditProcessedDataset(Dataset):
+    def __init__(self):
+        super().__init__(
+            dtype=DatasetType.Training,
+            path=GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH,
+            numeric_feature_names=Config().preprocessing.german_credit.numeric_features,
+            categorical_feature_names=Config().preprocessing.german_credit.categorical_features,
+            label_column_name=Config().preprocessing.german_credit.original_label_column_name
+        )
+
+    def load(self) -> pickle:
+        return pd.read_pickle(self._path)
 
 
 class BankMarketingDatasetPlus(Dataset):
