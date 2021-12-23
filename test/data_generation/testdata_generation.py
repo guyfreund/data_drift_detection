@@ -35,7 +35,7 @@ class _TestDatageneration:
 
 
 test_manager = _TestDatageneration()
-# data_generation_manager, generated_data = test_manager._test_data_drift_generation()
+data_generation_manager, generated_data = test_manager._test_data_drift_generation()
 print('Succeed generate normal data')
 data_generation_manager, generated_data = test_manager._test_data_drift_generation()
 print('Succeed generate drifted data')

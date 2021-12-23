@@ -55,8 +55,8 @@ class DataGenerationManager(IManager):
 
     def _save_data_as_pickle(self, generated_dataset):
         dataset_class_name = self._origin_dataset.__class__.__name__
-        # TODO remove later  [1,2,3] just for now
-        generated_dataset = pd.DataFrame(columns=list(self._origin_dataset.raw_df.columns)+['1','2','3'], data=generated_dataset)
+
+
         generated_dataset_plus = generated_dataset.copy()
         generated_dataset_plus[Config().preprocessing.data_drift_model_label_column_name] = DatasetType.Deployment
 
@@ -76,9 +76,9 @@ class DataGenerationManager(IManager):
 
 class MultipleDatasetGenerationManager(IManager):
     def __init__(self, info_list: List[DataGenerationManagerInfo]):
-        self.data_generation_managers: List[DataGenerationManager] = [DataGenerationManager(info) for info in info_list]
+        self.managers: List[DataGenerationManager] = [DataGenerationManager(info) for info in info_list]
 
     def manage(self) -> List[DataDrift]:
-        data_drifts: List[DataDrift] = [manager.manage() for manager in self.data_generation_managers]
+        data_drifts: List[DataDrift] = [manager.manage() for manager in self.managers]
         return data_drifts
 

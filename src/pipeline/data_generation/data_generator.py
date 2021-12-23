@@ -33,7 +33,11 @@ class GANDataGenerator(IDataGenerator):
                                     dtype=tf.dtypes.int32)
         generated_data = self._synthesizer.generator([z, label_z])
         generated_data = tf.make_ndarray(tf.make_tensor_proto(generated_data))
-        return self._inverse_preprocessor(generated_data) if self._inverse_preprocessor else generated_data
+        # To Data Frame
+        generated_dataset = self._inverse_preprocessor(generated_data) if self._inverse_preprocessor else generated_data
+        # TODO remove later  [1,2,3] just for now
+        generated_dataset = pd.DataFrame(columns=list(self._origin_dataset.raw_df.columns)+['1','2','3'], data=generated_dataset)
+        return generated_dataset
 
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[
         np.ndarray, pd.DataFrame]:
@@ -88,6 +92,7 @@ class GANDataGenerator(IDataGenerator):
                 logging.debug(f'numeric features to drift are: {drifted_features_numeric_only}')
                 for feature in drifted_features_numeric_only:
                     before_drift_data = df[feature]
+
                     before_drift_mean = before_drift_data.mean()
                     before_drift_std = before_drift_data.std()
                     new_drift_mean = before_drift_mean * percentage_drift_mean
@@ -106,7 +111,6 @@ class GANDataGenerator(IDataGenerator):
             # TODO optional: add drift of new unseen values of categorical feature
         # dataset.raw_df = df
         return df
-
 
     @property
     def synthesizer(self):
