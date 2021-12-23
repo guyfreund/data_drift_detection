@@ -17,13 +17,13 @@ from src.pipeline.data_drift_detection.constants import DataDriftType
 class GANDataGenerator(IDataGenerator):
     """ this class loads a GAN model trained on the dataset """
 
-    def __init__(self, dataset: Dataset, label_col: str, model_class: BaseModel, trained_model_path: str,
+    def __init__(self, dataset: Dataset, model_class: BaseModel, trained_model_path: str,
                  inverse_preprocesser: Any = None):
 
         self._synthesizer = model_class.load(trained_model_path)  # for now we use CGAN class only
         self._origin_dataset = dataset
         self._dataset_name = dataset.__class__.__name__
-        self._labels = [0, 1] #dataset.raw_df[label_col].unique() #TODO: for now need to see why we get [1,2]
+        self._labels = [0, 1]  # dataset.raw_df[label_col].unique() #TODO: for now need to see why we get [1,2]
         self._inverse_preprocessor = inverse_preprocesser
 
     # TODO: n_samples from config
