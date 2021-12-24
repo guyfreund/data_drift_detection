@@ -17,7 +17,7 @@ from src.pipeline.datasets.constants import DatasetType
 
 class DataGenerationManagerInfo:
 
-    def __init__(self, origin_dataset: Dataset, model_class: BaseModel,
+    def __init__(self, origin_dataset: Dataset, model_class: Union[BaseModel, str],
                  sample_size_to_generate: int, model_path: str,
                  data_drift_types: List[DataDriftType],
                  save_data_path: str, save_data_plus_path: str):
