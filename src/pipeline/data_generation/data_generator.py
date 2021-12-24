@@ -52,7 +52,7 @@ class GANDataGenerator(IDataGenerator):
         return self._add_data_drift(generated_data, num_drift_features, drift_types_list)
 
     # TODO: OPTIONAL add the statistics and features to drift somwhere and not only printing them.
-
+    # TODO change to static method or inheritance
     def _add_data_drift(self, dataset: pd.DataFrame, num_drift_features: int,
                         drift_types_list: List[DataDriftType]) -> pd.DataFrame:
         """
@@ -120,20 +120,36 @@ class GANDataGenerator(IDataGenerator):
     def origin_dataset(self) -> Dataset:
         return self._origin_dataset
 
+from imblearn.over_sampling import SMOTENC
 
-# TODO: OPTIONAL
 class BASICDataGenerator(IDataGenerator):
     """ this class loads a GAN model trained on the dataset """
 
-    def __init__(self, dataset: Dataset, inverse_preprocesser: Any, model_class: Any, trained_model_path: str):
-        # assert (model_class and trained_model_path), 'need to specify model class and model path'
-        pass
+    def __init__(self, dataset: Dataset):
+  # for now we use CGAN class only
+        self._origin_dataset = dataset
+        col_label = self._origin_dataset.label_column_name
+        df = self._origin_dataset.raw_df
+        self.X = df.drop(col_label, axis=1)
+        self.y = df[col_label]
+        self._dataset_name = dataset.__class__.__name__
 
     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
-        pass
+        df = self._origin_dataset.raw_df
+        cat_cols = [col for col in df.columns if any(cat_col for cat_col in self._origin_dataset.categorical_feature_names if cat_col + '_' in col)]
+        cat_cols_idx = [df.columns.get_loc(col) for col in df.columns if col in cat_cols]
+        sm = SMOTENC(random_state=42, categorical_features=cat_cols_idx)
+        X_res, y_res = sm.fit_resample(self.X, self.y)
 
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[np.ndarray, pd.DataFrame]:
         pass
 
     def save_generated_dataset(self, dataset, path):
         pass
+
+
+from src.pipeline.datasets.training_datasets import BankMarketingProcessedDataset
+
+dataset = BankMarketingProcessedDataset()
+gen = BASICDataGenerator(dataset)
+gen.generate_normal_samples(1)
