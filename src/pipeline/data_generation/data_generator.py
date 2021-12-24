@@ -120,11 +120,12 @@ class GANDataGenerator(IDataGenerator):
     def origin_dataset(self) -> Dataset:
         return self._origin_dataset
 
+
 from imblearn.over_sampling import SMOTENC
 
-class BASICDataGenerator(IDataGenerator):
-    """ this class loads a GAN model trained on the dataset """
 
+class SMOTENCDataGenerator(IDataGenerator):
+    """ this class loads a GAN model trained on the dataset """
     def __init__(self, dataset: Dataset):
   # for now we use CGAN class only
         self._origin_dataset = dataset
@@ -137,9 +138,11 @@ class BASICDataGenerator(IDataGenerator):
     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
         df = self._origin_dataset.raw_df
         cat_cols = [col for col in df.columns if any(cat_col for cat_col in self._origin_dataset.categorical_feature_names if cat_col + '_' in col)]
-        cat_cols_idx = [df.columns.get_loc(col) for col in df.columns if col in cat_cols]
-        sm = SMOTENC(random_state=42, categorical_features=cat_cols_idx)
-        X_res, y_res = sm.fit_resample(self.X, self.y)
+        print(cat_cols)
+        cat_cols_idx = [self.X.columns.get_loc(col) for col in df.columns if col in cat_cols]
+        self._model = SMOTENC(random_state=42, categorical_features=cat_cols_idx)
+        return self._model.fit_resample(self.X, self.y)
+
 
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[np.ndarray, pd.DataFrame]:
         pass
@@ -147,9 +150,3 @@ class BASICDataGenerator(IDataGenerator):
     def save_generated_dataset(self, dataset, path):
         pass
 
-
-from src.pipeline.datasets.training_datasets import BankMarketingProcessedDataset
-
-dataset = BankMarketingProcessedDataset()
-gen = BASICDataGenerator(dataset)
-gen.generate_normal_samples(1)
