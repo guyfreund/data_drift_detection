@@ -125,9 +125,8 @@ from imblearn.over_sampling import SMOTENC
 
 
 class SMOTENCDataGenerator(IDataGenerator):
-    """ this class loads a GAN model trained on the dataset """
+    """ this class generate synthetic data using SMOTENC method """
     def __init__(self, dataset: Dataset):
-  # for now we use CGAN class only
         self._origin_dataset = dataset
         col_label = self._origin_dataset.label_column_name
         df = self._origin_dataset.raw_df
@@ -141,8 +140,9 @@ class SMOTENCDataGenerator(IDataGenerator):
         print(cat_cols)
         cat_cols_idx = [self.X.columns.get_loc(col) for col in df.columns if col in cat_cols]
         self._model = SMOTENC(random_state=42, categorical_features=cat_cols_idx)
-        return self._model.fit_resample(self.X, self.y)
-
+        synthetic_X, synthetic_y = self._model.fit_resample(self.X, self.y)
+        synthetic_X[self._origin_dataset.label_column_name] = synthetic_y
+        return synthetic_X
 
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[np.ndarray, pd.DataFrame]:
         pass
