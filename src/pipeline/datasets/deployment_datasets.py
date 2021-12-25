@@ -73,7 +73,7 @@ class GermanCreditDeploymentDatasetPlus(Dataset):
 class BankMarketingSampledDeploymentDataset(SampledDataset):
     def __init__(self):
         super().__init__(
-            original_dataset=BankMarketingDeploymentDataset(to_load=False),
+            original_dataset=BankMarketingDeploymentDataset(),
             path=BANK_MARKETING_SAMPLED_DEPLOYMENT_DATASET,
             numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features,
             categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
@@ -84,7 +84,7 @@ class BankMarketingSampledDeploymentDataset(SampledDataset):
 class GermanCreditSampledDeploymentDataset(SampledDataset):
     def __init__(self):
         super().__init__(
-            original_dataset=GermanCreditDeploymentDataset(to_load=False),
+            original_dataset=GermanCreditDeploymentDataset(),
             path=GERMAN_CREDIT_SAMPLED_DEPLOYMENT_DATASET,
             numeric_feature_names=Config().preprocessing.german_credit.numeric_features,
             categorical_feature_names=Config().preprocessing.german_credit.categorical_features,
