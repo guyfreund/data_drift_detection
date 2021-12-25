@@ -164,3 +164,13 @@ class GermanCreditProductionModel(IModel):
     @property
     def is_tuned(self) -> bool:
         return self._is_tuned
+
+
+class BankMarketingRetrainedProductionModel(BankMarketingProductionModel):
+    def __init__(self):
+        super().__init__()
+
+
+class GermanCreditRetrainedProductionModel(GermanCreditProductionModel):
+    def __init__(self):
+        super().__init__()

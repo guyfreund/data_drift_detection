@@ -4,4 +4,3 @@ Implementation of a Machine Learning Operations pipeline, which consists of: mod
 Databases being used are:
 - https://archive.ics.uci.edu/ml/datasets/bank+marketing
 - https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
-

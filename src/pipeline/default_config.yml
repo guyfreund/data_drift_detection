@@ -46,7 +46,8 @@ data_drift:
         weight: 1
         percent_of_instances: 1e-1  # number of instances that indicates on a data drift
 
-
+retraining:
+  sample_size_in_percent: 3e-1  # means generate a sample of 30% size from the deployment dataset
 
 data_generation:
   generation_percent: 200  # means to generate a dataset of double size
