@@ -14,7 +14,8 @@ GERMAN_CREDIT_SAMPLED_DEPLOYMENT_DATASET = os.path.abspath(os.path.join(__file__
 # Backup
 SMOTENC_GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"smotenc_generated_GermanCreditDataset.csv"))
 SMOTENC_GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"smotenc_generated_GermanCreditDataset_plus.csv"))
-SMOTENC_GERMAN_CREDIT_SAMPLED_DEPLOYMENT_DATASET = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"smotenc_generated_sampled_GermanCreditDataset.csv"))
+GAN_GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"gan_generated_GermanCreditDataset.csv"))
+GAN_GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"gan_generated_GermanCreditDataset_plus.csv"))
 
 # ------------------------------ TRAINING DATA ------------------------------#
 GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset.pickle"))
@@ -35,9 +36,12 @@ BANK_MARKETING_SAMPLED_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..
 BANK_MARKETING_DEPLOYMENT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"generated_BankMarketingDataset.csv"))
 BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"generated_BankMarketingDataset_plus.csv"))
 BANK_MARKETING_SAMPLED_DEPLOYMENT_DATASET = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"generated_sampled_BankMarketingDataset.csv"))
+
+# Backup
 SMOTENC_BANK_MARKETING_DEPLOYMENT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"smotenc_generated_BankMarketingDataset.csv"))
 SMOTENC_BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"smotenc_generated_BankMarketingDataset_plus.csv"))
-SMOTENC_BANK_MARKETING_SAMPLED_DEPLOYMENT_DATASET = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"smotenc_generated_sampled_BankMarketingDataset.csv"))
+GAN_BANK_MARKETING_DEPLOYMENT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"gan_generated_BankMarketingDataset.csv"))
+GAN_BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"gan_generated_BankMarketingDataset_plus.csv"))
 
 # ------------------------------ TRAINING DATA ------------------------------#
 BANK_MARKETING_TRAINING_PROCESSED_DF_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset.pickle"))

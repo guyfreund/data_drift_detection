@@ -32,7 +32,6 @@ class DataGenerator(IDataGenerator):
     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
         raise NotImplementedError
 
-
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[
         np.ndarray, pd.DataFrame]:
         # first, generate normal data

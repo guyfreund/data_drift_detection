@@ -3,7 +3,7 @@ from ydata_synthetic.synthesizers.regular import CGAN
 from src.pipeline.model.paths import GERMAN_CREDIT_GEN_CGAN_MODEL_PATH
 from src.pipeline.datasets.training_datasets import GermanCreditDataset
 from src.pipeline.datasets.paths import SMOTENC_GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,\
-    SMOTENC_GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
+    SMOTENC_GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH, GAN_GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, GAN_GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
 from src.pipeline.data_generation.data_generation_manager import DataGenerationManagerInfo, \
     MultipleDatasetGenerationManager, DataGenerationManager
 from src.pipeline.data_drift_detection.constants import DataDriftType
@@ -22,8 +22,8 @@ class TestGANDatageneration:
             sample_size_to_generate=100,
             model_path=GERMAN_CREDIT_GEN_CGAN_MODEL_PATH,
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
-            save_data_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,
-            save_data_plus_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH,
+            save_data_path=GAN_GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,
+            save_data_plus_path=GAN_GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH,
             processor=LabelProcessor(dataset, GERMAN_CREDIT_LABEL_ENCODER_PATH)
         )
 

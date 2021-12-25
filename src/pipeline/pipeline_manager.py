@@ -30,7 +30,8 @@ from src.pipeline.preprocessing.preprocessor import Preprocessor
 from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.constants import DataDriftType
 from src.pipeline.model.paths import BANK_MARKETING_GEN_CGAN_MODEL_PATH, GERMAN_CREDIT_GEN_CGAN_MODEL_PATH
-
+from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
+from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH, GERMAN_CREDIT_LABEL_ENCODER_PATH
 
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo],
@@ -99,24 +100,29 @@ def prepare_model_training_info() -> List[ModelTrainingManagerInfo]:
 
 
 def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
+    gen_model_class = Config().data_generation.generate_model_class
+    bank_marketing_dataset = BankMarketingDataset()
+    german_credit_dataset = GermanCreditDataset()
     return [
         DataGenerationManagerInfo(
-            origin_dataset=BankMarketingDataset(),
-            model_class=Config().data_generation.generate_model_class,
+            origin_dataset=bank_marketing_dataset,
+            model_class=Config().data_generation.generate_model_class,  # for GAN
             sample_size_to_generate=Config().data_generation.generation_percent,
-            model_path=BANK_MARKETING_GEN_CGAN_MODEL_PATH,
+            model_path=BANK_MARKETING_GEN_CGAN_MODEL_PATH if gen_model_class else None,
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH,
-            save_data_plus_path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH
+            save_data_plus_path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH,
+            processor=LabelProcessor(bank_marketing_dataset, BANK_MARKETING_LABEL_ENCODER_PATH)
         ),  # Bank Marketing
         DataGenerationManagerInfo(
-            origin_dataset=GermanCreditDataset(),
+            origin_dataset=german_credit_dataset,
             model_class=Config().data_generation.generate_model_class,
             sample_size_to_generate=Config().data_generation.generation_percent,
-            model_path=GERMAN_CREDIT_GEN_CGAN_MODEL_PATH,
+            model_path=GERMAN_CREDIT_GEN_CGAN_MODEL_PATH if gen_model_class else None, # for GAN
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,
-            save_data_plus_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
+            save_data_plus_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH,
+            processor=LabelProcessor(german_credit_dataset, GERMAN_CREDIT_LABEL_ENCODER_PATH)
         )   # German Credit
     ]
 
