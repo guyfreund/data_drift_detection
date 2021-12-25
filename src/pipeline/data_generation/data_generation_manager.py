@@ -17,11 +17,13 @@ from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
 
 class DataGenerationManagerInfo:
 
-    def __init__(self, origin_dataset: Dataset, model_class: Union[BaseModel, str],
-                 sample_size_to_generate: int, model_path: str,
+    def __init__(self, origin_dataset: Dataset,
+                 sample_size_to_generate: int,
                  data_drift_types: List[DataDriftType],
                  save_data_path: str, save_data_plus_path: str,
-                 processor: LabelProcessor):
+                 processor: LabelProcessor,
+                 model_class: Union[BaseModel, str] = None,
+                 model_path: str = None):
         self.origin_dataset: Dataset = origin_dataset
         # self.dataset_name = type(origin_dataset.__name__)
         self.model_class: str = model_class
@@ -60,7 +62,6 @@ class DataGenerationManager(IManager):
 
     def _save_data_as_pickle(self, generated_dataset):
         dataset_class_name = self._origin_dataset.__class__.__name__
-
 
         generated_dataset_plus = generated_dataset.copy()
         generated_dataset_plus[Config().preprocessing.data_drift_model_label_column_name] = DatasetType.Deployment

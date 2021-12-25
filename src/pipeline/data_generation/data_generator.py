@@ -30,16 +30,8 @@ class DataGenerator(IDataGenerator):
 
     # TODO: n_samples from config
     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
-        z = tf.random.normal((n_samples, self._synthesizer.noise_dim))
-        label_z = tf.random.uniform((n_samples,), minval=min(self._labels), maxval=max(self._labels) + 1,
-                                    dtype=tf.dtypes.int32)
-        generated_data = self._synthesizer.generator([z, label_z])
-        generated_data = tf.make_ndarray(tf.make_tensor_proto(generated_data))
-        # To Data Frame
-        generated_dataset = self._inverse_preprocessor(generated_data) if self._inverse_preprocessor else generated_data
+        raise NotImplementedError
 
-        generated_dataset = pd.DataFrame(columns=list(self._df.columns), data=generated_dataset)
-        return generated_dataset
 
     def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[
         np.ndarray, pd.DataFrame]:
@@ -149,16 +141,6 @@ class GANDataGenerator(DataGenerator):
         # generated_dataset = pd.DataFrame(columns=list(self._df.columns), data=generated_dataset)
         return generated_data
 
-    # def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[
-    #     np.ndarray, pd.DataFrame]:
-    #     numeric_feature_names = self._origin_dataset.numeric_feature_names
-    #     categorical_feature_names = self._origin_dataset.categorical_feature_names
-    #     # first, generate normal data
-    #     generated_data = self.generate_normal_samples(n_samples)
-    #     # Do Drifting
-    #     num_features, percentage_features, num_drift_features = drifted_configs(n_samples, numeric_feature_names, categorical_feature_names)
-    #     return add_data_drift(generated_data, num_drift_features, drift_types_list,
-    #                           numeric_feature_names, categorical_feature_names)
 
     @property
     def synthesizer(self):
@@ -189,20 +171,7 @@ class SMOTENCDataGenerator(DataGenerator):
         synthetic_df = self._processor.postprocess_data(synthetic_df)
         return synthetic_df
 
-    # def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[np.ndarray, pd.DataFrame]:
-    #     generated_samples = self.generate_normal_samples(n_samples)
-    #     numeric_feature_names = self._origin_dataset.numeric_feature_names
-    #     categorical_feature_names = self._origin_dataset.categorical_feature_names
-    #     # first, generate normal data
-    #     generated_data = self.generate_normal_samples(n_samples)
-    #     # Do Drifting
-    #     num_features, percentage_features, num_drift_features = drifted_configs(n_samples, numeric_feature_names,
-    #                                                                             categorical_feature_names)
-    #     return add_data_drift(generated_data, num_drift_features, drift_types_list,
-    #                           numeric_feature_names, categorical_feature_names)
-    #
-    # def save_generated_dataset(self, dataset, path):
-    #     pass
+
     @property
     def model(self):
         return self._model

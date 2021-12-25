@@ -65,17 +65,18 @@ class TestSMOTENCDatageneration:
         generated_data = data_generation_manager._get_generated_dataset(is_drifted=True)
         return data_generation_manager, generated_data
 
-
+# SMOTE
 test_manager = TestSMOTENCDatageneration()
 data_generation_manager, generated_data = test_manager._test_data_normal_generation()
 print('Succeed generate normal data')
-data_generation_manager, generated_data = test_manager._test_data_drift_generation()
+data_generation_manager_drift, generated_data_drift = test_manager._test_data_drift_generation()
 print('Succeed generate drifted data')
 
-test_manager = TestGANDatageneration()
-data_generation_manager, generated_data = test_manager._test_data_normal_generation()
-print('Succeed generate normal data')
-data_generation_manager, generated_data = test_manager._test_data_drift_generation()
-print('Succeed generate drifted data')
-
+# GAN
+# test_manager = TestGANDatageneration()
+# data_generation_manager, generated_data = test_manager._test_data_normal_generation()
+# print('Succeed generate normal data')
+# data_generation_manager, generated_data = test_manager._test_data_drift_generation()
+# print('Succeed generate drifted data')
+#
 
