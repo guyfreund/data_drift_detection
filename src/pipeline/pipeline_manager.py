@@ -4,7 +4,8 @@ import logging
 
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.datasets.dataset import Dataset
-from src.pipeline.datasets.training_datasets import BankMarketingDataset, GermanCreditDataset
+from src.pipeline.datasets.training_datasets import BankMarketingDataset, GermanCreditDataset, \
+    GermanCreditSampledTrainingDataset, BankMarketingSampledTrainingDataset
 from src.pipeline.evaluation.evaluation_manager import EvaluationManagerInfo, MultipleDatasetEvaluationManager
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_generation.data_generation_manager import MultipleDatasetGenerationManager, \
@@ -151,12 +152,11 @@ def prepare_data_drift_info() -> List[DataDriftDetectionManagerInfo]:
 
 
 def prepare_model_retraining_info() -> List[ModelTrainingManagerInfo]:
-    # TODO: think of weighting
     return [
         ModelTrainingManagerInfo(
             preprocessor=Preprocessor(),
             dataset=Dataset.concatenate(
-                dataset_list=[BankMarketingDataset(), BankMarketingSampledDeploymentDataset()],
+                dataset_list=[BankMarketingSampledTrainingDataset(), BankMarketingSampledDeploymentDataset()],
                 path=BANK_MARKETING_CONCATENATED_DF
             ),
             model=BankMarketingRetrainedProductionModel()
@@ -164,7 +164,7 @@ def prepare_model_retraining_info() -> List[ModelTrainingManagerInfo]:
         ModelTrainingManagerInfo(
             preprocessor=Preprocessor(),
             dataset=Dataset.concatenate(
-                dataset_list=[GermanCreditDataset(), GermanCreditSampledDeploymentDataset()],
+                dataset_list=[GermanCreditSampledTrainingDataset(), GermanCreditSampledDeploymentDataset()],
                 path=GERMAN_CREDIT_CONCATENATED_DF
             ),
             model=GermanCreditRetrainedProductionModel()
@@ -181,7 +181,7 @@ def prepare_evaluation_info():
             training_dataset=BankMarketingDataset(),
             deployment_dataset=BankMarketingDeploymentDataset(),
             retraining_dataset=Dataset.concatenate(
-                dataset_list=[BankMarketingDataset(), BankMarketingSampledDeploymentDataset()],
+                dataset_list=[BankMarketingSampledTrainingDataset(), BankMarketingSampledDeploymentDataset()],
                 path=BANK_MARKETING_CONCATENATED_DF
             )
         ),
@@ -192,7 +192,7 @@ def prepare_evaluation_info():
             training_dataset=GermanCreditDataset(),
             deployment_dataset=GermanCreditDeploymentDataset(),
             retraining_dataset=Dataset.concatenate(
-                dataset_list=[GermanCreditDataset(), GermanCreditSampledDeploymentDataset()],
+                dataset_list=[GermanCreditSampledTrainingDataset(), GermanCreditSampledDeploymentDataset()],
                 path=BANK_MARKETING_CONCATENATED_DF
             )
         )
