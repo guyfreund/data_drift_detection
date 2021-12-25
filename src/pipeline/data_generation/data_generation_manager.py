@@ -41,7 +41,7 @@ class DataGenerationManager(IManager):
         self._label_col = self._origin_dataset.label_column_name
         if info.model_class:
             self._data_generator = GANDataGenerator(dataset=self._origin_dataset,
-                                                    model_class=info.model_class,
+                                                    model_class=info.model_class ,
                                                     trained_model_path=info.model_path,
                                                     processer=info.processor) # TODO add inverse
         else:
