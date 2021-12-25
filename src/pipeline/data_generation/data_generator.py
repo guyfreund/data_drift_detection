@@ -13,6 +13,7 @@ from src.pipeline.data_generation.interfaces.idata_generator import IDataGenerat
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.constants import DataDriftType
+from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
 
 
 class DataGenerator(IDataGenerator):
@@ -23,8 +24,8 @@ class DataGenerator(IDataGenerator):
         self._df = dataset.raw_df
         self._label_col = dataset.label_column_name
         self._dataset_name = dataset.__class__.__name__
-        self._cat_cols = [col for col in self._df.columns if any(cat_col for cat_col in dataset.categorical_feature_names if cat_col + '_' in col)]
-        self._numeric_cols = [col for col in self._df.columns if any(numeric_col for numeric_col in dataset.numeric_feature_names if numeric_col in col)]
+        self._cat_cols = dataset.categorical_feature_names
+        self._numeric_cols = dataset.numeric_feature_names
         self._labels = [0, 1]#self._df[self._label_col].unique() #TODO: for now need to see why we get [1,2]
 
     # TODO: n_samples from config
@@ -125,11 +126,11 @@ class GANDataGenerator(DataGenerator):
     """ this class loads a GAN model trained on the dataset """
 
     def __init__(self, dataset: Dataset, model_class: BaseModel, trained_model_path: str,
-                 inverse_preprocesser: Any = None):
+                 processer: LabelProcessor):
 
         super().__init__(dataset)
         self._synthesizer = model_class.load(trained_model_path)  # for now we use CGAN class only
-        self._inverse_preprocessor = inverse_preprocesser
+        self._processor = processer
 
     # TODO: n_samples from config
     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
@@ -144,7 +145,7 @@ class GANDataGenerator(DataGenerator):
         generated_data_class_false = self._synthesizer.sample(condition=np.array([0]), n_samples=generate_amount_per_class)
         generated_data = pd.concat([generated_data_class_true, generated_data_class_false]).sample(n_samples)
         # To Data Frame
-        generated_data = self._inverse_preprocessor(generated_data) if self._inverse_preprocessor else generated_data
+        generated_data = self._processor.postprocess_data(generated_data)
         # generated_dataset = pd.DataFrame(columns=list(self._df.columns), data=generated_dataset)
         return generated_data
 
@@ -170,18 +171,23 @@ class GANDataGenerator(DataGenerator):
 
 class SMOTENCDataGenerator(DataGenerator):
     """ this class generate synthetic data using SMOTENC method """
-    def __init__(self, dataset: Dataset):
+    def __init__(self, dataset: Dataset, processor: LabelProcessor):
         super().__init__(dataset)
         col_label = self._label_col
+        self._processor = processor
+        processed_df = self._processor.preprocessed_data(self._df)
+        self._df = processed_df
         self.X = self._df.drop(col_label, axis=1)
         self.y = self._df[col_label]
-        cat_cols_idx = [self.X.columns.get_loc(col) for col in self._df.columns if col in self._cat_cols]
+        cat_cols_idx = [self.X.columns.get_loc(col) for col in self._cat_cols]
         self._model = SMOTENC(random_state=42, categorical_features=cat_cols_idx)
 
     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
         synthetic_X, synthetic_y = self._model.fit_resample(self.X, self.y)
         synthetic_X[self._label_col] = synthetic_y
-        return synthetic_X
+        synthetic_df = synthetic_X
+        synthetic_df = self._processor.postprocess_data(synthetic_df)
+        return synthetic_df
 
     # def generate_drifted_samples(self, n_samples: int, drift_types_list: List[DataDriftType]) -> Union[np.ndarray, pd.DataFrame]:
     #     generated_samples = self.generate_normal_samples(n_samples)
