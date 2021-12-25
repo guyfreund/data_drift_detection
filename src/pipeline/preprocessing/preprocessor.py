@@ -116,7 +116,7 @@ class Preprocessor(IPreprocessor):
 
         logging.info(f'Save Data: {paths} files has been saved')
 
-    def split(self, processed_df: pd.DataFrame, label_column_name: str, dataset_class_name: str) -> \
+    def split(self, processed_df: pd.DataFrame, label_column_name: str, dataset_class_name: str = '', dump: bool = True) -> \
             Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         data_y = processed_df[label_column_name]
         data_X = processed_df.drop(label_column_name, axis=1)
@@ -129,7 +129,8 @@ class Preprocessor(IPreprocessor):
         self._y_train = y_train
         self._y_validation = y_validation
         self._y_test = y_test
-        self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)
+        if dump:
+            self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)
 
         logging.info(f"Split Data: processed_df has been splitted by the '{label_column_name}' column")
         logging.info(f"Split Info: train size: {round(len(self._X_train)/len(processed_df), 2)*100}% | "

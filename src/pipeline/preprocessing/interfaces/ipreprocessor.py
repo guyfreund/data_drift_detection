@@ -31,7 +31,7 @@ class IPreprocessor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def split(self, processed_df: pd.DataFrame, label_column_name: str, dataset_class_name: str) -> \
+    def split(self, processed_df: pd.DataFrame, label_column_name: str, dataset_class_name: str = '', dump: bool = True) -> \
             Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """ split the processed dataset into X_train, X_validation, X_test
         saves the sets in self._X_train, self._X_validation, self._X_test
@@ -43,6 +43,7 @@ class IPreprocessor(ABC):
             processed_df (pd.DataFrame): The processed dataframe
             label_column_name (str): The classification label
             dataset_class_name (str): The dataset class name being splitted
+            dump (bool): Whether to dump the split data or not.
 
         Returns:
             Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
