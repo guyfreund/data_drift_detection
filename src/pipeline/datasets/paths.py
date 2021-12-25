@@ -4,7 +4,7 @@ import os
 # ------------------------------ RAW DATA ------------------------------#
 GERMAN_CREDIT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "german_credit", "german.data"))
 GERMAN_CREDIT_NUMERIC_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "german_credit", "german.data-numeric"))
-GERMAN_CREDIT_SAMPLED_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "german_credit", f"sampled_GermanCreditDataset.csv"))
+GERMAN_CREDIT_SAMPLED_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "german_credit", f"sampled_GermanCreditDataset.csv"))
 
 # ------------------------------ DEPLOYMENT (SYNTHESIZED) DATA ------------------------------#
 GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"generated_GermanCreditDataset.csv"))
@@ -30,7 +30,7 @@ BANK_MARKETING_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "bank
 BANK_MARKETING_FULL_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "bank_marketing", "bank-full.csv"))
 BANK_MARKETING_ADDITIONAL_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "bank_marketing", "bank-additional.csv"))
 BANK_MARKETING_ADDITIONAL_FULL_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "bank_marketing", "bank-additional-full.csv"))
-BANK_MARKETING_SAMPLED_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "bank_marketing", f"sampled_BankMarketingDataset.csv"))
+BANK_MARKETING_SAMPLED_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "bank_marketing", f"sampled_BankMarketingDataset.csv"))
 
 # ------------------------------ DEPLOYMENT (SYNTHESIZED) DATA ------------------------------#
 BANK_MARKETING_DEPLOYMENT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"generated_BankMarketingDataset.csv"))

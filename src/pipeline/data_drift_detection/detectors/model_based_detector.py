@@ -30,7 +30,9 @@ class ModelBasedDetector(IDataDriftDetector):
 
         # train and evaluate the model
         X_train, X_validation, X_test, y_train, y_validation, y_test = self._preprocessor.split(
-            processed_df=processed_df, label_column_name=Config().preprocessing.data_drift_model_label_column_name)
+            processed_df=processed_df, label_column_name=Config().preprocessing.data_drift_model_label_column_name,
+            dump=False
+        )
         # TODO: think maybe to use pickle here
         self._model.train(X_train=X_train, y_train=y_train)
         self._model.tune_hyperparameters(X_validation=X_validation, y_validation=y_validation)

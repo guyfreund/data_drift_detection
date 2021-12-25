@@ -32,7 +32,11 @@ class ModelTrainingManager(IManager):
     def manage(self) -> Tuple[ModelTrainingManagerInfo, List[IFeatureMetrics], Dict[ModelMetricType, IModelMetric]]:
         assert self._info.to_train is True
         processed_dataset, processed_dataset_plus, feature_metrics_list = self._info.preprocessor.preprocess(self._info.training_dataset)
-        X_train, X_validation, X_test, y_train, y_validation, y_test = self._info.preprocessor.split(processed_dataset, self._info.training_dataset.label_column_name)
+        X_train, X_validation, X_test, y_train, y_validation, y_test = self._info.preprocessor.split(
+            processed_df=processed_dataset,
+            label_column_name=self._info.training_dataset.label_column_name,
+            dataset_class_name=self._info.training_dataset.__class__.__name__
+        )
 
         self._info.model.train(X_train, y_train)
         self._info.model.tune_hyperparameters(X_validation, y_validation)
