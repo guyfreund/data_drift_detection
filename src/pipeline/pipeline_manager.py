@@ -5,6 +5,7 @@ import logging
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.training_datasets import BankMarketingDataset, GermanCreditDataset
+from src.pipeline.evaluation.evaluation_manager import EvaluationManagerInfo, MultipleDatasetEvaluationManager
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_generation.data_generation_manager import MultipleDatasetGenerationManager, \
     DataGenerationManagerInfo
@@ -21,7 +22,8 @@ from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
     BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
 from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDataset, \
     BankMarketingDeploymentDatasetPlus, GermanCreditDeploymentDataset, GermanCreditDeploymentDatasetPlus
-from src.pipeline.model.production_models import BankMarketingProductionModel, GermanCreditProductionModel
+from src.pipeline.model.production_models import BankMarketingProductionModel, GermanCreditProductionModel, \
+    BankMarketingRetrainedProductionModel, GermanCreditRetrainedProductionModel
 from src.pipeline.preprocessing.preprocessor import Preprocessor
 from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.constants import DataDriftType
@@ -31,13 +33,15 @@ from src.pipeline.model.paths import BANK_MARKETING_GEN_CGAN_MODEL_PATH, GERMAN_
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo],
                  training_info_list: List[ModelTrainingManagerInfo], retraining_info_list: List[ModelTrainingManagerInfo],
-                 data_generation_info_list: List[DataGenerationManagerInfo]):
+                 data_generation_info_list: List[DataGenerationManagerInfo], evaluation_info_list: List[EvaluationManagerInfo]):
         self._mode = pipeline_mode
         self._data_generation_manager = MultipleDatasetGenerationManager(info_list=data_generation_info_list)
         self._data_drift_detection_manager = MultipleDatasetDataDriftDetectionManager(info_list=data_drift_info_list)
         self._model_training_manager = MultipleDatasetModelTrainingManager(info_list=training_info_list)
         self._retraining_info_list: List[ModelTrainingManagerInfo] = retraining_info_list
         self._model_retraining_manager = MultipleDatasetModelTrainingManager(info_list=self._retraining_info_list)
+        self._evaluation_info_list = evaluation_info_list
+        self._evaluation_manager = MultipleDatasetEvaluationManager()
         self._data_drifts: List[DataDrift] = []
         self._detected_data_drifts: List[DataDrift] = []
 
@@ -56,11 +60,13 @@ class PipelineManager(IManager):
             # training only if a data drift was detected
             for idx, data_drift in enumerate(self._detected_data_drifts):
                 self._retraining_info_list[idx].to_train = data_drift.is_drifted
-            self._model_retraining_manager.info_list = self._retraining_info_list  # no need, but more readable
+                self._evaluation_info_list[idx].to_evaluate = data_drift.is_drifted
 
             # retraining all models that a data drift has detected for their corresponding deployment dataset
             self._model_retraining_manager.manage()
-            # TODO: evaluate
+
+            # evaluation
+            self._evaluation_manager.manage()
 
         else:
             # pipeline running mode is not supported
@@ -152,7 +158,7 @@ def prepare_model_retraining_info() -> List[ModelTrainingManagerInfo]:
                 dataset_list=[BankMarketingDataset(), BankMarketingDeploymentDataset()],
                 path=BANK_MARKETING_CONCATENATED_DF
             ),
-            model=BankMarketingProductionModel()
+            model=BankMarketingRetrainedProductionModel()
         ),
         ModelTrainingManagerInfo(
             preprocessor=Preprocessor(),
@@ -160,7 +166,35 @@ def prepare_model_retraining_info() -> List[ModelTrainingManagerInfo]:
                 dataset_list=[GermanCreditDataset(), GermanCreditDeploymentDataset()],
                 path=GERMAN_CREDIT_CONCATENATED_DF
             ),
-            model=GermanCreditProductionModel()
+            model=GermanCreditRetrainedProductionModel()
+        )
+    ]
+
+
+def prepare_evaluation_info():
+    # TODO: think of weighting
+    return [
+        EvaluationManagerInfo(
+            production_model=BankMarketingProductionModel(),
+            retrained_production_model=BankMarketingRetrainedProductionModel(),
+            preprocessor=Preprocessor(),
+            training_dataset=BankMarketingDataset(),
+            deployment_dataset=BankMarketingDeploymentDataset(),
+            retraining_dataset=Dataset.concatenate(
+                dataset_list=[BankMarketingDataset(), BankMarketingDeploymentDataset()],
+                path=BANK_MARKETING_CONCATENATED_DF
+            )
+        ),
+        EvaluationManagerInfo(
+            production_model=GermanCreditProductionModel(),
+            retrained_production_model=GermanCreditRetrainedProductionModel(),
+            preprocessor=Preprocessor(),
+            training_dataset=GermanCreditDataset(),
+            deployment_dataset=GermanCreditDeploymentDataset(),
+            retraining_dataset=Dataset.concatenate(
+                dataset_list=[GermanCreditDataset(), GermanCreditDeploymentDataset()],
+                path=BANK_MARKETING_CONCATENATED_DF
+            )
         )
     ]
 
@@ -172,7 +206,8 @@ def run_pipeline_manager():
         training_info_list=prepare_model_training_info(),
         data_generation_info_list=prepare_data_generation_info(),
         data_drift_info_list=prepare_data_drift_info(),
-        retraining_info_list=prepare_model_retraining_info()
+        retraining_info_list=prepare_model_retraining_info(),
+        evaluation_info_list=prepare_evaluation_info()
     )
     pipeline_manager.manage()
 
