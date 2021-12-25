@@ -52,7 +52,9 @@ retraining:
 
 data_generation:
   generation_percent: 200  # means to generate a dataset of double size
-  generate_model_class: CGAN # model class we load
+  gan_generate_model_class: CGAN # model class we load
+  use_gan: False # if we use gan fam as generation model
+  use_smote: True # if we use Smote fam as generation model
 
 preprocessing:
   data_drift_model_label_column_name: 'datasetType'

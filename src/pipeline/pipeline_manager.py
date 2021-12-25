@@ -100,7 +100,9 @@ def prepare_model_training_info() -> List[ModelTrainingManagerInfo]:
 
 
 def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
-    gen_model_class = Config().data_generation.generate_model_class
+    use_gan: bool = Config().data_generation.use_gan
+    use_smote: bool = Config().data_generation.use_smote
+    assert use_gan != use_smote
     bank_marketing_dataset = BankMarketingDataset()
     german_credit_dataset = GermanCreditDataset()
     return [
@@ -108,7 +110,7 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
             origin_dataset=bank_marketing_dataset,
             model_class=Config().data_generation.generate_model_class,  # for GAN
             sample_size_to_generate=Config().data_generation.generation_percent,
-            model_path=BANK_MARKETING_GEN_CGAN_MODEL_PATH if gen_model_class else None,
+            model_path=BANK_MARKETING_GEN_CGAN_MODEL_PATH if use_gan else None,
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH,
             save_data_plus_path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH,
@@ -118,7 +120,7 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
             origin_dataset=german_credit_dataset,
             model_class=Config().data_generation.generate_model_class,
             sample_size_to_generate=Config().data_generation.generation_percent,
-            model_path=GERMAN_CREDIT_GEN_CGAN_MODEL_PATH if gen_model_class else None, # for GAN
+            model_path=GERMAN_CREDIT_GEN_CGAN_MODEL_PATH if use_gan else None, # for GAN
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,
             save_data_plus_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH,
