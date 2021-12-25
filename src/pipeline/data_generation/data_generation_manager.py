@@ -10,35 +10,43 @@ from src.pipeline.config import Config
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.data_drift_detection.constants import DataDriftType
-from src.pipeline.data_generation.data_generator import GANDataGenerator
+from src.pipeline.data_generation.data_generator import GANDataGenerator, SMOTENCDataGenerator
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.constants import DatasetType
-
+from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
 
 class DataGenerationManagerInfo:
 
-    def __init__(self, origin_dataset: Dataset, model_class: Union[BaseModel, str],
-                 sample_size_to_generate: int, model_path: str,
+    def __init__(self, origin_dataset: Dataset,
+                 sample_size_to_generate: int,
                  data_drift_types: List[DataDriftType],
-                 save_data_path: str, save_data_plus_path: str):
+                 save_data_path: str, save_data_plus_path: str,
+                 processor: LabelProcessor,
+                 model_class: Union[BaseModel, str] = None,
+                 model_path: str = None):
         self.origin_dataset: Dataset = origin_dataset
         # self.dataset_name = type(origin_dataset.__name__)
-        self.model_class: BaseModel = model_class
+        self.model_class: str = model_class
         self.model_path: str = model_path
         self.sample_size_to_generate: int = sample_size_to_generate
         self.data_drift_types: List[DataDriftType] = data_drift_types
         self.save_data_path: str = save_data_path
         self.save_data_plus_path: str = save_data_plus_path
+        self.processor: LabelProcessor = processor
 
 
 class DataGenerationManager(IManager):
     def __init__(self, info: DataGenerationManagerInfo):
         self._origin_dataset = info.origin_dataset
         self._label_col = self._origin_dataset.label_column_name
-        self._data_generator = GANDataGenerator(dataset=self._origin_dataset,
-                                                model_class=info.model_class,
-                                                trained_model_path=info.model_path,
-                                                inverse_preprocesser=None) # TODO add inverse
+        if info.model_class:
+            self._data_generator = GANDataGenerator(dataset=self._origin_dataset,
+                                                    model_class=info.model_class,
+                                                    trained_model_path=info.model_path,
+                                                    processer=info.processor) # TODO add inverse
+        else:
+            self._data_generator = SMOTENCDataGenerator(dataset=self._origin_dataset,
+                                                        processor=info.processor)
         self._sample_size_to_generate = info.sample_size_to_generate
         self._data_drift_types = info.data_drift_types
         self._save_data_path = info.save_data_path
@@ -54,7 +62,6 @@ class DataGenerationManager(IManager):
 
     def _save_data_as_pickle(self, generated_dataset):
         dataset_class_name = self._origin_dataset.__class__.__name__
-
 
         generated_dataset_plus = generated_dataset.copy()
         generated_dataset_plus[Config().preprocessing.data_drift_model_label_column_name] = DatasetType.Deployment
