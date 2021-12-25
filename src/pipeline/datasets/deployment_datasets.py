@@ -81,6 +81,9 @@ class BankMarketingSampledDeploymentDataset(SampledDataset):
             label_column_name=Config().preprocessing.bank_marketing.original_label_column_name
         )
 
+    def load(self) -> pd.DataFrame:
+        return pd.read_csv(self._path, delimiter=';')
+
 
 class GermanCreditSampledDeploymentDataset(SampledDataset):
     def __init__(self):
@@ -91,3 +94,6 @@ class GermanCreditSampledDeploymentDataset(SampledDataset):
             categorical_feature_names=Config().preprocessing.german_credit.categorical_features,
             label_column_name=Config().preprocessing.german_credit.original_label_column_name
         )
+
+    def load(self) -> pd.DataFrame:
+        return pd.read_csv(self._path, names=Config().preprocessing.german_credit.names, delimiter=' ')
