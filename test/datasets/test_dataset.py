@@ -22,5 +22,5 @@ def test_data_set_concatenation():
         dataset.categorical_feature_names == bank_marketing_dataset.categorical_feature_names,
         dataset.label_column_name == bank_marketing_dataset.label_column_name,
         np.all(dataset.load().to_numpy() == dataset.raw_df.to_numpy()),
-        dataset.dtype == DatasetType.NewTraining
+        dataset.dtype == DatasetType.Retraining
     ]) is True

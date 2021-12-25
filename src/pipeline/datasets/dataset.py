@@ -4,6 +4,7 @@ from typing import List, Set, Optional
 import pandas as pd
 import os
 
+from src.pipeline.config import Config
 from src.pipeline.datasets.constants import DatasetType
 
 
@@ -110,7 +111,7 @@ class Dataset:
             pickle.dump(raw_df, output)
 
         return cls(
-            dtype=DatasetType.NewTraining,
+            dtype=DatasetType.Retraining,
             path=path,
             label_column_name=dataset_labels.pop(),
             categorical_feature_names=list(categorical_feature_names),
@@ -131,3 +132,29 @@ class Dataset:
             return self._raw_df
 
         raise NotImplementedError
+
+
+class SampledDataset(Dataset):
+    def __init__(self, original_dataset: Dataset, path: str, numeric_feature_names: List[str],
+                 categorical_feature_names: List[str], label_column_name: str):
+
+        self.original_dataset: Dataset = original_dataset
+        # sample dataframe
+        raw_df: pd.DataFrame = \
+            self.original_dataset.raw_df.sample(frac=Config().retraining.sample_size_in_percent, replace=False)
+
+        with open(path, 'wb') as output:
+            pickle.dump(raw_df, output)
+
+        super().__init__(
+            dtype=DatasetType.DeploymentSampled,
+            path=path,
+            label_column_name=label_column_name,
+            categorical_feature_names=categorical_feature_names,
+            numeric_feature_names=numeric_feature_names,
+            raw_df=raw_df,
+            to_load=False
+        )
+
+    def load(self) -> pd.DataFrame:
+        return super().load()
