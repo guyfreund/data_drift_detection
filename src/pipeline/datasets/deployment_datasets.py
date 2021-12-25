@@ -74,11 +74,13 @@ class GermanCreditDeploymentDatasetPlus(Dataset):
 class BankMarketingSampledDeploymentDataset(SampledDataset):
     def __init__(self):
         super().__init__(
+            dtype=DatasetType.DeploymentSampled,
             original_dataset=BankMarketingDeploymentDataset(),
             path=BANK_MARKETING_SAMPLED_DEPLOYMENT_DATASET,
             numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features,
             categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
-            label_column_name=Config().preprocessing.bank_marketing.original_label_column_name
+            label_column_name=Config().preprocessing.bank_marketing.original_label_column_name,
+            sample_size_in_percent=Config().retraining.deployment_sample_size_in_percent
         )
 
     def load(self) -> pd.DataFrame:
@@ -88,11 +90,13 @@ class BankMarketingSampledDeploymentDataset(SampledDataset):
 class GermanCreditSampledDeploymentDataset(SampledDataset):
     def __init__(self):
         super().__init__(
+            dtype=DatasetType.DeploymentSampled,
             original_dataset=GermanCreditDeploymentDataset(),
             path=GERMAN_CREDIT_SAMPLED_DEPLOYMENT_DATASET,
             numeric_feature_names=Config().preprocessing.german_credit.numeric_features,
             categorical_feature_names=Config().preprocessing.german_credit.categorical_features,
-            label_column_name=Config().preprocessing.german_credit.original_label_column_name
+            label_column_name=Config().preprocessing.german_credit.original_label_column_name,
+            sample_size_in_percent=Config().retraining.deployment_sample_size_in_percent
         )
 
     def load(self) -> pd.DataFrame:

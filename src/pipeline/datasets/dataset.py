@@ -136,18 +136,19 @@ class Dataset:
 
 class SampledDataset(Dataset):
     def __init__(self, original_dataset: Dataset, path: str, numeric_feature_names: List[str],
-                 categorical_feature_names: List[str], label_column_name: str):
+                 categorical_feature_names: List[str], label_column_name: str, dtype: DatasetType,
+                 sample_size_in_percent: float):
 
         self.original_dataset: Dataset = original_dataset
         # sample dataframe
         raw_df: pd.DataFrame = \
-            self.original_dataset.raw_df.sample(frac=Config().retraining.sample_size_in_percent, replace=False)
+            self.original_dataset.raw_df.sample(frac=sample_size_in_percent, replace=False)
 
         with open(path, 'wb') as output:
             pickle.dump(raw_df, output)
 
         super().__init__(
-            dtype=DatasetType.DeploymentSampled,
+            dtype=dtype,
             path=path,
             label_column_name=label_column_name,
             categorical_feature_names=categorical_feature_names,
