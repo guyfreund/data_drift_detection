@@ -36,7 +36,6 @@ class DataGenerationManager(IManager):
         self._origin_dataset = info.origin_dataset
         self._label_col = self._origin_dataset.label_column_name
         self._data_generator = GANDataGenerator(dataset=self._origin_dataset,
-                                                label_col=self._label_col,
                                                 model_class=info.model_class,
                                                 trained_model_path=info.model_path,
                                                 inverse_preprocesser=None) # TODO add inverse
