@@ -43,7 +43,7 @@ class PipelineManager(IManager):
         self._retraining_info_list: List[ModelTrainingManagerInfo] = retraining_info_list
         self._model_retraining_manager = MultipleDatasetModelTrainingManager(info_list=self._retraining_info_list)
         self._evaluation_info_list = evaluation_info_list
-        self._evaluation_manager = MultipleDatasetEvaluationManager()
+        self._evaluation_manager = MultipleDatasetEvaluationManager(info_list=self._evaluation_info_list)
         self._data_drifts: List[DataDrift] = []
         self._detected_data_drifts: List[DataDrift] = []
 
@@ -172,6 +172,7 @@ def prepare_model_retraining_info() -> List[ModelTrainingManagerInfo]:
     ]
 
 
+# TODO: data leakage
 def prepare_evaluation_info():
     return [
         EvaluationManagerInfo(
