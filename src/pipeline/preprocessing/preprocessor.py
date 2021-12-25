@@ -93,7 +93,31 @@ class Preprocessor(IPreprocessor):
         logging.info(f'Save Data: {dataset_class_name}.pickle, {dataset_class_name}Plus.pickle, '
                      f'{dataset_class_name}_FeatureMetricsList.pickle files has been saved')
 
-    def split(self, processed_df: pd.DataFrame, label_column_name: str) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    def _save_split_data_as_pickle(self, dataset_class_name: str):
+        paths = [
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_X_train.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_X_validation.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_X_test.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_train.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_validation.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_test.pickle"))
+        ]
+        dataframes = [
+            self._X_train,
+            self._X_validation,
+            self._X_test,
+            self._y_train,
+            self._y_validation,
+            self._y_test
+        ]
+        for path, dataframe in zip(paths, dataframes):
+            with open(path, 'wb') as output:
+                pickle.dump(dataframe, output)
+
+        logging.info(f'Save Data: {paths} files has been saved')
+
+    def split(self, processed_df: pd.DataFrame, label_column_name: str, dataset_class_name: str) -> \
+            Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         data_y = processed_df[label_column_name]
         data_X = processed_df.drop(label_column_name, axis=1)
         X_train, X_test, y_train, y_test = train_test_split(data_X, data_y, test_size=Config().preprocessing.split.train_test_split_size)
@@ -105,6 +129,7 @@ class Preprocessor(IPreprocessor):
         self._y_train = y_train
         self._y_validation = y_validation
         self._y_test = y_test
+        self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)
 
         logging.info(f"Split Data: processed_df has been splitted by the '{label_column_name}' column")
         logging.info(f"Split Info: train size: {round(len(self._X_train)/len(processed_df), 2)*100}% | "
