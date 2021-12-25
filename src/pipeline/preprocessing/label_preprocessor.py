@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from src.pipeline.datasets.dataset import Dataset
 
+
 class LabelProcessor:
 
     def __init__(self, dataset: Dataset, save_encoder_path: str):

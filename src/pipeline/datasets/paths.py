@@ -10,6 +10,8 @@ GERMAN_CREDIT_SAMPLED_DATASET_PATH = os.path.abspath(os.path.join(__file__, ".."
 GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"generated_GermanCreditDataset.csv"))
 GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"generated_GermanCreditDataset_plus.csv"))
 GERMAN_CREDIT_SAMPLED_DEPLOYMENT_DATASET = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"generated_sampled_GermanCreditDataset.csv"))
+
+# Backup
 SMOTENC_GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"smotenc_generated_GermanCreditDataset.csv"))
 SMOTENC_GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"smotenc_generated_GermanCreditDataset_plus.csv"))
 SMOTENC_GERMAN_CREDIT_SAMPLED_DEPLOYMENT_DATASET = os.path.abspath(os.path.join(__file__, "..", "..", "data_generation", "raw_files", f"smotenc_generated_sampled_GermanCreditDataset.csv"))
