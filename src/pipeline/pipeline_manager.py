@@ -33,6 +33,7 @@ from src.pipeline.model.paths import BANK_MARKETING_GEN_CGAN_MODEL_PATH, GERMAN_
 from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
 from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH, GERMAN_CREDIT_LABEL_ENCODER_PATH
 
+
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo],
                  training_info_list: List[ModelTrainingManagerInfo], retraining_info_list: List[ModelTrainingManagerInfo],
@@ -108,7 +109,7 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
     return [
         DataGenerationManagerInfo(
             origin_dataset=bank_marketing_dataset,
-            model_class=Config().data_generation.generate_model_class,  # for GAN
+            model_class=Config().data_generation.gan_generate_model_class if use_gan else None,  # for GAN
             sample_size_to_generate=Config().data_generation.generation_percent,
             model_path=BANK_MARKETING_GEN_CGAN_MODEL_PATH if use_gan else None,
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
@@ -118,7 +119,7 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
         ),  # Bank Marketing
         DataGenerationManagerInfo(
             origin_dataset=german_credit_dataset,
-            model_class=Config().data_generation.generate_model_class,
+            model_class=Config().data_generation.gan_generate_model_class if use_gan else None,
             sample_size_to_generate=Config().data_generation.generation_percent,
             model_path=GERMAN_CREDIT_GEN_CGAN_MODEL_PATH if use_gan else None, # for GAN
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
