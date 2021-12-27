@@ -133,12 +133,12 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
 
 
 def prepare_data_drift_info() -> List[DataDriftDetectionManagerInfo]:
-    assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH)
-    assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH)
-    assert os.path.exists(GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH)
-    assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PATH)
-    assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH)
-    assert os.path.exists(BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH)
+    # assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH)
+    # assert os.path.exists(GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH)
+    # assert os.path.exists(GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH)
+    # assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PATH)
+    # assert os.path.exists(BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH)
+    # assert os.path.exists(BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH)
 
     return [
         DataDriftDetectionManagerInfo(

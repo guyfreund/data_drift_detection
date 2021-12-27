@@ -38,7 +38,6 @@ class EvaluationManager(IManager):
     def manage(self):
         # detect degradation of original production model, training dataset vs deployment dataset
         self._info.production_model.load(self._info.production_model.__class__.__name__)
-
         X_test_training = pd.read_pickle(self._info.training_X_test_path)
         y_test_training = pd.read_pickle(self._info.training_y_test_path)
         training_production_model_metrics_dict: Dict[ModelMetricType, IModelMetric] = \
