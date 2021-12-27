@@ -5,8 +5,7 @@ import logging
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.training_datasets import BankMarketingDataset, GermanCreditDataset, \
-    GermanCreditSampledTrainingDataset, BankMarketingSampledTrainingDataset, BankMarketingSampledTrainingTrainDataset, \
-    GermanCreditSampledTrainingTrainDataset
+    BankMarketingSampledTrainingTrainDataset, GermanCreditSampledTrainingTrainDataset
 from src.pipeline.evaluation.evaluation_manager import EvaluationManagerInfo, MultipleDatasetEvaluationManager
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_generation.data_generation_manager import MultipleDatasetGenerationManager, \
