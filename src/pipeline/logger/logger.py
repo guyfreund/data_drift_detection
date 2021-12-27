@@ -46,9 +46,10 @@ class LoggerHandler:
     def handler(self, value):
         self._handler = value
 
+
 class Logger:
 
-    def __init__(self, logger_name: str, set_level_all:bool = False):
+    def __init__(self, logger_name: str):
         self._logger = logging.getLogger(logger_name)
 
         self._logger.addHandler(LoggerHandler(LoggerType.CONSOLE,
