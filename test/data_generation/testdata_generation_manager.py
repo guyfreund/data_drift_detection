@@ -15,6 +15,7 @@ from src.pipeline.data_generation.data_generation_manager import MultipleDataset
 # class _TestDatagenerationManager:
 
 def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
+
     use_gan: bool = Config().data_generation.use_gan
     use_smote: bool = Config().data_generation.use_smote
     assert use_gan != use_smote
