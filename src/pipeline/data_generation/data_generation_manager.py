@@ -1,11 +1,9 @@
-import logging
 import os
 import pickle
 from typing import List, Union
 import pandas as pd
 import numpy as np
 from ydata_synthetic.synthesizers.gan import BaseModel
-
 from src.pipeline.config import Config
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_drift_detection.data_drift import DataDrift
@@ -14,6 +12,9 @@ from src.pipeline.data_generation.data_generator import GANDataGenerator, SMOTEN
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
+from src.pipeline import logger
+
+logging = logger.get_logger(__name__)
 
 class DataGenerationManagerInfo:
 

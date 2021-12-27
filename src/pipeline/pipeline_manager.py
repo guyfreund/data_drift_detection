@@ -1,7 +1,6 @@
 import os
 from typing import List
-import logging
-
+import logger
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.training_datasets import BankMarketingDataset, GermanCreditDataset, \
@@ -35,6 +34,7 @@ from src.pipeline.model.paths import BANK_MARKETING_GEN_CGAN_MODEL_PATH, GERMAN_
 from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
 from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH, GERMAN_CREDIT_LABEL_ENCODER_PATH
 
+logging = logger.get_logger(__name__)
 
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo],
@@ -232,6 +232,8 @@ def run_pipeline_manager():
 
 
 if __name__ == '__main__':
+    logging.info("Start running pipline")
     run_pipeline_manager()
-    logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
-    logging.warning('This will get logged to a file')
+    logging.info("DONE!")
+    # logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    # logging.warning('This will get logged to a file')
