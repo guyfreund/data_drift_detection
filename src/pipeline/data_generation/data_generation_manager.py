@@ -56,7 +56,7 @@ class DataGenerationManager(IManager):
     def manage(self) -> DataDrift:
         is_drifted = np.random.choice([False, True])
         generated_data = self._get_generated_dataset(is_drifted)
-        logging.info(f'Finished generating data. (is_drifted={is_drifted}).')
+        logging.info(f'Finished generating data. {self._origin_dataset.__class__.__name__} (is_drifted={is_drifted}).')
         self._save_data_as_pickle(generated_data)
         logging.info('Done saving generated data.')
         return DataDrift(is_drifted=is_drifted)

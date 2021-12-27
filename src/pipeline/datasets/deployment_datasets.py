@@ -21,7 +21,7 @@ class BankMarketingDeploymentDataset(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, delimiter=';')
+        return pd.read_csv(self._path)
 
 
 class BankMarketingDeploymentDatasetPlus(Dataset):
@@ -37,7 +37,7 @@ class BankMarketingDeploymentDatasetPlus(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, delimiter=';')
+        return pd.read_csv(self._path)
 
 
 class GermanCreditDeploymentDataset(Dataset):
@@ -52,7 +52,7 @@ class GermanCreditDeploymentDataset(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, names=Config().preprocessing.german_credit.names, delimiter=' ')
+        return pd.read_csv(self._path)
 
 
 class GermanCreditDeploymentDatasetPlus(Dataset):
@@ -68,7 +68,7 @@ class GermanCreditDeploymentDatasetPlus(Dataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, names=Config().preprocessing.german_credit.names, delimiter=' ')
+        return pd.read_csv(self._path)
 
 
 class BankMarketingSampledDeploymentDataset(SampledDataset):
@@ -84,7 +84,7 @@ class BankMarketingSampledDeploymentDataset(SampledDataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, delimiter=';')
+        return pd.read_csv(self._path)
 
 
 class GermanCreditSampledDeploymentDataset(SampledDataset):
@@ -100,4 +100,4 @@ class GermanCreditSampledDeploymentDataset(SampledDataset):
         )
 
     def load(self) -> pd.DataFrame:
-        return pd.read_csv(self._path, names=Config().preprocessing.german_credit.names, delimiter=' ')
+        return pd.read_csv(self._path)
