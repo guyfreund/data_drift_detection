@@ -14,7 +14,9 @@ from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.config import Config
 from src.pipeline.data_drift_detection.constants import DataDriftType
 from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
+from src.pipeline import logger
 
+logging = logger.get_logger(__name__)
 
 class DataGenerator(IDataGenerator):
     """ this class loads a GAN model trained on the dataset """
@@ -161,7 +163,8 @@ class SMOTENCDataGenerator(DataGenerator):
         self.X = self._df.drop(col_label, axis=1)
         self.y = self._df[col_label]
         cat_cols_idx = [self.X.columns.get_loc(col) for col in self._cat_cols]
-        self._model = SMOTENC(random_state=42, categorical_features=cat_cols_idx)
+        sampling_strategy = self._df[col_label].value_counts().to_dict()
+        self._model = SMOTENC(random_state=42, categorical_features=cat_cols_idx, sampling_strategy=sampling_strategy)
 
     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
         synthetic_X, synthetic_y = self._model.fit_resample(self.X, self.y)

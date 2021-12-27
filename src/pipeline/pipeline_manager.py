@@ -61,10 +61,11 @@ class PipelineManager(IManager):
         elif self._mode == PipelineMode.Monitoring:
             # generating deployment datasets
             self._data_drifts = self._data_generation_manager.manage()
-            logging.debug("Data Generation Pipline done manage")
+            logging.info(f"Data Generation Pipline done manage.")
 
             # detecting data drifts in each of the deployment datasets
             self._detected_data_drifts = self._data_drift_detection_manager.manage()
+            logging.info(f"Data Drift Detection Pipline done manage.")
 
             # training only if a data drift was detected
             for idx, data_drift in enumerate(self._detected_data_drifts):
