@@ -5,15 +5,15 @@ import pandas as pd
 from collections import defaultdict
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
-import logging
-
 from src.pipeline.config import Config
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.preprocessing.feature_metrics.feature_metrics_categorical import CategoricalFeatureMetrics
 from src.pipeline.preprocessing.feature_metrics.feature_metrics_numeric import NumericFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
+from src.pipeline import logger
 
+logging = logger.get_logger(__name__)
 
 class Preprocessor(IPreprocessor):
 
@@ -130,6 +130,7 @@ class Preprocessor(IPreprocessor):
         self._y_train = y_train
         self._y_validation = y_validation
         self._y_test = y_test
+
         if dump:
             self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)
 

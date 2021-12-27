@@ -11,7 +11,9 @@ from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.config import Config
 from src.pipeline.model.constants import ModelMetricType
+from src.pipeline import logger
 
+logging = logger.get_logger(__name__)
 
 class ModelBasedDetector(IDataDriftDetector):
     def __init__(self, deployment_dataset_plus: Dataset, training_processed_df_plus_path: str, preprocessor: IPreprocessor, model: IModel):
@@ -41,5 +43,5 @@ class ModelBasedDetector(IDataDriftDetector):
         # data drift is detected if model accuracy is not like a coin-flip
         model_accuracy: float = model_metrics_dict[ModelMetricType.Accuracy].value
         is_accuracy_like_coin_flip = np.abs(model_accuracy - 0.5) < Config().data_drift.internal_data_drift_detector.model_based_threshold  # TODO: change to np.isclose
-
+        logging.info(f"Model based data drift detector: is_drifted={not is_accuracy_like_coin_flip}")
         return ModelBasedDataDrift(is_drifted=not is_accuracy_like_coin_flip)

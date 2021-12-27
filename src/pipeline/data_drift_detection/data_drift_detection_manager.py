@@ -14,6 +14,9 @@ from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.model.interfaces.imodel import IModel
+from src.pipeline import logger
+
+logging = logger.get_logger(__name__)
 
 
 class DataDriftDetectionManagerInfo:
@@ -68,6 +71,10 @@ class DataDriftDetectionManager(IManager):
             ])
         ) >= Config().data_drift.threshold
 
+        logging.info(f"Internal data drift: is_drifted={self._internal_data_drift}")
+        # logging.info(f"Tensorflow data drift: is_drifted={self._tensorflow_data_drift}")
+        # logging.info(f"Scikit multiflow data drift: is_drifted={self._scikit_multiflow_data_drift}")
+
         return DataDrift(is_drifted=is_drifted)
 
 
@@ -77,4 +84,5 @@ class MultipleDatasetDataDriftDetectionManager(IManager):
 
     def manage(self) -> List[DataDrift]:
         data_drifts: List[DataDrift] = [manager.manage() for manager in self.data_drift_detection_managers]
+        logging.info(f"Managers data drift detections: {[data_drift.is_drifted for data_drift in data_drifts]}")
         return data_drifts

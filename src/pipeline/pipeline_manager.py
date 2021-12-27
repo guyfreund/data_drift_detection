@@ -1,7 +1,6 @@
 import os
 from typing import List
-import logging
-
+import logger
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.training_datasets import BankMarketingDataset, GermanCreditDataset, \
@@ -36,6 +35,7 @@ from src.pipeline.model.paths import BANK_MARKETING_GEN_CGAN_MODEL_PATH, GERMAN_
 from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
 from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH, GERMAN_CREDIT_LABEL_ENCODER_PATH
 
+logging = logger.get_logger(__name__)
 
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo],
@@ -56,10 +56,12 @@ class PipelineManager(IManager):
         if self._mode == PipelineMode.Training:
             # training all models
             self._model_training_manager.manage()
+            logging.debug("Training Pipline done manage")
 
         elif self._mode == PipelineMode.Monitoring:
             # generating deployment datasets
             self._data_drifts = self._data_generation_manager.manage()
+            logging.debug("Data Generation Pipline done manage")
 
             # detecting data drifts in each of the deployment datasets
             self._detected_data_drifts = self._data_drift_detection_manager.manage()
@@ -71,9 +73,11 @@ class PipelineManager(IManager):
 
             # retraining all models that a data drift has detected for their corresponding deployment dataset
             self._model_retraining_manager.manage()
+            logging.debug("Model Retraining done manage")
 
             # evaluation
             self._evaluation_manager.manage()
+            logging.debug("Model Evaluation done manage")
 
         else:
             # pipeline running mode is not supported
@@ -220,6 +224,7 @@ def run_pipeline_manager():
         retraining_info_list=prepare_model_retraining_info(),
         evaluation_info_list=prepare_evaluation_info()
     )
+    logging.debug("pipline manager start to manage")
     pipeline_manager.manage()
 
     # monitoring
@@ -229,6 +234,8 @@ def run_pipeline_manager():
 
 
 if __name__ == '__main__':
+    logging.info("Start running pipline")
     run_pipeline_manager()
-    logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
-    logging.warning('This will get logged to a file')
+    logging.info("DONE!")
+    # logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    # logging.warning('This will get logged to a file')
