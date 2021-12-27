@@ -9,7 +9,6 @@ FORMATTER = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 
 
 class LoggerType(Enum):
-
     CONSOLE = 1
     FILE = 2
 
