@@ -14,11 +14,13 @@ class Dataset:
     """
 
     def __init__(self, dtype: DatasetType, path: str, label_column_name: str, categorical_feature_names: List[str],
-                 numeric_feature_names: List[str], to_load: bool = True, raw_df: Optional[pd.DataFrame] = None):
+                 numeric_feature_names: List[str], to_load: bool = True, raw_df: Optional[pd.DataFrame] = None,
+                 name: str = ''):
         assert os.path.exists(path)
         self._path = path
         self._to_load = to_load
         self._raw_df = raw_df
+        self._name = self.__class__.__name__ if not name else name
         if self._to_load:
             self._raw_df = self.load()
             print('loading dataset')
@@ -27,6 +29,10 @@ class Dataset:
         self._label_column_name = label_column_name
         self._categorical_feature_names = categorical_feature_names
         self._numeric_feature_names = numeric_feature_names
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     @property
     def num_features(self) -> int:
@@ -113,6 +119,7 @@ class Dataset:
         return cls(
             dtype=DatasetType.Retraining,
             path=path,
+            name='_'.join(dataset.name for dataset in dataset_list),
             label_column_name=dataset_labels.pop(),
             categorical_feature_names=list(categorical_feature_names),
             numeric_feature_names=list(numeric_feature_names),

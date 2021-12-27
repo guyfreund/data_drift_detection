@@ -53,7 +53,7 @@ class Preprocessor(IPreprocessor):
         self._processed_df_plus = self._processed_df.copy()
         self._processed_df_plus[Config().preprocessing.data_drift_model_label_column_name] = dataset.dtype.value
 
-        self._save_data_as_pickle(dataset.__class__.__name__)
+        self._save_data_as_pickle(dataset.name)
 
         return self._processed_df, self._processed_df_plus, self._feature_metrics_list
 
@@ -110,6 +110,7 @@ class Preprocessor(IPreprocessor):
             self._y_validation,
             self._y_test
         ]
+
         for path, dataframe in zip(paths, dataframes):
             with open(path, 'wb') as output:
                 pickle.dump(dataframe, output)

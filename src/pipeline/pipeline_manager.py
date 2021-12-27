@@ -20,7 +20,9 @@ from src.pipeline.datasets.paths import GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH
     BANK_MARKETING_TRAINING_PROCESSED_DF_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH, \
     BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH, BANK_MARKETING_CONCATENATED_DF, GERMAN_CREDIT_CONCATENATED_DF, \
     BANK_MARKETING_DEPLOYMENT_DATASET_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, \
-    BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH
+    BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH, GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH, \
+    BANK_MARKETING_TRAINING_X_TEST, BANK_MARKETING_TRAINING_Y_TEST, GERMAN_CREDIT_TRAINING_X_TEST, \
+    GERMAN_CREDIT_TRAINING_Y_TEST
 from src.pipeline.datasets.deployment_datasets import BankMarketingDeploymentDataset, \
     BankMarketingDeploymentDatasetPlus, GermanCreditDeploymentDataset, GermanCreditDeploymentDatasetPlus, \
     BankMarketingSampledDeploymentDataset, GermanCreditSampledDeploymentDataset
@@ -188,7 +190,8 @@ def prepare_evaluation_info():
             production_model=BankMarketingProductionModel(),
             retrained_production_model=BankMarketingRetrainedProductionModel(),
             preprocessor=Preprocessor(),
-            training_dataset=BankMarketingDataset(),
+            training_X_test_path=BANK_MARKETING_TRAINING_X_TEST,
+            training_y_test_path=BANK_MARKETING_TRAINING_Y_TEST,
             deployment_dataset=BankMarketingDeploymentDataset(),
             retraining_dataset=Dataset.concatenate(
                 dataset_list=[BankMarketingSampledTrainingDataset(), BankMarketingSampledDeploymentDataset()],
@@ -199,7 +202,8 @@ def prepare_evaluation_info():
             production_model=GermanCreditProductionModel(),
             retrained_production_model=GermanCreditRetrainedProductionModel(),
             preprocessor=Preprocessor(),
-            training_dataset=GermanCreditDataset(),
+            training_X_test_path=GERMAN_CREDIT_TRAINING_X_TEST,
+            training_y_test_path=GERMAN_CREDIT_TRAINING_Y_TEST,
             deployment_dataset=GermanCreditDeploymentDataset(),
             retraining_dataset=Dataset.concatenate(
                 dataset_list=[GermanCreditSampledTrainingDataset(), GermanCreditSampledDeploymentDataset()],

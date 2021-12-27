@@ -35,7 +35,7 @@ class ModelTrainingManager(IManager):
         X_train, X_validation, X_test, y_train, y_validation, y_test = self._info.preprocessor.split(
             processed_df=processed_dataset,
             label_column_name=self._info.training_dataset.label_column_name,
-            dataset_class_name=self._info.training_dataset.__class__.__name__
+            dataset_class_name=self._info.training_dataset.name
         )
 
         self._info.model.train(X_train, y_train)

@@ -1,4 +1,5 @@
 from typing import List, Dict
+import pandas as pd
 
 from src.pipeline.model.constants import ModelMetricType
 from src.pipeline.model.interfaces.imodel_metric import IModelMetric
@@ -10,11 +11,13 @@ from src.pipeline.datasets.dataset import Dataset
 
 class EvaluationManagerInfo:
     def __init__(self, production_model: IModel, retrained_production_model: IModel, preprocessor: IPreprocessor,
-                 training_dataset: Dataset, deployment_dataset: Dataset, retraining_dataset: Dataset, to_evaluate: bool = True):
+                 training_X_test_path: str, training_y_test_path: str, deployment_dataset: Dataset,
+                 retraining_dataset: Dataset, to_evaluate: bool = True):
         self.production_model: IModel = production_model
         self.retrained_production_model: IModel = retrained_production_model
         self.preprocessor: IPreprocessor = preprocessor
-        self.training_dataset: Dataset = training_dataset
+        self.training_X_test_path: str = training_X_test_path
+        self.training_y_test_path: str = training_y_test_path
         self.deployment_dataset: Dataset = deployment_dataset
         self.retraining_dataset: Dataset = retraining_dataset
         self._to_evaluate: bool = to_evaluate
@@ -36,15 +39,15 @@ class EvaluationManager(IManager):
         # detect degradation of original production model, training dataset vs deployment dataset
         self._info.production_model.load(self._info.production_model.__class__.__name__)
 
-        processed_training_dataframe, _, _ = self._info.preprocessor.preprocess(self._info.training_dataset)
-        _, _, X_test_training, _, _, y_test_training = \
-            self._info.preprocessor.split(processed_training_dataframe, self._info.training_dataset.label_column_name)
+        X_test_training = pd.read_pickle(self._info.training_X_test_path)
+        y_test_training = pd.read_pickle(self._info.training_y_test_path)
         training_production_model_metrics_dict: Dict[ModelMetricType, IModelMetric] = \
             self._info.production_model.evaluate(X_test_training, y_test_training)
 
         processed_deployment_dataframe, _, _ = self._info.preprocessor.preprocess(self._info.deployment_dataset)
-        _, _, X_test_deployment, _, _, y_test_deployment = \
-            self._info.preprocessor.split(processed_deployment_dataframe, self._info.deployment_dataset.label_column_name)
+        _, _, X_test_deployment, _, _, y_test_deployment = self._info.preprocessor.split(
+            processed_deployment_dataframe, self._info.deployment_dataset.label_column_name, dump=False
+        )
         deployment_production_model_metrics_dict: Dict[ModelMetricType, IModelMetric] = \
             self._info.production_model.evaluate(X_test_deployment, y_test_deployment)
 
