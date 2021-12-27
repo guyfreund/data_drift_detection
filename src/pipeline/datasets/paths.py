@@ -17,10 +17,21 @@ GERMAN_CREDIT_SAMPLED_DEPLOYMENT_DATASET = os.path.abspath(os.path.join(__file__
 GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset.pickle"))
 GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDatasetPlus.pickle"))
 GERMAN_CREDIT_TRAINING_FEATURE_METRIC_LIST_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset_FeatureMetricsList.pickle"))
-GERMAN_CREDIT_CONCATENATED_DF = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditConcatenatedDataFrame.pickle"))
+GERMAN_CREDIT_RETRAINING_DF = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditConcatenatedDataFrame.pickle"))
 
+GERMAN_CREDIT_TRAINING_X_TRAIN = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset_X_train.pickle"))
+GERMAN_CREDIT_TRAINING_Y_TRAIN = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset_y_train.pickle"))
+GERMAN_CREDIT_TRAINING_X_VALIDATION = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset_X_validation.pickle"))
+GERMAN_CREDIT_TRAINING_Y_VALIDATION = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset_y_validation.pickle"))
 GERMAN_CREDIT_TRAINING_X_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset_X_test.pickle"))
-GERMAN_CREDIT_TRAINING_Y_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset_Y_test.pickle"))
+GERMAN_CREDIT_TRAINING_Y_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditDataset_y_test.pickle"))
+
+GERMAN_CREDIT_RETRAINING_X_TRAIN = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditSampledTrainingTrainDataset_GermanCreditSampledDeploymentDataset_X_train.pickle"))
+GERMAN_CREDIT_RETRAINING_Y_TRAIN = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditSampledTrainingTrainDataset_GermanCreditSampledDeploymentDataset_y_train.pickle"))
+GERMAN_CREDIT_RETRAINING_X_VALIDATION = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditSampledTrainingTrainDataset_GermanCreditSampledDeploymentDataset_X_validation.pickle"))
+GERMAN_CREDIT_RETRAINING_Y_VALIDATION = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditSampledTrainingTrainDataset_GermanCreditSampledDeploymentDataset_y_validation.pickle"))
+GERMAN_CREDIT_RETRAINING_X_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditSampledTrainingTrainDataset_GermanCreditSampledDeploymentDataset_X_test.pickle"))
+GERMAN_CREDIT_RETRAINING_Y_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "GermanCreditSampledTrainingTrainDataset_GermanCreditSampledDeploymentDataset_y_test.pickle"))
 
 # ------------------------------ Backup and Testing ------------------------------#
 # Not-drifted
@@ -56,11 +67,21 @@ BANK_MARKETING_SAMPLED_DEPLOYMENT_DATASET = os.path.abspath(os.path.join(__file_
 BANK_MARKETING_TRAINING_PROCESSED_DF_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset.pickle"))
 BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDatasetPlus.pickle"))
 BANK_MARKETING_TRAINING_FEATURE_METRIC_LIST_PATH = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset_FeatureMetricsList.pickle"))
-BANK_MARKETING_CONCATENATED_DF = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingConcatenatedDataFrame.pickle"))
+BANK_MARKETING_RETRAINING_DF = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingConcatenatedDataFrame.pickle"))
 
+BANK_MARKETING_TRAINING_X_TRAIN = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset_X_train.pickle"))
+BANK_MARKETING_TRAINING_Y_TRAIN = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset_y_train.pickle"))
+BANK_MARKETING_TRAINING_X_VALIDATION = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset_X_validation.pickle"))
+BANK_MARKETING_TRAINING_Y_VALIDATION = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset_y_validation.pickle"))
 BANK_MARKETING_TRAINING_X_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset_X_test.pickle"))
-BANK_MARKETING_TRAINING_Y_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset_Y_test.pickle"))
+BANK_MARKETING_TRAINING_Y_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingDataset_y_test.pickle"))
 
+BANK_MARKETING_RETRAINING_X_TRAIN = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingSampledTrainingTrainDataset_BankMarketingSampledDeploymentDataset_X_train.pickle"))
+BANK_MARKETING_RETRAINING_Y_TRAIN = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingSampledTrainingTrainDataset_BankMarketingSampledDeploymentDataset_y_train.pickle"))
+BANK_MARKETING_RETRAINING_X_VALIDATION = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingSampledTrainingTrainDataset_BankMarketingSampledDeploymentDataset_X_validation.pickle"))
+BANK_MARKETING_RETRAINING_Y_VALIDATION = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingSampledTrainingTrainDataset_BankMarketingSampledDeploymentDataset_y_validation.pickle"))
+BANK_MARKETING_RETRAINING_X_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingSampledTrainingTrainDataset_BankMarketingSampledDeploymentDataset_X_test.pickle"))
+BANK_MARKETING_RETRAINING_Y_TEST = os.path.abspath(os.path.join(__file__, "..", "..", "preprocessing", "raw_files", "BankMarketingSampledTrainingTrainDataset_BankMarketingSampledDeploymentDataset_y_test.pickle"))
 
 # ------------------------------ Backup and Testing ------------------------------#
 # Non-Drifted
