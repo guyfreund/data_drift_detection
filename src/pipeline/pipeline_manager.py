@@ -37,6 +37,7 @@ from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH, 
 
 logging = logger.get_logger(__name__)
 
+
 class PipelineManager(IManager):
     def __init__(self, pipeline_mode: PipelineMode, data_drift_info_list: List[DataDriftDetectionManagerInfo],
                  training_info_list: List[ModelTrainingManagerInfo], retraining_info_list: List[ModelTrainingManagerInfo],
