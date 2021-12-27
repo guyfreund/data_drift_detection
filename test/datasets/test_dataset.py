@@ -2,7 +2,7 @@ import numpy as np
 
 from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.datasets.dataset import Dataset
-from src.pipeline.datasets.paths import BANK_MARKETING_CONCATENATED_DF
+from src.pipeline.datasets.paths import BANK_MARKETING_RETRAINING_DF
 from src.pipeline.datasets.training_datasets import BankMarketingDataset
 
 
@@ -13,7 +13,7 @@ def test_data_set_concatenation():
             bank_marketing_dataset,
             bank_marketing_dataset
         ],
-        path=BANK_MARKETING_CONCATENATED_DF
+        path=BANK_MARKETING_RETRAINING_DF
     )
 
     assert all([

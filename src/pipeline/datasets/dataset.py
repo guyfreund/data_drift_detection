@@ -142,14 +142,22 @@ class Dataset:
 
 
 class SampledDataset(Dataset):
-    def __init__(self, original_dataset: Dataset, path: str, numeric_feature_names: List[str],
+    def __init__(self, path: str, numeric_feature_names: List[str],
                  categorical_feature_names: List[str], label_column_name: str, dtype: DatasetType,
-                 sample_size_in_percent: float):
+                 sample_size_in_percent: float, original_dataset: Dataset = None, raw_df_paths: List[str] = None):
 
-        self.original_dataset: Dataset = original_dataset
+        if original_dataset is not None:
+            raw_df = original_dataset.raw_df
+        else:
+            raw_dfs: List[pd.DataFrame] = []
+            for raw_df_path in raw_df_paths:
+                df = pd.read_pickle(raw_df_path)
+                raw_dfs.append(df)
+            # used to concat X to y
+            raw_df = pd.concat(raw_dfs, axis=1)
+
         # sample dataframe
-        raw_df: pd.DataFrame = \
-            self.original_dataset.raw_df.sample(frac=sample_size_in_percent, replace=False)
+        raw_df: pd.DataFrame = raw_df.sample(frac=sample_size_in_percent, replace=False)
 
         with open(path, 'wb') as output:
             pickle.dump(raw_df, output)

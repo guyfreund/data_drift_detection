@@ -12,14 +12,15 @@ from src.pipeline.datasets.dataset import Dataset
 class EvaluationManagerInfo:
     def __init__(self, production_model: IModel, retrained_production_model: IModel, preprocessor: IPreprocessor,
                  training_X_test_path: str, training_y_test_path: str, deployment_dataset: Dataset,
-                 retraining_dataset: Dataset, to_evaluate: bool = True):
+                 retraining_X_test_path: str, retraining_y_test_path: str, to_evaluate: bool = True):
         self.production_model: IModel = production_model
         self.retrained_production_model: IModel = retrained_production_model
         self.preprocessor: IPreprocessor = preprocessor
         self.training_X_test_path: str = training_X_test_path
         self.training_y_test_path: str = training_y_test_path
         self.deployment_dataset: Dataset = deployment_dataset
-        self.retraining_dataset: Dataset = retraining_dataset
+        self.retraining_X_test_path: str = retraining_X_test_path
+        self.retraining_y_test_path: str = retraining_y_test_path
         self._to_evaluate: bool = to_evaluate
 
     @property
@@ -60,10 +61,8 @@ class EvaluationManager(IManager):
         # detect increase in performance of retrained production model vs original production model on the retraining dataset
         self._info.retrained_production_model.load(self._info.retrained_production_model.__class__.__name__)
 
-        processed_retraining_dataframe, _, _ = self._info.preprocessor.preprocess(self._info.retraining_dataset)
-        _, _, X_test_retraining, _, _, y_test_retraining = \
-            self._info.preprocessor.split(processed_retraining_dataframe, self._info.retraining_dataset.label_column_name)
-
+        X_test_retraining = pd.read_pickle(self._info.retraining_X_test_path)
+        y_test_retraining = pd.read_pickle(self._info.retraining_y_test_path)
         original_production_model_metrics_dict: Dict[ModelMetricType, IModelMetric] = \
             self._info.production_model.evaluate(X_test_retraining, y_test_retraining)
         retrained_production_model_metrics_dict: Dict[ModelMetricType, IModelMetric] = \

@@ -5,8 +5,10 @@ from src.pipeline.datasets.dataset import Dataset, SampledDataset
 from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.datasets.paths import BANK_MARKETING_DATASET_PATH, GERMAN_CREDIT_DATASET_PATH, \
     GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH, \
-    GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PATH, BANK_MARKETING_SAMPLED_DATASET_PATH, \
-    GERMAN_CREDIT_SAMPLED_DATASET_PATH
+    GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PATH, \
+    BANK_MARKETING_SAMPLED_DATASET_PATH, \
+    GERMAN_CREDIT_SAMPLED_DATASET_PATH, BANK_MARKETING_TRAINING_X_TRAIN, BANK_MARKETING_TRAINING_Y_TRAIN, \
+    GERMAN_CREDIT_TRAINING_Y_TRAIN, GERMAN_CREDIT_TRAINING_X_TRAIN
 
 
 class BankMarketingDataset(Dataset):
@@ -103,7 +105,7 @@ class GermanCreditDatasetPlus(Dataset):
         return df
 
 
-class BankMarketingSampledTrainingDataset(SampledDataset):
+class BankMarketingSampledTrainingTrainDataset(SampledDataset):
     def __init__(self):
         super().__init__(
             dtype=DatasetType.TrainingSampled,
@@ -119,11 +121,11 @@ class BankMarketingSampledTrainingDataset(SampledDataset):
         return pd.read_csv(self._path, delimiter=';')
 
 
-class GermanCreditSampledTrainingDataset(SampledDataset):
+class GermanCreditSampledTrainingTrainDataset(SampledDataset):
     def __init__(self):
         super().__init__(
             dtype=DatasetType.Training,
-            original_dataset=GermanCreditDataset(),
+            raw_df_paths=[GERMAN_CREDIT_TRAINING_X_TRAIN, GERMAN_CREDIT_TRAINING_Y_TRAIN],
             path=GERMAN_CREDIT_SAMPLED_DATASET_PATH,
             numeric_feature_names=Config().preprocessing.german_credit.numeric_features,
             categorical_feature_names=Config().preprocessing.german_credit.categorical_features,
