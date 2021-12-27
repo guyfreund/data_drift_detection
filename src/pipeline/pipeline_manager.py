@@ -55,10 +55,12 @@ class PipelineManager(IManager):
         if self._mode == PipelineMode.Training:
             # training all models
             self._model_training_manager.manage()
+            logging.debug("Training Pipline done manage")
 
         elif self._mode == PipelineMode.Monitoring:
             # generating deployment datasets
             self._data_drifts = self._data_generation_manager.manage()
+            logging.debug("Data Generation Pipline done manage")
 
             # detecting data drifts in each of the deployment datasets
             self._detected_data_drifts = self._data_drift_detection_manager.manage()
@@ -70,9 +72,11 @@ class PipelineManager(IManager):
 
             # retraining all models that a data drift has detected for their corresponding deployment dataset
             self._model_retraining_manager.manage()
+            logging.debug("Model Retraining done manage")
 
             # evaluation
             self._evaluation_manager.manage()
+            logging.debug("Model Evaluation done manage")
 
         else:
             # pipeline running mode is not supported
@@ -223,6 +227,7 @@ def run_pipeline_manager():
         retraining_info_list=prepare_model_retraining_info(),
         evaluation_info_list=prepare_evaluation_info()
     )
+    logging.debug("pipline manager start to manage")
     pipeline_manager.manage()
 
     # monitoring

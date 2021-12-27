@@ -12,7 +12,9 @@ from src.pipeline.preprocessing.constants import FeatureType
 from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.config import Config
+from src.pipeline import logger
 
+logging = logger.get_logger(__name__)
 
 # TODO: add detector for new unseen values of categorical features
 
@@ -54,7 +56,7 @@ class StatisticalBasedDetector(IDataDriftDetector):
         )
 
         is_drifted = weighted_sum_on_all_data_drift_types > Config().data_drift.internal_data_drift_detector.statistical_based_threshold
-
+        logging.info(f"Statistical based data drift detector: is_drifted={is_drifted}")
         return StatisticalBasedDataDrift(is_drifted=is_drifted)
 
     def _get_data(self) -> Tuple[List[str], List[IFeatureMetrics], List[IFeatureMetrics]]:
