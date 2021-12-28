@@ -60,6 +60,9 @@ class Preprocessor(IPreprocessor):
 
         return self._processed_df, self._processed_df_plus, self._feature_metrics_list
 
+    def postprocess(self, processed_df: pd.DataFrame) -> pd.DataFrame:
+        pass
+
     @staticmethod    
     def _build_feature_metrics_list(dataset: Dataset) -> List[IFeatureMetrics]:
         feature_metrics_list: List[IFeatureMetrics] = []

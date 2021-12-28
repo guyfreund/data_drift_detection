@@ -109,12 +109,12 @@ class BankMarketingSampledTrainingTrainDataset(SampledDataset):
     def __init__(self):
         super().__init__(
             dtype=DatasetType.TrainingSampled,
-            original_dataset=BankMarketingDataset(),
+            raw_df_paths=[BANK_MARKETING_TRAINING_X_TRAIN, BANK_MARKETING_TRAINING_Y_TRAIN],
             path=BANK_MARKETING_SAMPLED_DATASET_PATH,
             numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features,
             categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
             label_column_name=Config().preprocessing.bank_marketing.original_label_column_name,
-            sample_size_in_percent=Config().retraining.training_sample_size_in_percent
+            sample_size_in_percent=Config().retraining.training_sample_size_in_percent,
         )
 
     def load(self) -> pd.DataFrame:

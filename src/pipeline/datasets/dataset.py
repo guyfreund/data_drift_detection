@@ -153,7 +153,8 @@ class Dataset:
 class SampledDataset(Dataset):
     def __init__(self, path: str, numeric_feature_names: List[str],
                  categorical_feature_names: List[str], label_column_name: str, dtype: DatasetType,
-                 sample_size_in_percent: float, original_dataset: Dataset = None, raw_df_paths: List[str] = None):
+                 sample_size_in_percent: float, original_dataset: Dataset = None, raw_df_paths: List[str] = None,
+                 original_label_column_name: str = ''):
 
         if original_dataset is not None:
             raw_df = original_dataset.raw_df
@@ -178,7 +179,8 @@ class SampledDataset(Dataset):
             categorical_feature_names=categorical_feature_names,
             numeric_feature_names=numeric_feature_names,
             raw_df=raw_df,
-            to_load=False
+            to_load=False,
+            original_label_column_name=original_label_column_name
         )
 
     def load(self) -> pd.DataFrame:
