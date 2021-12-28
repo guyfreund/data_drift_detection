@@ -10,7 +10,7 @@ from src.pipeline.data_generation.data_generation_manager import DataGenerationM
     MultipleDatasetGenerationManager, DataGenerationManager
 from src.pipeline.data_drift_detection.constants import DataDriftType
 from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
-from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH, GERMAN_CREDIT_LABEL_ENCODER_PATH
+from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH_DEPLOYMENT, GERMAN_CREDIT_LABEL_ENCODER_PATH_DEPLOYMENT
 
 
 class GermanCreditTestGANDatageneration:
@@ -26,7 +26,7 @@ class GermanCreditTestGANDatageneration:
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=None,
             save_data_plus_path=None,
-            processor=LabelProcessor(dataset, GERMAN_CREDIT_LABEL_ENCODER_PATH)
+            processor=LabelProcessor(dataset, GERMAN_CREDIT_LABEL_ENCODER_PATH_DEPLOYMENT)
         )
 
     def _test_data_normal_generation(self):
@@ -58,7 +58,7 @@ class GermanCreditTestSMOTENCDatageneration:
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=None,
             save_data_plus_path=None,
-            processor=LabelProcessor(dataset, GERMAN_CREDIT_LABEL_ENCODER_PATH)
+            processor=LabelProcessor(dataset, GERMAN_CREDIT_LABEL_ENCODER_PATH_DEPLOYMENT)
         )
 
     def _test_data_normal_generation(self):
@@ -91,7 +91,7 @@ class BankMarketingTestGANDatageneration:
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=None,
             save_data_plus_path=None,
-            processor=LabelProcessor(dataset, BANK_MARKETING_LABEL_ENCODER_PATH)
+            processor=LabelProcessor(dataset, BANK_MARKETING_LABEL_ENCODER_PATH_DEPLOYMENT)
         )
 
     def _test_data_normal_generation(self):
@@ -123,7 +123,7 @@ class BankMarketingTestSMOTENCDatageneration:
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=None,
             save_data_plus_path=None,
-            processor=LabelProcessor(dataset, BANK_MARKETING_LABEL_ENCODER_PATH)
+            processor=LabelProcessor(dataset, BANK_MARKETING_LABEL_ENCODER_PATH_DEPLOYMENT)
         )
 
     def _test_data_normal_generation(self):

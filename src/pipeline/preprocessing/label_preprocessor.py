@@ -7,15 +7,15 @@ from src.pipeline.datasets.dataset import Dataset
 
 class LabelProcessor:
 
-    def __init__(self, dataset: Dataset, save_encoder_path: str):
+    def __init__(self, dataset: Dataset, save_encoder_path: str = None):
         self._label_col = dataset.label_column_name
         self._cat_cols = dataset.categorical_feature_names
         self._numeric_cols = dataset.numeric_feature_names
         self._encoder = None
         self._save_encoder_path = save_encoder_path
 
-    def preprocessed_data(self, dataset_df: pd.DataFrame) -> pd.DataFrame:
-        df = dataset_df
+    def preprocessed_data(self, dataset_df: pd.DataFrame, dump_encoder: bool = True) -> pd.DataFrame:
+        df = dataset_df.copy()
         label_col = self._label_col
         cat_cols = self._cat_cols + [label_col]
         numeric_cols = self._numeric_cols
@@ -31,14 +31,21 @@ class LabelProcessor:
         df_processed = pd.concat([df_numeric_cols, df_cat_cols_processed], axis=1)
         df_processed = df_processed[columns]
         self._encoder = encoder_dict
-
-        self._save_encoder_dict()
+        if dump_encoder:
+            self._save_encoder_dict()
 
         return df_processed
 
-    def postprocess_data(self, processed_df: pd.DataFrame) -> pd.DataFrame:
+    def postprocess_data(self, processed_df: pd.DataFrame, df_type: str = "Xy") -> pd.DataFrame:
+
         encoder_dict = self._encoder if self._encoder else self._load_encoder_dict()
-        cat_cols = self._cat_cols + [self._label_col]
+        if df_type == "X":
+            cat_cols = self._cat_cols
+        if df_type == "y":
+            cat_cols = [self._label_col]
+        elif df_type == "Xy":
+            cat_cols = self._cat_cols + [self._label_col]
+
         inverse_transform_lambda = lambda x: encoder_dict[x.name].inverse_transform(x) if x.name in cat_cols else x
         return processed_df.apply(inverse_transform_lambda)
 
@@ -47,3 +54,7 @@ class LabelProcessor:
 
     def _load_encoder_dict(self):
         np.load(self._save_encoder_path)
+
+    @property
+    def encoder(self):
+        return self._encoder

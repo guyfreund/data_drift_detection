@@ -8,7 +8,7 @@ from src.pipeline.datasets.paths import GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH, \
     GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH, BANK_MARKETING_DEPLOYMENT_DATASET_PATH, BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH
 from src.pipeline.data_generation.data_generation_manager import DataGenerationManagerInfo, \
     MultipleDatasetGenerationManager, DataGenerationManager
-from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH, GERMAN_CREDIT_LABEL_ENCODER_PATH
+from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH_DEPLOYMENT, GERMAN_CREDIT_LABEL_ENCODER_PATH_DEPLOYMENT
 from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
 from src.pipeline.data_drift_detection.constants import DataDriftType
 from src.pipeline.data_generation.data_generation_manager import MultipleDatasetGenerationManager
@@ -29,7 +29,7 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH,
             save_data_plus_path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH,
-            processor=LabelProcessor(bank_marketing_dataset, BANK_MARKETING_LABEL_ENCODER_PATH)
+            processor=LabelProcessor(bank_marketing_dataset, BANK_MARKETING_LABEL_ENCODER_PATH_DEPLOYMENT)
         ),  # Bank Marketing
         DataGenerationManagerInfo(
             origin_dataset=german_credit_dataset,
@@ -39,7 +39,7 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
             data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
             save_data_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,
             save_data_plus_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH,
-            processor=LabelProcessor(german_credit_dataset, GERMAN_CREDIT_LABEL_ENCODER_PATH)
+            processor=LabelProcessor(german_credit_dataset, GERMAN_CREDIT_LABEL_ENCODER_PATH_DEPLOYMENT)
         )   # German Credit
     ]
 
