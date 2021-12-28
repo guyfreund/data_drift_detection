@@ -92,10 +92,6 @@ class Preprocessor(IPreprocessor):
         #
         # self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
 
-        if dataset.original_label_column_name:
-            # process original label column name in case it is needed
-            self._processed_df[dataset.original_label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.original_label_column_name])
-
         logging.info(f"Preprocessing: data was preprocessed successfully.")
         logging.info(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
                      f"num of numerical features: {len(self._processed_df.select_dtypes(exclude=['bool', 'object']).columns)}")
@@ -196,6 +192,7 @@ class Preprocessor(IPreprocessor):
         for key, value in x.items():
             raw, df_type = value
             raw = self._label_preprocessor.postprocess_data(processed_df=key, df_type=df_type)
+            logging.debug(raw.shape)
 
         if dump:
             self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)
