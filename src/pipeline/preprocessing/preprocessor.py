@@ -45,6 +45,9 @@ class Preprocessor(IPreprocessor):
         self._processed_df = pd.get_dummies(self._processed_df, columns=dataset.categorical_feature_names)
 
         self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
+        if dataset.original_label_column_name:
+            # process original label column name in case it is needed
+            self._processed_df[dataset.original_label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.original_label_column_name])
 
         logging.info(f"Preprocessing: data was preprocessed successfully.")
         logging.info(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "

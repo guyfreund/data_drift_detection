@@ -15,7 +15,7 @@ class Dataset:
 
     def __init__(self, dtype: DatasetType, path: str, label_column_name: str, categorical_feature_names: List[str],
                  numeric_feature_names: List[str], to_load: bool = True, raw_df: Optional[pd.DataFrame] = None,
-                 name: str = ''):
+                 name: str = '', original_label_column_name: str = ''):
         assert os.path.exists(path)
         self._path = path
         self._to_load = to_load
@@ -29,6 +29,15 @@ class Dataset:
         self._label_column_name = label_column_name
         self._categorical_feature_names = categorical_feature_names
         self._numeric_feature_names = numeric_feature_names
+        self._original_label_column_name = original_label_column_name
+
+    @property
+    def original_label_column_name(self) -> str:
+        return self._original_label_column_name
+
+    @original_label_column_name.setter
+    def original_label_column_name(self, value: str):
+        self._original_label_column_name = value
 
     @property
     def name(self) -> str:
