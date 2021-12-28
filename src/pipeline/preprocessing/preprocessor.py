@@ -11,7 +11,9 @@ from src.pipeline.preprocessing.feature_metrics.feature_metrics_categorical impo
 from src.pipeline.preprocessing.feature_metrics.feature_metrics_numeric import NumericFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ifeature_metrics import IFeatureMetrics
 from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
+from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
 from src.pipeline import logger
+from src.pipeline.preprocessing.paths import BANK_MARKETING_LABEL_ENCODER_PATH_TRAINING, GERMAN_CREDIT_LABEL_ENCODER_PATH_TRAINING
 
 logging = logger.get_logger(__name__)
 
@@ -20,13 +22,55 @@ class Preprocessor(IPreprocessor):
     def __init__(self):
         self._processed_df: pd.DataFrame = pd.DataFrame()
         self._processed_df_plus: pd.DataFrame = pd.DataFrame()
+
         self._X_train: pd.DataFrame = pd.DataFrame()
         self._X_validation: pd.DataFrame = pd.DataFrame()
         self._X_test: pd.DataFrame = pd.DataFrame()
         self._y_train: pd.DataFrame = pd.DataFrame()
         self._y_validation: pd.DataFrame = pd.DataFrame()
         self._y_test: pd.DataFrame = pd.DataFrame()
+
+        self._X_train_raw = None
+        self._X_validation_raw = None
+        self._X_test_raw = None
+        self._y_train_raw = None
+        self._y_validation_raw = None
+        self._y_test_raw = None
+
         self._feature_metrics_list: List[IFeatureMetrics] = []
+        self._label_preprocessor = None
+
+    # def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
+    #
+    #     logging.info(f'Dataset Info: num of total features: {len(dataset.categorical_feature_names) + len(dataset.numeric_feature_names)} | '
+    #                  f'num of categorical features: {len(dataset.categorical_feature_names)} | '
+    #                  f'num of numerical features: {len(dataset.numeric_feature_names)}')
+    #
+    #     feature_metrics_list: List[IFeatureMetrics] = self._build_feature_metrics_list(dataset)
+    #     self._feature_metrics_list = feature_metrics_list
+    #
+    #     self._processed_df = dataset.raw_df.copy()
+    #
+    #     pd.DataFrame(StandardScaler().fit_transform(self._processed_df[dataset.numeric_feature_names]))
+    #     d = defaultdict(LabelEncoder)
+    #     self._processed_df[dataset.categorical_feature_names].apply(lambda x: d[x.name].fit_transform(x))
+    #     self._processed_df = pd.get_dummies(self._processed_df, columns=dataset.categorical_feature_names)
+    #
+    #     self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
+    #     if dataset.original_label_column_name:
+    #         # process original label column name in case it is needed
+    #         self._processed_df[dataset.original_label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.original_label_column_name])
+    #
+    #     logging.info(f"Preprocessing: data was preprocessed successfully.")
+    #     logging.info(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
+    #                  f"num of numerical features: {len(self._processed_df.select_dtypes(exclude=['bool', 'object']).columns)}")
+    #
+    #     self._processed_df_plus = self._processed_df.copy()
+    #     self._processed_df_plus[Config().preprocessing.data_drift_model_label_column_name] = dataset.dtype.value
+    #
+    #     self._save_data_as_pickle(dataset.name)
+    #
+    #     return self._processed_df, self._processed_df_plus, self._feature_metrics_list
 
     def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
 
@@ -39,15 +83,14 @@ class Preprocessor(IPreprocessor):
 
         self._processed_df = dataset.raw_df.copy()
 
-        pd.DataFrame(StandardScaler().fit_transform(self._processed_df[dataset.numeric_feature_names]))
-        d = defaultdict(LabelEncoder)
-        self._processed_df[dataset.categorical_feature_names].apply(lambda x: d[x.name].fit_transform(x))
-        self._processed_df = pd.get_dummies(self._processed_df, columns=dataset.categorical_feature_names)
-
-        self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
-        if dataset.original_label_column_name:
-            # process original label column name in case it is needed
-            self._processed_df[dataset.original_label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.original_label_column_name])
+        self._label_preprocessor = LabelProcessor(dataset)
+        self._processed_df = self._label_preprocessor.preprocessed_data(self._processed_df, dump_encoder=False)
+        # pd.DataFrame(StandardScaler().fit_transform(self._processed_df[dataset.numeric_feature_names]))
+        # d = defaultdict(LabelEncoder)
+        # self._processed_df[dataset.categorical_feature_names].apply(lambda x: d[x.name].fit_transform(x))
+        # self._processed_df = pd.get_dummies(self._processed_df, columns=dataset.categorical_feature_names)
+        #
+        # self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
 
         logging.info(f"Preprocessing: data was preprocessed successfully.")
         logging.info(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
@@ -61,7 +104,7 @@ class Preprocessor(IPreprocessor):
         return self._processed_df, self._processed_df_plus, self._feature_metrics_list
 
     def postprocess(self, processed_df: pd.DataFrame) -> pd.DataFrame:
-        pass
+        return self._label_preprocessor.preprocessed_data(processed_df=processed_df)
 
     @staticmethod    
     def _build_feature_metrics_list(dataset: Dataset) -> List[IFeatureMetrics]:
@@ -109,12 +152,12 @@ class Preprocessor(IPreprocessor):
             os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_test.pickle"))
         ]
         dataframes = [
-            self._X_train,
-            self._X_validation,
-            self._X_test,
-            self._y_train,
-            self._y_validation,
-            self._y_test
+            self._X_train_raw,
+            self._X_validation_raw,
+            self._X_test_raw,
+            self._y_train_raw,
+            self._y_validation_raw,
+            self._y_test_raw
         ]
 
         for path, dataframe in zip(paths, dataframes):
@@ -136,6 +179,13 @@ class Preprocessor(IPreprocessor):
         self._y_train = y_train
         self._y_validation = y_validation
         self._y_test = y_test
+
+        self._X_test_raw = self._label_preprocessor.postprocess_data(processed_df=self.X_train, df_type='X')
+        self._X_validation_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_validation, df_type='X')
+        self._X_test_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_test, df_type='X')
+        self._y_train_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_train), df_type='y')
+        self._y_validation_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_validation), df_type='y')
+        self._y_test_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_test), df_type='y')
 
         if dump:
             self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)
