@@ -33,6 +33,7 @@ class BankMarketingDeploymentDatasetPlus(Dataset):
             numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features + [data_drift_model_label_column_name],
             categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
             label_column_name=data_drift_model_label_column_name,
+            original_label_column_name=Config().preprocessing.bank_marketing.original_label_column_name,
             to_load=to_load
         )
 
@@ -80,7 +81,8 @@ class BankMarketingSampledDeploymentDataset(SampledDataset):
             numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features,
             categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
             label_column_name=Config().preprocessing.bank_marketing.original_label_column_name,
-            sample_size_in_percent=Config().retraining.deployment_sample_size_in_percent
+            sample_size_in_percent=Config().retraining.deployment_sample_size_in_percent,
+            original_label_column_name=Config().preprocessing.bank_marketing.original_label_column_name
         )
 
     def load(self) -> pd.DataFrame:

@@ -45,6 +45,9 @@ class Preprocessor(IPreprocessor):
         self._processed_df = pd.get_dummies(self._processed_df, columns=dataset.categorical_feature_names)
 
         self._processed_df[dataset.label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.label_column_name])
+        if dataset.original_label_column_name:
+            # process original label column name in case it is needed
+            self._processed_df[dataset.original_label_column_name] = LabelEncoder().fit_transform(self._processed_df[dataset.original_label_column_name])
 
         logging.info(f"Preprocessing: data was preprocessed successfully.")
         logging.info(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
@@ -56,6 +59,9 @@ class Preprocessor(IPreprocessor):
         self._save_data_as_pickle(dataset.name)
 
         return self._processed_df, self._processed_df_plus, self._feature_metrics_list
+
+    def postprocess(self, processed_df: pd.DataFrame) -> pd.DataFrame:
+        pass
 
     @staticmethod    
     def _build_feature_metrics_list(dataset: Dataset) -> List[IFeatureMetrics]:

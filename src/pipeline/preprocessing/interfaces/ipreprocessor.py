@@ -30,6 +30,18 @@ class IPreprocessor(ABC):
         """
         raise NotImplementedError
 
+    def postprocess(self, processed_df: pd.DataFrame) -> pd.DataFrame:
+        """ perform post process on processed df
+        need to be able to process X, y or X+y
+
+        Args:
+            processed_df:
+
+        Returns:
+
+        """
+        raise NotImplementedError
+
     @abstractmethod
     def split(self, processed_df: pd.DataFrame, label_column_name: str, dataset_class_name: str = '', dump: bool = True) -> \
             Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:

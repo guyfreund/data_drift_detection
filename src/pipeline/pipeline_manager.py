@@ -121,7 +121,7 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
             model_class=Config().data_generation.gan_generate_model_class if use_gan else None,  # for GAN
             sample_size_to_generate=Config().data_generation.generation_percent,
             model_path=BANK_MARKETING_GEN_CGAN_MODEL_PATH if use_gan else None,
-            data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
+            data_drift_types=[DataDriftType.Statistical], #, DataDriftType.NumNulls],
             save_data_path=BANK_MARKETING_DEPLOYMENT_DATASET_PATH,
             save_data_plus_path=BANK_MARKETING_DEPLOYMENT_DATASET_PLUS_PATH,
             processor=LabelProcessor(bank_marketing_dataset, BANK_MARKETING_LABEL_ENCODER_PATH)
@@ -131,7 +131,7 @@ def prepare_data_generation_info() -> List[DataGenerationManagerInfo]:
             model_class=Config().data_generation.gan_generate_model_class if use_gan else None,
             sample_size_to_generate=Config().data_generation.generation_percent,
             model_path=GERMAN_CREDIT_GEN_CGAN_MODEL_PATH if use_gan else None, # for GAN
-            data_drift_types=[DataDriftType.Statistical, DataDriftType.NumNulls],
+            data_drift_types=[DataDriftType.Statistical], #, DataDriftType.NumNulls],
             save_data_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PATH,
             save_data_plus_path=GERMAN_CREDIT_DEPLOYMENT_DATASET_PLUS_PATH,
             processor=LabelProcessor(german_credit_dataset, GERMAN_CREDIT_LABEL_ENCODER_PATH)

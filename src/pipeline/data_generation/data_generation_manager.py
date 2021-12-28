@@ -65,7 +65,7 @@ class DataGenerationManager(IManager):
         dataset_class_name = self._origin_dataset.__class__.__name__
 
         generated_dataset_plus = generated_dataset.copy()
-        generated_dataset_plus[Config().preprocessing.data_drift_model_label_column_name] = DatasetType.Deployment
+        generated_dataset_plus[Config().preprocessing.data_drift_model_label_column_name] = DatasetType.Deployment.value
 
         generated_dataset.to_csv(self._save_data_path, index=False)
         generated_dataset_plus.to_csv(self._save_data_plus_path, index=False)
