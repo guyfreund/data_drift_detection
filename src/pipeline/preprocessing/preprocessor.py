@@ -180,19 +180,12 @@ class Preprocessor(IPreprocessor):
         self._y_validation = y_validation
         self._y_test = y_test
 
-        x = {
-            self._X_train: (self._X_train_raw, 'X'),
-            self._X_validation: (self._X_validation_raw, 'X'),
-            self._X_test: (self._X_test_raw, 'X'),
-            self._y_train: (self._y_train_raw, 'y'),
-            self._y_validation: (self._y_validation_raw, 'y'),
-            self._y_test: (self._y_test_raw, 'y'),
-        }
-
-        for key, value in x.items():
-            raw, df_type = value
-            raw = self._label_preprocessor.postprocess_data(processed_df=key, df_type=df_type)
-            logging.debug(raw.shape)
+        self._X_test_raw = self._label_preprocessor.postprocess_data(processed_df=self.X_train, df_type='X')
+        self._X_validation_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_validation, df_type='X')
+        self._X_test_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_test, df_type='X')
+        self._y_train_raw = self._label_preprocessor.postprocess_data(processed_df=self._y_train, df_type='y')
+        self._y_validation_raw = self._label_preprocessor.postprocess_data(processed_df=self._y_validation, df_type='y')
+        self._y_test_raw = self._label_preprocessor.postprocess_data(processed_df=self._y_test, df_type='y')
 
         if dump:
             self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)
