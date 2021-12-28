@@ -3,6 +3,7 @@ from sklearn.preprocessing import LabelEncoder
 import pandas as pd
 import numpy as np
 from src.pipeline.datasets.dataset import Dataset
+from copy import deepcopy
 
 
 class LabelProcessor:
@@ -43,10 +44,16 @@ class LabelProcessor:
     def postprocess_data(self, processed_df: pd.DataFrame, df_type: str = "Xy") -> pd.DataFrame:
 
         encoder_dict = self._encoder if self._encoder else self._load_encoder_dict()
+        encoder_dict = deepcopy(encoder_dict)
         if df_type == "X":
             cat_cols = self._cat_cols
+            del encoder_dict[self._label_col]
         elif df_type == "y":
             cat_cols = [self._label_col]
+            for k, v in encoder_dict.items():
+                if isinstance(v, LabelEncoder):
+                    if k != self._label_col:
+                        del encoder_dict[k]
         elif df_type == "Xy":
             cat_cols = self._cat_cols + [self._label_col]
         else:
