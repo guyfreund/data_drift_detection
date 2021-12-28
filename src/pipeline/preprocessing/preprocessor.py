@@ -183,9 +183,9 @@ class Preprocessor(IPreprocessor):
         self._X_test_raw = self._label_preprocessor.postprocess_data(processed_df=self.X_train, df_type='X')
         self._X_validation_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_validation, df_type='X')
         self._X_test_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_test, df_type='X')
-        self._y_train_raw = self._label_preprocessor.postprocess_data(processed_df=self._y_train, df_type='y')
-        self._y_validation_raw = self._label_preprocessor.postprocess_data(processed_df=self._y_validation, df_type='y')
-        self._y_test_raw = self._label_preprocessor.postprocess_data(processed_df=self._y_test, df_type='y')
+        self._y_train_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_train), df_type='y')
+        self._y_validation_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_validation), df_type='y')
+        self._y_test_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_test), df_type='y')
 
         if dump:
             self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)

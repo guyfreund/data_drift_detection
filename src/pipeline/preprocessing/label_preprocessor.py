@@ -44,16 +44,18 @@ class LabelProcessor:
     def postprocess_data(self, processed_df: pd.DataFrame, df_type: str = "Xy") -> pd.DataFrame:
 
         encoder_dict = self._encoder if self._encoder else self._load_encoder_dict()
-        encoder_dict = deepcopy(encoder_dict)
+        new_encoder_dict = encoder_dict
         if df_type == "X":
+            new_encoder_dict = deepcopy(encoder_dict)
             cat_cols = self._cat_cols
-            del encoder_dict[self._label_col]
+            del new_encoder_dict[self._label_col]
         elif df_type == "y":
+            new_encoder_dict = deepcopy(encoder_dict)
             cat_cols = [self._label_col]
             for k, v in encoder_dict.items():
                 if isinstance(v, LabelEncoder):
                     if k != self._label_col:
-                        del encoder_dict[k]
+                        del new_encoder_dict[k]
         elif df_type == "Xy":
             cat_cols = self._cat_cols + [self._label_col]
         else:
@@ -62,7 +64,7 @@ class LabelProcessor:
         if self._original_label_col:
             cat_cols += [self._original_label_col]
 
-        inverse_transform_lambda = lambda x: encoder_dict[x.name].inverse_transform(x) if x.name in cat_cols else x
+        inverse_transform_lambda = lambda x: new_encoder_dict[x.name].inverse_transform(x) if x.name in cat_cols else x
         return processed_df.apply(inverse_transform_lambda)
 
     def _save_encoder_dict(self):
