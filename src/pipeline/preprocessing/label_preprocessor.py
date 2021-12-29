@@ -45,6 +45,10 @@ class LabelProcessor:
 
         encoder_dict = self._encoder if self._encoder else self._load_encoder_dict()
         new_encoder_dict = encoder_dict
+        cat_cols = []
+        if self._original_label_col:
+            cat_cols += [self._original_label_col]
+
         if df_type == "X":
             new_encoder_dict = deepcopy(encoder_dict)
             cat_cols = self._cat_cols
@@ -60,9 +64,6 @@ class LabelProcessor:
             cat_cols = self._cat_cols + [self._label_col]
         else:
             raise NotImplementedError
-
-        if self._original_label_col:
-            cat_cols += [self._original_label_col]
 
         inverse_transform_lambda = lambda x: new_encoder_dict[x.name].inverse_transform(x) if x.name in cat_cols else x
         return processed_df.apply(inverse_transform_lambda)

@@ -12,8 +12,10 @@ from src.pipeline.preprocessing.interfaces.ipreprocessor import IPreprocessor
 from src.pipeline.config import Config
 from src.pipeline.model.constants import ModelMetricType
 from src.pipeline import logger
+from src.pipeline.datasets.constants import DatasetType
 
 logging = logger.get_logger(__name__)
+
 
 class ModelBasedDetector(IDataDriftDetector):
     def __init__(self, deployment_dataset_plus: Dataset, training_processed_df_plus_path: str, preprocessor: IPreprocessor, model: IModel):
@@ -27,12 +29,18 @@ class ModelBasedDetector(IDataDriftDetector):
         # concatenate the training and deployment processed dataframes
         training_processed_df_plus: pd.DataFrame = pd.read_pickle(self._training_processed_df_plus_path)
         # TODO: think maybe to use pickle here
-        _, deployment_processed_df_plus, _ = self._preprocessor.preprocess(dataset=self._deployment_dataset_plus)
+        _, deployment_processed_df_plus, _ = self._preprocessor.preprocess(dataset=self._deployment_dataset_plus, generate_dataset_plus=False)
+
+        # update the encoder to see training data also
+        label_column_name = Config().preprocessing.data_drift_model_label_column_name
+        encoder_for_data_drift_label = self._preprocessor.label_preprocessor.encoder[label_column_name]
+        encoder_for_data_drift_label.classes_ = np.append(encoder_for_data_drift_label.classes_, DatasetType.Training.value)
+
         processed_df: pd.DataFrame = pd.concat([training_processed_df_plus, deployment_processed_df_plus])
 
         # train and evaluate the model
         X_train, X_validation, X_test, y_train, y_validation, y_test = self._preprocessor.split(
-            processed_df=processed_df, label_column_name=Config().preprocessing.data_drift_model_label_column_name,
+            processed_df=processed_df, label_column_name=label_column_name,
             dump=False
         )
         # TODO: think maybe to use pickle here

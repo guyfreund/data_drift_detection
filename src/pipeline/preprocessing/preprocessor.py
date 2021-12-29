@@ -72,9 +72,9 @@ class Preprocessor(IPreprocessor):
     #
     #     return self._processed_df, self._processed_df_plus, self._feature_metrics_list
 
-    def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
+    def preprocess(self, dataset: Dataset, generate_dataset_plus: bool = True) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
 
-        logging.info(f'Dataset Info: num of total features: {len(dataset.categorical_feature_names) + len(dataset.numeric_feature_names)} | '
+        logging.info(f'Dataset {dataset.name} Info: num of total features: {len(dataset.categorical_feature_names) + len(dataset.numeric_feature_names)} | '
                      f'num of categorical features: {len(dataset.categorical_feature_names)} | '
                      f'num of numerical features: {len(dataset.numeric_feature_names)}')
 
@@ -96,10 +96,11 @@ class Preprocessor(IPreprocessor):
         logging.info(f"Preprocessing Info: num of categorical features: {len(self._processed_df.select_dtypes(include=['bool', 'object']).columns)} | "
                      f"num of numerical features: {len(self._processed_df.select_dtypes(exclude=['bool', 'object']).columns)}")
 
-        self._processed_df_plus = self._processed_df.copy()
-        self._processed_df_plus[Config().preprocessing.data_drift_model_label_column_name] = dataset.dtype.value
+        if generate_dataset_plus:
+            self._processed_df_plus = self._processed_df.copy()
+            self._processed_df_plus[Config().preprocessing.data_drift_model_label_column_name] = dataset.dtype.value
 
-        self._save_data_as_pickle(dataset.name)
+        self._save_data_as_pickle(dataset.name, generate_dataset_plus)
 
         return self._processed_df, self._processed_df_plus, self._feature_metrics_list
 
@@ -126,14 +127,15 @@ class Preprocessor(IPreprocessor):
 
         return feature_metrics_list
 
-    def _save_data_as_pickle(self, dataset_class_name: str):
+    def _save_data_as_pickle(self, dataset_class_name: str, generate_dataset_plus: bool):
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}.pickle"))
         with open(path, 'wb') as output:
             pickle.dump(self._processed_df, output)
 
-        path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}Plus.pickle"))
-        with open(path, 'wb') as output:
-            pickle.dump(self._processed_df_plus, output)
+        if generate_dataset_plus:
+            path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}Plus.pickle"))
+            with open(path, 'wb') as output:
+                pickle.dump(self._processed_df_plus, output)
 
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_FeatureMetricsList.pickle"))
         with open(path, 'wb') as output:
@@ -256,3 +258,7 @@ class Preprocessor(IPreprocessor):
     @property
     def feature_metrics_list(self) -> List[IFeatureMetrics]:
         return self._feature_metrics_list
+
+    @property
+    def label_preprocessor(self):
+        return self._label_preprocessor
