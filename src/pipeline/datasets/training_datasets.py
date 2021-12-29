@@ -7,8 +7,8 @@ from src.pipeline.datasets.paths import BANK_MARKETING_DATASET_PATH, GERMAN_CRED
     GERMAN_CREDIT_TRAINING_PROCESSED_DF_PLUS_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PLUS_PATH, \
     GERMAN_CREDIT_TRAINING_PROCESSED_DF_PATH, BANK_MARKETING_TRAINING_PROCESSED_DF_PATH, \
     BANK_MARKETING_SAMPLED_DATASET_PATH, \
-    GERMAN_CREDIT_SAMPLED_DATASET_PATH, BANK_MARKETING_TRAINING_X_TRAIN, BANK_MARKETING_TRAINING_Y_TRAIN, \
-    GERMAN_CREDIT_TRAINING_Y_TRAIN, GERMAN_CREDIT_TRAINING_X_TRAIN
+    GERMAN_CREDIT_SAMPLED_DATASET_PATH, BANK_MARKETING_TRAINING_X_TRAIN_RAW, BANK_MARKETING_TRAINING_Y_TRAIN_RAW, \
+    GERMAN_CREDIT_TRAINING_Y_TRAIN_RAW, GERMAN_CREDIT_TRAINING_X_TRAIN_RAW
 
 
 class BankMarketingDataset(Dataset):
@@ -109,7 +109,7 @@ class BankMarketingSampledTrainingTrainDataset(SampledDataset):
     def __init__(self):
         super().__init__(
             dtype=DatasetType.TrainingSampled,
-            raw_df_paths=[BANK_MARKETING_TRAINING_X_TRAIN, BANK_MARKETING_TRAINING_Y_TRAIN],
+            raw_df_paths=[BANK_MARKETING_TRAINING_X_TRAIN_RAW, BANK_MARKETING_TRAINING_Y_TRAIN_RAW],
             path=BANK_MARKETING_SAMPLED_DATASET_PATH,
             numeric_feature_names=Config().preprocessing.bank_marketing.numeric_features,
             categorical_feature_names=Config().preprocessing.bank_marketing.categorical_features,
@@ -125,7 +125,7 @@ class GermanCreditSampledTrainingTrainDataset(SampledDataset):
     def __init__(self):
         super().__init__(
             dtype=DatasetType.Training,
-            raw_df_paths=[GERMAN_CREDIT_TRAINING_X_TRAIN, GERMAN_CREDIT_TRAINING_Y_TRAIN],
+            raw_df_paths=[GERMAN_CREDIT_TRAINING_X_TRAIN_RAW, GERMAN_CREDIT_TRAINING_Y_TRAIN_RAW],
             path=GERMAN_CREDIT_SAMPLED_DATASET_PATH,
             numeric_feature_names=Config().preprocessing.german_credit.numeric_features,
             categorical_feature_names=Config().preprocessing.german_credit.categorical_features,
