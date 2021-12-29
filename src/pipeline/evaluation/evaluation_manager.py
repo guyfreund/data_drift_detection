@@ -54,7 +54,7 @@ class EvaluationManager(IManager):
         for model_metric_type, training_model_metric in training_production_model_metrics_dict.items():
             deployment_model_metric: IModelMetric = deployment_production_model_metrics_dict[model_metric_type]
             if training_model_metric.value != deployment_model_metric.value:
-                print(f'A change in model metric {ModelMetricType.name} was detected with original production model '
+                print(f'A change in model metric {model_metric_type.name} was detected with original production model '
                       f'{self._info.production_model.__class__.__name__}. '
                       f'Training: {training_model_metric.value} - Deployment: {deployment_model_metric.value}')
 
@@ -72,7 +72,7 @@ class EvaluationManager(IManager):
         for model_metric_type, original_model_metric in original_production_model_metrics_dict.items():
             retrained_model_metric: IModelMetric = retrained_production_model_metrics_dict[model_metric_type]
             if original_model_metric.value != retrained_model_metric.value:
-                print(f'A change in model metric {ModelMetricType.name} was detected on retraining '
+                print(f'A change in model metric {model_metric_type.name} was detected on retraining '
                       f'dataset {retrained_production_model_name}. '
                       f'Original Model: {original_model_metric.value} - Retrained Model: {retrained_model_metric.value}')
 
