@@ -36,6 +36,7 @@ class ModelBasedDetector(IDataDriftDetector):
         encoder_for_data_drift_label = self._preprocessor.label_preprocessor.encoder[label_column_name]
         encoder_for_data_drift_label.classes_ = np.append(encoder_for_data_drift_label.classes_, DatasetType.Training.value)
 
+        logging.info(f'Concatenated training and deployment datasets plus, {self._deployment_dataset_plus.name}')
         processed_df: pd.DataFrame = pd.concat([training_processed_df_plus, deployment_processed_df_plus])
 
         # train and evaluate the model
