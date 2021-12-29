@@ -34,7 +34,7 @@ class BankMarketingProductionModel(IModel):
     def _save_model_as_pickle(self, model_class_name: str):
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{model_class_name}.sav"))
         with open(path, 'wb') as handle:
-            pickle.dump({}, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(self._model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         logging.info(f'Save Data: {model_class_name}.save model has been saved')
 
@@ -116,11 +116,10 @@ class GermanCreditProductionModel(IModel):
 
         self._save_model_as_pickle(self.__class__.__name__)
 
-    @staticmethod
-    def _save_model_as_pickle(model_class_name: str):
+    def _save_model_as_pickle(self, model_class_name: str):
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{model_class_name}.sav"))
         with open(path, 'wb') as handle:
-            pickle.dump({}, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(self._model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         logging.info(f'Save Data: {model_class_name}.save model has been saved')
 
