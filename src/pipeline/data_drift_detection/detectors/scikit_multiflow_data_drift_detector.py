@@ -17,7 +17,7 @@ from src.pipeline.config import Config
 
 class ScikitMultiflowDataDriftDetector(IDataDriftDetector):
     def __init__(self, deployment_dataset: Dataset, training_processed_df_path: str, preprocessor: IPreprocessor):
-        assert os.path.exists(training_processed_df_path)
+        # assert os.path.exists(training_processed_df_path)
         self._training_processed_df_path: str = training_processed_df_path
         self._deployment_dataset: Dataset = deployment_dataset
         self._preprocessor: IPreprocessor = preprocessor

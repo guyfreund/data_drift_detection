@@ -59,7 +59,8 @@ class EvaluationManager(IManager):
                       f'Training: {training_model_metric.value} - Deployment: {deployment_model_metric.value}')
 
         # detect increase in performance of retrained production model vs original production model on the retraining dataset
-        self._info.retrained_production_model.load(self._info.retrained_production_model.__class__.__name__)
+        retrained_production_model_name: str = self._info.retrained_production_model.__class__.__name__
+        self._info.retrained_production_model.load(retrained_production_model_name)
 
         X_test_retraining = pd.read_pickle(self._info.retraining_X_test_path)
         y_test_retraining = pd.read_pickle(self._info.retraining_y_test_path)
@@ -72,7 +73,7 @@ class EvaluationManager(IManager):
             retrained_model_metric: IModelMetric = retrained_production_model_metrics_dict[model_metric_type]
             if original_model_metric.value != retrained_model_metric.value:
                 print(f'A change in model metric {ModelMetricType.name} was detected on retraining '
-                      f'dataset {self._info.retraining_dataset.__class__.__name__}. '
+                      f'dataset {retrained_production_model_name}. '
                       f'Original Model: {original_model_metric.value} - Retrained Model: {retrained_model_metric.value}')
 
     @property
