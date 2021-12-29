@@ -18,6 +18,7 @@ from src.pipeline import logger
 
 logging = logger.get_logger(__name__)
 
+
 class DataGenerator(IDataGenerator):
     """ this class loads a GAN model trained on the dataset """
 

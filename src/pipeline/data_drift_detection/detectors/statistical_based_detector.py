@@ -56,7 +56,8 @@ class StatisticalBasedDetector(IDataDriftDetector):
         )
 
         is_drifted = weighted_sum_on_all_data_drift_types > Config().data_drift.internal_data_drift_detector.statistical_based_threshold
-        logging.info(f"Statistical based data drift detector: is_drifted={is_drifted}")
+        logging.info(f"Statistical based data drift detector for {self._deployment_dataset.name}:"
+                     f"is_drifted={is_drifted}")
         return StatisticalBasedDataDrift(is_drifted=is_drifted)
 
     def _get_data(self) -> Tuple[List[str], List[IFeatureMetrics], List[IFeatureMetrics]]:
