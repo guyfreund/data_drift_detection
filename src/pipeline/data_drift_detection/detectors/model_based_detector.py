@@ -19,7 +19,7 @@ logging = logger.get_logger(__name__)
 
 class ModelBasedDetector(IDataDriftDetector):
     def __init__(self, deployment_dataset_plus: Dataset, training_processed_df_plus_path: str, preprocessor: IPreprocessor, model: IModel):
-        assert os.path.exists(training_processed_df_plus_path)
+        # assert os.path.exists(training_processed_df_plus_path)
         self._training_processed_df_plus_path: str = training_processed_df_plus_path
         self._deployment_dataset_plus: Dataset = deployment_dataset_plus
         self._preprocessor: IPreprocessor = preprocessor

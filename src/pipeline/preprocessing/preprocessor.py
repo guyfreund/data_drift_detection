@@ -85,7 +85,12 @@ class Preprocessor(IPreprocessor):
 
         self._label_preprocessor = LabelProcessor(dataset)
         self._processed_df = self._label_preprocessor.preprocessed_data(self._processed_df, dump_encoder=False)
-        # pd.DataFrame(StandardScaler().fit_transform(self._processed_df[dataset.numeric_feature_names]))
+        logging.info(f'Dataset {dataset.name} BEFORE cleaning Nulls: num of total rows: {dataset.raw_df.shape[0]}')
+        # Remove NULLS
+        self._processed_df = self._processed_df.dropna()
+        logging.info(f'Dataset {dataset.name} AFTER cleaning Nulls: num of total rows: {self._processed_df.shape[0]}')
+
+    # pd.DataFrame(StandardScaler().fit_transform(self._processed_df[dataset.numeric_feature_names]))
         # d = defaultdict(LabelEncoder)
         # self._processed_df[dataset.categorical_feature_names].apply(lambda x: d[x.name].fit_transform(x))
         # self._processed_df = pd.get_dummies(self._processed_df, columns=dataset.categorical_feature_names)
@@ -129,13 +134,11 @@ class Preprocessor(IPreprocessor):
 
     def _save_data_as_pickle(self, dataset_class_name: str, generate_dataset_plus: bool):
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}.pickle"))
-        with open(path, 'wb') as output:
-            pickle.dump(self._processed_df, output)
+        self._processed_df.to_pickle(path)
 
         if generate_dataset_plus:
             path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}Plus.pickle"))
-            with open(path, 'wb') as output:
-                pickle.dump(self._processed_df_plus, output)
+            self._processed_df_plus.to_pickle(path)
 
         path = os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_FeatureMetricsList.pickle"))
         with open(path, 'wb') as output:
@@ -163,8 +166,7 @@ class Preprocessor(IPreprocessor):
         ]
 
         for path, dataframe in zip(paths, dataframes):
-            with open(path, 'wb') as output:
-                pickle.dump(dataframe, output)
+            dataframe.to_pickle(path)
 
         logging.info(f'Save Data: {paths} files has been saved')
 
@@ -182,7 +184,7 @@ class Preprocessor(IPreprocessor):
         self._y_validation = y_validation
         self._y_test = y_test
 
-        self._X_test_raw = self._label_preprocessor.postprocess_data(processed_df=self.X_train, df_type='X')
+        self._X_train_raw = self._label_preprocessor.postprocess_data(processed_df=self.X_train, df_type='X')
         self._X_validation_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_validation, df_type='X')
         self._X_test_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_test, df_type='X')
         self._y_train_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_train), df_type='y')
