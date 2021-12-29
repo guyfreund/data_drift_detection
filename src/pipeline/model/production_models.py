@@ -94,15 +94,14 @@ class BankMarketingProductionModel(IModel):
 
 class GermanCreditProductionModel(IModel):
     def __init__(self):
-        self._model = XGBClassifier(**{
-        'n_estimators':3000,
-        'objective': 'binary:logistic',
-        'learning_rate': 0.005,
-        'subsample':0.555,
-        'colsample_bytree':0.7,
-        'min_child_weight':3,
-        'max_depth':8,
-        'n_jobs' : -1})
+        self._model = XGBClassifier(**{'n_estimators': 3000,
+                                       'objective': 'binary:logistic',
+                                       'learning_rate': 0.005,
+                                       'subsample': 0.555,
+                                       'colsample_bytree': 0.7,
+                                       'min_child_weight': 3,
+                                       'max_depth': 8,
+                                       'n_jobs': -1})
         self._is_trained = False
         self._is_tuned = False
         self._model_metrics: Dict[ModelMetricType, IModelMetric] = {}
@@ -129,7 +128,7 @@ class GermanCreditProductionModel(IModel):
         pass
 
     def evaluate(self, X_test: pd.DataFrame, y_test: pd.DataFrame) -> Dict[ModelMetricType, IModelMetric]:
-        y_pred = [round(num) for num in self._model.predict_proba(X_test, ntree_limit=self._model.best_ntree_limit)[:, 1]]
+        y_pred = self._model.predict(X_test, ntree_limit=self._model.best_ntree_limit)
 
         accuracy = metrics.accuracy_score(y_test, y_pred)
         precision = metrics.precision_score(y_test, y_pred)
