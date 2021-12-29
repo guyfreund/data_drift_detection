@@ -154,15 +154,27 @@ class Preprocessor(IPreprocessor):
             os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_X_test.pickle")),
             os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_train.pickle")),
             os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_validation.pickle")),
-            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_test.pickle"))
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_test.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_X_train_raw.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_X_validation_raw.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_X_test_raw.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_train_raw.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_validation_raw.pickle")),
+            os.path.abspath(os.path.join(__file__, "..", "raw_files", f"{dataset_class_name}_y_test_raw.pickle"))
         ]
         dataframes = [
+            self._X_train,
+            self._X_validation,
+            self._X_test,
+            self._y_train,
+            self._y_validation,
+            self._y_test,
             self._X_train_raw,
             self._X_validation_raw,
             self._X_test_raw,
             self._y_train_raw,
             self._y_validation_raw,
-            self._y_test_raw
+            self._y_test_raw,
         ]
 
         for path, dataframe in zip(paths, dataframes):
