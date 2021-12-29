@@ -1,4 +1,3 @@
-import logging
 from xgboost import XGBClassifier
 from typing import Dict, Any
 from sklearn import metrics
@@ -11,6 +10,10 @@ from src.pipeline.model.interfaces.imodel import IModel
 from src.pipeline.model.interfaces.imodel_metric import IModelMetric
 from src.pipeline.model.model_metrics import Accuracy, Precision, Recall, F1, AUC
 from sklearn.ensemble import RandomForestClassifier
+
+from src.pipeline import logger
+
+logging = logger.get_logger(__name__)
 
 
 class BankMarketingProductionModel(IModel):

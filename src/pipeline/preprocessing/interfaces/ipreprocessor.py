@@ -12,7 +12,7 @@ class IPreprocessor(ABC):
     """
 
     @abstractmethod
-    def preprocess(self, dataset: Dataset) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
+    def preprocess(self, dataset: Dataset, generate_dataset_plus: bool = True) -> Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
         """ preprocesses the raw dataset
         saves the processed data frame in self._processed_df
         saves the processed dataset as a pickle
@@ -21,6 +21,7 @@ class IPreprocessor(ABC):
 
         Args:
             dataset (Dataset): The raw dataset
+            generate_dataset_plus (bool): Whether to generate dataset plus or not.
 
         Returns:
             Tuple[pd.DataFrame, pd.DataFrame, List[IFeatureMetrics]]:
@@ -98,4 +99,8 @@ class IPreprocessor(ABC):
 
     @property
     def feature_metrics_list(self) -> List[IFeatureMetrics]:
+        raise NotImplementedError
+
+    @property
+    def label_preprocessor(self):
         raise NotImplementedError
