@@ -1,4 +1,4 @@
-# data_drift_detctor
+# data_drift_detector
 
 Implementation of a Machine Learning Operations pipeline, which consists of: model training, data drift detection & data generation to generate data drift. 
 Databases being used are:
