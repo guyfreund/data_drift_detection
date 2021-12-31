@@ -30,6 +30,11 @@ class Dataset:
         self._categorical_feature_names = categorical_feature_names
         self._numeric_feature_names = numeric_feature_names
         self._original_label_column_name = original_label_column_name
+        self._update_types()
+
+    def _update_types(self):
+        for col in self._categorical_feature_names:
+            self._raw_df[col] = self._raw_df[col].astype('category')
 
     @property
     def original_label_column_name(self) -> str:

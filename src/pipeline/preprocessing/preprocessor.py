@@ -2,6 +2,7 @@ import pickle
 import os
 from typing import Tuple, List
 import pandas as pd
+import numpy as np
 from collections import defaultdict
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
@@ -184,26 +185,33 @@ class Preprocessor(IPreprocessor):
 
     def split(self, processed_df: pd.DataFrame, label_column_name: str, dataset_class_name: str = '', dump: bool = True) -> \
             Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-        data_y = processed_df[label_column_name]
-        data_X = processed_df.drop(label_column_name, axis=1)
-        X_train, X_test, y_train, y_test = train_test_split(data_X, data_y, test_size=Config().preprocessing.split.train_test_split_size)
-        X_test, X_validation, y_test, y_validation = train_test_split(X_test, y_test, test_size=Config().preprocessing.split.validation_test_split_size)
+        processed_df_with_idx_column: pd.DataFrame = processed_df.copy()
+        processed_df_with_idx_column['idx'] = np.arange(processed_df.shape[0])
+        data_y = processed_df_with_idx_column[label_column_name]
+        data_X = processed_df_with_idx_column.drop(label_column_name, axis=1)
+        X_train_idx, X_test_idx, y_train, y_test = train_test_split(data_X, data_y, test_size=Config().preprocessing.split.train_test_split_size)
+        X_test_idx, X_validation_idx, y_test, y_validation = train_test_split(X_test_idx, y_test, test_size=Config().preprocessing.split.validation_test_split_size)
 
-        self._X_train = X_train
-        self._X_validation = X_validation
-        self._X_test = X_test
+        self._X_train = X_train_idx.drop('idx', axis=1)
+        self._X_validation = X_validation_idx.drop('idx', axis=1)
+        self._X_test = X_test_idx.drop('idx', axis=1)
         self._y_train = y_train
         self._y_validation = y_validation
         self._y_test = y_test
 
-        self._X_train_raw = self._label_preprocessor.postprocess_data(processed_df=self.X_train, df_type='X')
-        self._X_validation_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_validation, df_type='X')
-        self._X_test_raw = self._label_preprocessor.postprocess_data(processed_df=self._X_test, df_type='X')
-        self._y_train_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_train), df_type='y')
-        self._y_validation_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_validation), df_type='y')
-        self._y_test_raw = self._label_preprocessor.postprocess_data(processed_df=pd.DataFrame(self._y_test), df_type='y')
-
         if dump:
+            raw_df: pd.DataFrame = self._label_preprocessor.postprocess_data(processed_df=processed_df)
+            assert len(raw_df) == len(processed_df)
+            X_raw: pd.DataFrame = raw_df.drop(label_column_name, axis=1)
+            y_raw: pd.DataFrame = raw_df[label_column_name]
+
+            self._X_train_raw = X_raw.iloc[X_train_idx['idx']]
+            self._X_validation_raw = X_raw.iloc[X_validation_idx['idx']]
+            self._X_test_raw = X_raw.iloc[X_test_idx['idx']]
+            self._y_train_raw = y_raw.iloc[X_train_idx['idx']]
+            self._y_validation_raw = y_raw.iloc[X_validation_idx['idx']]
+            self._y_test_raw = y_raw.iloc[X_test_idx['idx']]
+
             self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)
 
         logging.info(f"Split Data: processed_df has been splitted by the '{label_column_name}' column")
@@ -211,7 +219,7 @@ class Preprocessor(IPreprocessor):
                      f"validation size: {round(len(self._X_validation)/len(processed_df), 2)*100}% | "
                      f"test size: {round(len(self._X_test)/len(processed_df), 2)*100}%")
 
-        return X_train, X_validation, X_test, y_train, y_validation, y_test
+        return self._X_train, self._X_validation, self._X_test, self._y_train, self._y_validation, self._y_test
 
     @property
     def processed_df(self) -> pd.DataFrame:

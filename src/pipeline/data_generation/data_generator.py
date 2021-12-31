@@ -161,7 +161,7 @@ class SMOTENCDataGenerator(DataGenerator):
         self._X = self._df.drop(col_label, axis=1)
         self._y = self._df[col_label]
         self._cat_cols_idx = [self._X.columns.get_loc(col) for col in self._cat_cols]
-        sampling_strategy = self._df[col_label].value_counts().to_dict()
+        # sampling_strategy = self._df[col_label].value_counts().to_dict()
         self._model = SMOTENC(random_state=42, categorical_features=self._cat_cols_idx)
 
     def generate_normal_samples(self, n_samples: int, generate_both: bool = True) -> Union[np.ndarray, pd.DataFrame]:
@@ -171,7 +171,7 @@ class SMOTENCDataGenerator(DataGenerator):
             synthetic_X, synthetic_y = self._model.fit_resample(self._X, self._y)
             synthetic_X[self._label_col] = synthetic_y
             synthetic_df = synthetic_X
-            synthetic_df = self._processor.postprocess_data(synthetic_df)
+        synthetic_df = self._processor.postprocess_data(synthetic_df)
         return synthetic_df
 
     def generate_both_classes(self) -> pd.DataFrame:
