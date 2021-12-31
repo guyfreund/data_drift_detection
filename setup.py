@@ -57,10 +57,5 @@ setup(
     ],
     python_requires=">=3.8.12",
     url="https://github.com/guyfreund/data_drift_detctor/",
-    classifiers=[],
-    entry_points={
-        "console_scripts": [
-            "data_drift_detector=pipeline_manager.__main__:main",
-        ]
-    },
+    classifiers=[]
 )
