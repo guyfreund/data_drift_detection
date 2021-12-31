@@ -59,7 +59,8 @@ setup(
     url="https://github.com/guyfreund/data_drift_detctor/",
     classifiers=[
         "Intended Audience :: Education",
-        "License :: OSI Approved :: MIT License"
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
