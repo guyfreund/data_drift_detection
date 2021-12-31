@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 DESCRIPTION = 'Data Drift Detection - MLOps project, Reichman University 2022\n'
 LONG_DESCRIPTION = 'Implementation of a Machine Learning Operations pipeline, which consists of: model training, ' \
                    'data drift detection & data generation to generate data drift.\n' \
@@ -9,7 +9,7 @@ LONG_DESCRIPTION = 'Implementation of a Machine Learning Operations pipeline, wh
                    '- https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)\n'
 
 setup(
-    name="data_drift_detector",
+    name="data_drift_detection",
     version=VERSION,
     author="Guy Freund, Danielle Ben-Bashat, Elad Prager",
     author_email="guyfreund@gmail.com",
@@ -55,5 +55,17 @@ setup(
         "xgboost==1.5.1"
     ],
     python_requires=">=3.8.12",
-    url="https://github.com/guyfreund/data_drift_detector/"
+    url="https://github.com/guyfreund/data_drift_detector/",
+    classifiers=[
+        "Intended Audience :: Education",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+    ],
+    entry_points={
+        "console_scripts": [
+            "data_drift_detector=pipeline_manager.__main__:main",
+        ]
+    },
 )
