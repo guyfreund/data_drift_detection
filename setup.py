@@ -56,6 +56,6 @@ setup(
         "xgboost==1.5.1"
     ],
     python_requires=">=3.8.12",
-    url="https://github.com/guyfreund/data_drift_detctor/",
+    url="https://github.com/guyfreund/data_drift_detector/",
     classifiers=[]
 )
