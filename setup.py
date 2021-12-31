@@ -14,7 +14,7 @@ setup(
     author="Guy Freund, Danielle Ben-Bashat, Elad Prager",
     author_email="guyfreund@gmail.com",
     description=DESCRIPTION,
-    license="MIT",
+    # license="MIT",
     long_description=LONG_DESCRIPTION,
     packages=find_packages(),
     install_requires=[
@@ -34,7 +34,6 @@ setup(
         "packaging==21.3",
         "pandas==1.3.5",
         "pillow==8.4.0",
-        "pip==21.3.1",
         "pipenv==2021.11.23",
         "platformdirs==2.4.1",
         "pyparsing==3.0.6",
@@ -56,17 +55,5 @@ setup(
         "xgboost==1.5.1"
     ],
     python_requires=">=3.8.12",
-    url="https://github.com/guyfreund/data_drift_detector/",
-    classifiers=[
-        "Intended Audience :: Education",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-    ],
-    entry_points={
-        "console_scripts": [
-            "data_drift_detector=pipeline_manager.__main__:main",
-        ]
-    },
+    url="https://github.com/guyfreund/data_drift_detector/"
 )
