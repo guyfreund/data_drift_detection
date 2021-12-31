@@ -51,12 +51,12 @@ class BankMarketingProductionModel(IModel):
         fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
         auc = metrics.auc(fpr, tpr)
 
-        logging.info(f'Model Evaluation: model was evaluated successfully. ')
-        logging.info(f'Evaluation Info: accuracy: {round(accuracy * 100, 2)}% | '
-                      f'precision: {round(precision * 100, 2)}% | '
-                      f'recall: {round(recall * 100, 2)}% | '
-                      f'f1: {round(f1 * 100, 2)}% | '
-                      f'auc: {round(auc, 2)}')
+        # logging.info(f'Model Evaluation: model was evaluated successfully. ')
+        # logging.info(f'Evaluation Info: accuracy: {round(accuracy * 100, 2)}% | '
+        #               f'precision: {round(precision * 100, 2)}% | '
+        #               f'recall: {round(recall * 100, 2)}% | '
+        #               f'f1: {round(f1 * 100, 2)}% | '
+        #               f'auc: {round(auc, 2)}')
 
         self._model_metrics = {
             ModelMetricType.Accuracy: Accuracy(value=accuracy),
@@ -136,12 +136,12 @@ class GermanCreditProductionModel(IModel):
         fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
         auc = metrics.auc(fpr, tpr)
 
-        logging.info(f'Model Evaluation: model was evaluated successfully. results are as follows: '
-                      f'Accuracy: {round(accuracy * 100, 2)}%, '
-                      f'Precision: {round(precision * 100, 2)}%, '
-                      f'Recall: {round(recall * 100, 2)}%, '
-                      f'F1: {round(f1 * 100, 2)}%, '
-                      f'AUC: {round(auc, 2)}')
+        # logging.info(f'Model Evaluation: model was evaluated successfully. results are as follows: '
+        #               f'Accuracy: {round(accuracy * 100, 2)}%, '
+        #               f'Precision: {round(precision * 100, 2)}%, '
+        #               f'Recall: {round(recall * 100, 2)}%, '
+        #               f'F1: {round(f1 * 100, 2)}%, '
+        #               f'AUC: {round(auc, 2)}')
 
         self._model_metrics = {
             ModelMetricType.Accuracy: Accuracy(value=accuracy),

@@ -2,7 +2,9 @@ from typing import Dict
 import pandas as pd
 import numpy as np
 import os
+from sklearn import metrics
 
+from src.pipeline.model.model_metrics import Accuracy, Precision, Recall, F1, AUC
 from src.pipeline.data_drift_detection.interfaces.idata_drift_detector import IDataDriftDetector
 from src.pipeline.data_drift_detection.data_drift import ModelBasedDataDrift
 from src.pipeline.model.interfaces.imodel import IModel
@@ -13,6 +15,7 @@ from src.pipeline.config import Config
 from src.pipeline.model.constants import ModelMetricType
 from src.pipeline import logger
 from src.pipeline.datasets.constants import DatasetType
+from sklearn.linear_model import LogisticRegression
 
 logging = logger.get_logger(__name__)
 
@@ -42,13 +45,38 @@ class ModelBasedDetector(IDataDriftDetector):
 
         # train and evaluate the model
         X_train, X_validation, X_test, y_train, y_validation, y_test = self._preprocessor.split(
-            processed_df=processed_df, label_column_name=label_column_name,
-            dump=False
-        )
+            processed_df=processed_df, label_column_name=label_column_name)
+        processed_df.to_csv(os.path.abspath(os.path.join(__file__, "..", "..", "..", "data_generation", "raw_files", f"training_and_deployment_df.csv")), index=False)
+        logmodel = LogisticRegression()
+        logmodel.fit(X_train, y_train)
+
         # TODO: think maybe to use pickle here
-        self._model.train(X_train=X_train, y_train=y_train)
+        # self._model.train(X_train=X_train, y_train=y_train)
         self._model.tune_hyperparameters(X_validation=X_validation, y_validation=y_validation)
-        model_metrics_dict: Dict[ModelMetricType, IModelMetric] = self._model.evaluate(X_test=X_test, y_test=y_test)
+        y_pred = logmodel.predict(X_test)
+
+        accuracy = metrics.accuracy_score(y_test, y_pred)
+        precision = metrics.precision_score(y_test, y_pred)
+        recall = metrics.recall_score(y_test, y_pred)
+        f1 = metrics.f1_score(y_test, y_pred)
+        fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred)
+        auc = metrics.auc(fpr, tpr)
+
+        # logging.info(f'Model Evaluation: model was evaluated successfully. results are as follows: '
+        #              f'Accuracy: {round(accuracy * 100, 2)}%, '
+        #              f'Precision: {round(precision * 100, 2)}%, '
+        #              f'Recall: {round(recall * 100, 2)}%, '
+        #              f'F1: {round(f1 * 100, 2)}%, '
+        #              f'AUC: {round(auc, 2)}')
+
+        model_metrics_dict = {
+            ModelMetricType.Accuracy: Accuracy(value=accuracy),
+            ModelMetricType.Precision: Precision(value=precision),
+            ModelMetricType.Recall: Recall(value=recall),
+            ModelMetricType.F1: F1(value=f1),
+            ModelMetricType.AUC: AUC(value=auc)
+        }
+
 
         # data drift is detected if model accuracy is not like a coin-flip
         model_accuracy: float = model_metrics_dict[ModelMetricType.Accuracy].value

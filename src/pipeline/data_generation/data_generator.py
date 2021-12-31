@@ -67,9 +67,9 @@ class DataGenerator(IDataGenerator):
         drifted_features_all_types = np.random.choice(self._numeric_cols + self._cat_cols,
                                                       num_drift_features, replace=False)
         percentage_drift_mean = np.random.uniform(
-            Config().data_drift.internal_data_drift_detector.mean.percent_threshold, 1.)
+            Config().data_drift.internal_data_drift_detector.mean.percent_threshold + 0.2, 1.)
         percentage_drift_std = np.random.uniform(
-            Config().data_drift.internal_data_drift_detector.variance.percent_threshold, 1.)
+            Config().data_drift.internal_data_drift_detector.variance.percent_threshold + 0.2, 1.)
         percentage_drift_nulls = np.random.uniform(
             Config().data_drift.internal_data_drift_detector.number_of_nulls.percent_threshold, 1.)
 

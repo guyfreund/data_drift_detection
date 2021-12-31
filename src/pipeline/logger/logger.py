@@ -4,7 +4,7 @@ from enum import Enum
 import sys
 
 LOG_FILE_PATH = "data_drift_detector.log"
-LOGGING_LEVEL = logging.DEBUG
+LOGGING_LEVEL = logging.INFO
 FORMATTER = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 

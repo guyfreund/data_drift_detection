@@ -151,15 +151,21 @@ print('Bank Marketing: Succeed generate normal dataset using SMOTENC')
 data_generation_manager_drift, generated_data_drift = test_manager._test_data_drift_generation()
 print('Bank Marketing: Succeed generate drifted dataset using SMOTENC')
 
-test_manager = GermanCreditTestSMOTENCDatageneration()
-data_generation_manager, generated_data = test_manager._test_data_normal_generation()
-print('German Credit: Succeed generate normal data')
-data_generation_manager_drift, generated_data_drift = test_manager._test_data_drift_generation()
-print('German Credit: Succeed generate drifted data')
+# test_manager = GermanCreditTestSMOTENCDatageneration()
+# data_generation_manager, generated_data = test_manager._test_data_normal_generation()
+# print('German Credit: Succeed generate normal data')
+# data_generation_manager_drift, generated_data_drift = test_manager._test_data_drift_generation()
+# print('German Credit: Succeed generate drifted data')
 
 
 # GAN
-# test_manager = TestGANDatageneration()
+# test_manager = BankMarketingTestGANDatageneration()
+# data_generation_manager, generated_data = test_manager._test_data_normal_generation()
+# print('Succeed generate normal data')
+# data_generation_manager, generated_data = test_manager._test_data_drift_generation()
+# print('Succeed generate drifted data')
+#
+# test_manager = GermanCreditTestGANDatageneration()
 # data_generation_manager, generated_data = test_manager._test_data_normal_generation()
 # print('Succeed generate normal data')
 # data_generation_manager, generated_data = test_manager._test_data_drift_generation()

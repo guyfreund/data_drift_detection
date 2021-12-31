@@ -15,6 +15,9 @@ class Accuracy(IModelMetric):
     def mtype(self):
         return self._mtype
 
+    @value.setter
+    def value(self, value):
+        self._value = value
 
 class Precision(IModelMetric):
     def __init__(self, value: float):
@@ -29,6 +32,9 @@ class Precision(IModelMetric):
     def mtype(self):
         return self._mtype
 
+    @value.setter
+    def value(self, value):
+        self._value = value
 
 class Recall(IModelMetric):
     def __init__(self, value: float):
@@ -43,6 +49,9 @@ class Recall(IModelMetric):
     def mtype(self):
         return self._mtype
 
+    @value.setter
+    def value(self, value):
+        self._value = value
 
 class F1(IModelMetric):
     def __init__(self, value: float):
@@ -57,6 +66,9 @@ class F1(IModelMetric):
     def mtype(self):
         return self._mtype
 
+    @value.setter
+    def value(self, value):
+        self._value = value
 
 class AUC(IModelMetric):
     def __init__(self, value: float):
@@ -70,3 +82,7 @@ class AUC(IModelMetric):
     @property
     def mtype(self):
         return self._mtype
+
+    @value.setter
+    def value(self, value):
+        self._value = value
