@@ -2,6 +2,7 @@ import pickle
 import os
 from typing import Tuple, List
 import pandas as pd
+import numpy as np
 from collections import defaultdict
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
@@ -185,7 +186,7 @@ class Preprocessor(IPreprocessor):
     def split(self, processed_df: pd.DataFrame, label_column_name: str, dataset_class_name: str = '', dump: bool = True) -> \
             Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         processed_df_with_idx_column: pd.DataFrame = processed_df.copy()
-        processed_df_with_idx_column['idx'] = processed_df_with_idx_column.index
+        processed_df_with_idx_column['idx'] = np.arange(processed_df.shape[0])
         data_y = processed_df_with_idx_column[label_column_name]
         data_X = processed_df_with_idx_column.drop(label_column_name, axis=1)
         X_train_idx, X_test_idx, y_train, y_test = train_test_split(data_X, data_y, test_size=Config().preprocessing.split.train_test_split_size)
