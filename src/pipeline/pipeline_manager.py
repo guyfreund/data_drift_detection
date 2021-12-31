@@ -77,7 +77,7 @@ class PipelineManager(IManager):
             self._model_retraining_manager.manage()
             logging.debug("Model Retraining done manage")
 
-            # evaluationest
+            # evaluation
             self._evaluation_manager.manage()
             logging.debug("Model Evaluation done manage")
 
