@@ -203,12 +203,12 @@ class Preprocessor(IPreprocessor):
         X_raw: pd.DataFrame = raw_df.drop(label_column_name, axis=1)
         y_raw: pd.DataFrame = raw_df[label_column_name]
 
-        self._X_train_raw = X_raw[X_train_idx['idx']]
-        self._X_validation_raw = X_raw[X_validation_idx['idx']]
-        self._X_test_raw = X_raw[X_test_idx['idx']]
-        self._y_train_raw = y_raw[X_train_idx['idx']]
-        self._y_validation_raw = y_raw[X_validation_idx['idx']]
-        self._y_test_raw = y_raw[X_test_idx['idx']]
+        self._X_train_raw = X_raw.iloc[X_train_idx['idx']]
+        self._X_validation_raw = X_raw.iloc[X_validation_idx['idx']]
+        self._X_test_raw = X_raw.iloc[X_test_idx['idx']]
+        self._y_train_raw = y_raw.iloc[X_train_idx['idx']]
+        self._y_validation_raw = y_raw.iloc[X_validation_idx['idx']]
+        self._y_test_raw = y_raw.iloc[X_test_idx['idx']]
 
         if dump:
             self._save_split_data_as_pickle(dataset_class_name=dataset_class_name)
