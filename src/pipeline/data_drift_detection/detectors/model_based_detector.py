@@ -35,7 +35,7 @@ class ModelBasedDetector(IDataDriftDetector):
         label_column_name = Config().preprocessing.data_drift_model_label_column_name
         encoder_for_data_drift_label = self._preprocessor.label_preprocessor.encoder[label_column_name]
         encoder_for_data_drift_label.classes_ = np.append(encoder_for_data_drift_label.classes_, DatasetType.Training.value)
-        logging.info('Updated the encoder dict')
+        logging.debug('Updated the encoder dict')
 
         logging.info(f'Concatenated training and deployment datasets plus, {self._deployment_dataset_plus.name}')
         processed_df: pd.DataFrame = pd.concat([training_processed_df_plus, deployment_processed_df_plus])
@@ -53,5 +53,6 @@ class ModelBasedDetector(IDataDriftDetector):
         # data drift is detected if model accuracy is not like a coin-flip
         model_accuracy: float = model_metrics_dict[ModelMetricType.Accuracy].value
         is_accuracy_like_coin_flip = np.abs(model_accuracy - 0.5) < Config().data_drift.internal_data_drift_detector.model_based_threshold  # TODO: change to np.isclose
-        logging.info(f"Model based data drift detector: is_drifted={not is_accuracy_like_coin_flip}")
+        logging.info(f"Model based data drift detector: for {self._deployment_dataset_plus.name}, "
+                     f"is_drifted={not is_accuracy_like_coin_flip}")
         return ModelBasedDataDrift(is_drifted=not is_accuracy_like_coin_flip)

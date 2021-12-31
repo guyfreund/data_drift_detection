@@ -18,6 +18,7 @@ from src.pipeline import logger
 
 logging = logger.get_logger(__name__)
 
+
 class DataGenerator(IDataGenerator):
     """ this class loads a GAN model trained on the dataset """
 
@@ -160,18 +161,56 @@ class SMOTENCDataGenerator(DataGenerator):
         self._processor = processor
         processed_df = self._processor.preprocessed_data(self._df)
         self._df = processed_df
-        self.X = self._df.drop(col_label, axis=1)
-        self.y = self._df[col_label]
-        cat_cols_idx = [self.X.columns.get_loc(col) for col in self._cat_cols]
+        self._X = self._df.drop(col_label, axis=1)
+        self._y = self._df[col_label]
+        self._cat_cols_idx = [self._X.columns.get_loc(col) for col in self._cat_cols]
         sampling_strategy = self._df[col_label].value_counts().to_dict()
-        self._model = SMOTENC(random_state=42, categorical_features=cat_cols_idx, sampling_strategy=sampling_strategy)
+        self._model = SMOTENC(random_state=42, categorical_features=self._cat_cols_idx)
 
-    def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
-        synthetic_X, synthetic_y = self._model.fit_resample(self.X, self.y)
-        synthetic_X[self._label_col] = synthetic_y
-        synthetic_df = synthetic_X
-        synthetic_df = self._processor.postprocess_data(synthetic_df)
+    def generate_normal_samples(self, n_samples: int, generate_both: bool = True) -> Union[np.ndarray, pd.DataFrame]:
+        if generate_both:
+            synthetic_df = self.generate_both_classes()
+        else:
+            synthetic_X, synthetic_y = self._model.fit_resample(self._X, self._y)
+            synthetic_X[self._label_col] = synthetic_y
+            synthetic_df = synthetic_X
+            synthetic_df = self._processor.postprocess_data(synthetic_df)
         return synthetic_df
+
+    def generate_both_classes(self) -> pd.DataFrame:
+        self._model = SMOTENC(random_state=42, categorical_features=self._cat_cols_idx)
+        class_counts = self._y.value_counts()
+        minority_class_label, majority_class_label = class_counts.idxmin(), class_counts.idxmax()
+        df_origin_minority = self._df.loc[self._df[self._label_col] == minority_class_label]
+        df_origin_majority = self._df.loc[self._df[self._label_col] == majority_class_label]
+
+        # generate minority
+        synthetic_X_minority, synthetic_y_minority = self._model.fit_resample(self._X, self._y)
+        synthetic_df_minority = synthetic_X_minority
+        synthetic_df_minority[self._label_col] = synthetic_y_minority
+        synthetic_df_minority = synthetic_df_minority[synthetic_df_minority[self._label_col] == minority_class_label]
+        synthetic_df_minority = pd.concat([synthetic_df_minority, df_origin_minority]).drop_duplicates(keep=False)
+        # generate majority
+        df_majority = df_origin_majority.drop(self._label_col, axis=1)
+        # take new generated
+        df_majority['tmp_label'] = 1    # add new label
+        # create dummy data
+        df_tmp = df_majority.copy()
+        df_tmp['tmp_label'] = 0  # make different label
+        n_rows = df_tmp.shape[0]
+        df_tmp = df_tmp.sample(n=n_rows*3, replace=True)
+        df_tmp = pd.concat([df_tmp, df_majority])
+        X_tmp, y_tmp = df_tmp.drop(['tmp_label'], axis=1), df_tmp['tmp_label']
+        synthetic_X_majority, synthetic_y_majority = self._model.fit_resample(X_tmp, y_tmp)
+        synthetic_df_majority = synthetic_X_majority
+        synthetic_df_majority['tmp_label'] = synthetic_y_majority
+        synthetic_df_majority = synthetic_df_majority[synthetic_df_majority['tmp_label'] == 1]  #take only majority class
+        synthetic_df_majority = synthetic_df_majority.drop('tmp_label', axis=1)
+        synthetic_df_majority[self._label_col] = majority_class_label
+        synthetic_df_majority = pd.concat([synthetic_df_majority, df_origin_majority]).drop_duplicates(keep=False)
+        df_synthetic_all = pd.concat([synthetic_df_minority, synthetic_df_majority])
+        df_synthetic_all = df_synthetic_all.sample(min(n_rows, len(df_synthetic_all)))
+        return df_synthetic_all
 
 
     @property
