@@ -218,7 +218,7 @@ class Preprocessor(IPreprocessor):
                      f"validation size: {round(len(self._X_validation)/len(processed_df), 2)*100}% | "
                      f"test size: {round(len(self._X_test)/len(processed_df), 2)*100}%")
 
-        return X_train, X_validation, X_test, y_train, y_validation, y_test
+        return self._X_train, self._X_validation, self._X_test, self._y_train, self._y_validation, self._y_test
 
     @property
     def processed_df(self) -> pd.DataFrame:
