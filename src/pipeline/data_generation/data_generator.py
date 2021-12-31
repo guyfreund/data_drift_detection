@@ -1,13 +1,10 @@
-from typing import Any, List, Union
+from typing import List, Union
 import logging
 import pandas as pd
-import tensorflow as tf
-import time
-import os
+# import tensorflow as tf
 import numpy as np
-# from imblearn.over_sampling import SMOTE, ADASYN
 from imblearn.over_sampling import SMOTENC
-from ydata_synthetic.synthesizers.gan import BaseModel
+# from ydata_synthetic.synthesizers.gan import BaseModel
 
 from src.pipeline.data_generation.interfaces.idata_generator import IDataGenerator
 from src.pipeline.datasets.dataset import Dataset
@@ -116,41 +113,41 @@ class DataGenerator(IDataGenerator):
         return self._df
 
 
-class GANDataGenerator(DataGenerator):
-    """ this class loads a GAN model trained on the dataset """
-
-    def __init__(self, dataset: Dataset, model_class: BaseModel, trained_model_path: str,
-                 processer: LabelProcessor):
-
-        super().__init__(dataset)
-        self._synthesizer = model_class.load(trained_model_path)  # for now we use CGAN class only
-        self._processor = processer
-
-    # TODO: n_samples from config
-    def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
-        # z = tf.random.normal((n_samples, self._synthesizer.noise_dim))
-        # label_z = tf.random.uniform((n_samples,), minval=min(self._labels), maxval=max(self._labels) + 1,
-        #                             dtype=tf.dtypes.int32)
-        # generated_data = self._synthesizer.generator([z, label_z])
-        # generated_data = tf.make_ndarray(tf.make_tensor_proto(generated_data))
-        amount_to_generate = np.ceil(n_samples//self._synthesizer.batch_size)
-        generate_amount_per_class = int(amount_to_generate//2)
-        generated_data_class_true = self._synthesizer.sample(condition=np.array([1]), n_samples=generate_amount_per_class)
-        generated_data_class_false = self._synthesizer.sample(condition=np.array([0]), n_samples=generate_amount_per_class)
-        generated_data = pd.concat([generated_data_class_true, generated_data_class_false]).sample(n_samples)
-        # To Data Frame
-        generated_data = self._processor.postprocess_data(generated_data)
-        # generated_dataset = pd.DataFrame(columns=list(self._df.columns), data=generated_dataset)
-        return generated_data
-
-
-    @property
-    def synthesizer(self):
-        return self._synthesizer
-    #
-    # @property
-    # def origin_dataset(self) -> Dataset:
-    #     return self._origin_dataset
+# class GANDataGenerator(DataGenerator):
+#     """ this class loads a GAN model trained on the dataset """
+#
+#     def __init__(self, dataset: Dataset, model_class: BaseModel, trained_model_path: str,
+#                  processer: LabelProcessor):
+#
+#         super().__init__(dataset)
+#         self._synthesizer = model_class.load(trained_model_path)  # for now we use CGAN class only
+#         self._processor = processer
+#
+#     # TODO: n_samples from config
+#     def generate_normal_samples(self, n_samples: int) -> Union[np.ndarray, pd.DataFrame]:
+#         # z = tf.random.normal((n_samples, self._synthesizer.noise_dim))
+#         # label_z = tf.random.uniform((n_samples,), minval=min(self._labels), maxval=max(self._labels) + 1,
+#         #                             dtype=tf.dtypes.int32)
+#         # generated_data = self._synthesizer.generator([z, label_z])
+#         # generated_data = tf.make_ndarray(tf.make_tensor_proto(generated_data))
+#         amount_to_generate = np.ceil(n_samples//self._synthesizer.batch_size)
+#         generate_amount_per_class = int(amount_to_generate//2)
+#         generated_data_class_true = self._synthesizer.sample(condition=np.array([1]), n_samples=generate_amount_per_class)
+#         generated_data_class_false = self._synthesizer.sample(condition=np.array([0]), n_samples=generate_amount_per_class)
+#         generated_data = pd.concat([generated_data_class_true, generated_data_class_false]).sample(n_samples)
+#         # To Data Frame
+#         generated_data = self._processor.postprocess_data(generated_data)
+#         # generated_dataset = pd.DataFrame(columns=list(self._df.columns), data=generated_dataset)
+#         return generated_data
+#
+#
+#     @property
+#     def synthesizer(self):
+#         return self._synthesizer
+#     #
+#     # @property
+#     # def origin_dataset(self) -> Dataset:
+#     #     return self._origin_dataset
 
 
 class SMOTENCDataGenerator(DataGenerator):

@@ -3,12 +3,12 @@ import pickle
 from typing import List, Union
 import pandas as pd
 import numpy as np
-from ydata_synthetic.synthesizers.gan import BaseModel
+# from ydata_synthetic.synthesizers.gan import BaseModel
 from src.pipeline.config import Config
 from src.pipeline.interfaces.imanager import IManager
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.data_drift_detection.constants import DataDriftType
-from src.pipeline.data_generation.data_generator import GANDataGenerator, SMOTENCDataGenerator
+from src.pipeline.data_generation.data_generator import SMOTENCDataGenerator
 from src.pipeline.datasets.dataset import Dataset
 from src.pipeline.datasets.constants import DatasetType
 from src.pipeline.preprocessing.label_preprocessor import LabelProcessor
@@ -23,7 +23,7 @@ class DataGenerationManagerInfo:
                  data_drift_types: List[DataDriftType],
                  save_data_path: str, save_data_plus_path: str,
                  processor: LabelProcessor,
-                 model_class: Union[BaseModel, str] = None,
+                 model_class = None,
                  model_path: str = None):
         self.origin_dataset: Dataset = origin_dataset
         # self.dataset_name = type(origin_dataset.__name__)
@@ -40,13 +40,13 @@ class DataGenerationManager(IManager):
     def __init__(self, info: DataGenerationManagerInfo):
         self._origin_dataset = info.origin_dataset
         self._label_col = self._origin_dataset.label_column_name
-        if info.model_class:
-            self._data_generator = GANDataGenerator(dataset=self._origin_dataset,
-                                                    model_class=info.model_class ,
-                                                    trained_model_path=info.model_path,
-                                                    processer=info.processor) # TODO add inverse
-        else:
-            self._data_generator = SMOTENCDataGenerator(dataset=self._origin_dataset,
+        # if info.model_class:
+        #     self._data_generator = GANDataGenerator(dataset=self._origin_dataset,
+        #                                             model_class=info.model_class ,
+        #                                             trained_model_path=info.model_path,
+        #                                             processer=info.processor) # TODO add inverse
+        # else:
+        self._data_generator = SMOTENCDataGenerator(dataset=self._origin_dataset,
                                                         processor=info.processor)
         self._sample_size_to_generate = info.sample_size_to_generate
         self._data_drift_types = info.data_drift_types
@@ -69,7 +69,6 @@ class DataGenerationManager(IManager):
 
         generated_dataset.to_csv(self._save_data_path, index=False)
         generated_dataset_plus.to_csv(self._save_data_plus_path, index=False)
-
 
     def _get_generated_dataset(self, is_drifted: bool) -> Union[np.array, pd.DataFrame]:
         if is_drifted:
