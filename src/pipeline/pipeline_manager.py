@@ -231,7 +231,7 @@ def run_pipeline_manager():
 
     # monitoring
     pipeline_manager.mode = PipelineMode.Monitoring
-    for _ in range(1):
+    for _ in range(10):
         pipeline_manager.manage()
 
 
