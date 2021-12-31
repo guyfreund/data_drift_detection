@@ -15,6 +15,7 @@ pipenv = "*"
 pyyaml = "*"
 xgboost = "*"
 "ruamel.yaml" = "*"
+imblearn = "*"
 
 [dev-packages]
 pytest = "*"
