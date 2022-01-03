@@ -2,11 +2,11 @@ import os
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Set
-from skmultiflow.drift_detection.ddm import DDM
-from skmultiflow.drift_detection.eddm import EDDM
-from skmultiflow.drift_detection.hddm_a import HDDM_A
-from skmultiflow.drift_detection.hddm_w import HDDM_W
-from skmultiflow.drift_detection.base_drift_detector import BaseDriftDetector as ScikitMultiflowModuleBaseDataDriftDetector
+# from skmultiflow.drift_detection.ddm import DDM
+# from skmultiflow.drift_detection.eddm import EDDM
+# from skmultiflow.drift_detection.hddm_a import HDDM_A
+# from skmultiflow.drift_detection.hddm_w import HDDM_W
+# from skmultiflow.drift_detection.base_drift_detector import BaseDriftDetector as ScikitMultiflowModuleBaseDataDriftDetector
 
 from src.pipeline.data_drift_detection.data_drift import DataDrift
 from src.pipeline.data_drift_detection.interfaces.idata_drift_detector import IDataDriftDetector
@@ -22,12 +22,12 @@ class ScikitMultiflowDataDriftDetector(IDataDriftDetector):
         self._deployment_dataset: Dataset = deployment_dataset
         self._preprocessor: IPreprocessor = preprocessor
         self._processed_df: pd.DataFrame = pd.DataFrame()
-        self._ddm = DDM()
-        self._eddm = EDDM()
-        self._hddm_a = HDDM_A()
-        self._hddm_w = HDDM_W()
-        self._detectors: List[ScikitMultiflowModuleBaseDataDriftDetector] = [self._ddm, self._eddm, self._hddm_a, self._hddm_w]
-        self._drifted_instances_idx: Dict[ScikitMultiflowModuleBaseDataDriftDetector, Set[int]] = {d: set() for d in self._detectors}
+        # self._ddm = DDM()
+        # self._eddm = EDDM()
+        # self._hddm_a = HDDM_A()
+        # self._hddm_w = HDDM_W()
+        # self._detectors: List[ScikitMultiflowModuleBaseDataDriftDetector] = [self._ddm, self._eddm, self._hddm_a, self._hddm_w]
+        # self._drifted_instances_idx: Dict[ScikitMultiflowModuleBaseDataDriftDetector, Set[int]] = {d: set() for d in self._detectors}
 
     def detect(self) -> DataDrift:
         return DataDrift(is_drifted=False)

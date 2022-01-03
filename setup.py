@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.2'
+VERSION = '1.0.0'
 DESCRIPTION = 'Data Drift Detection - MLOps project, Reichman University 2022\n'
 LONG_DESCRIPTION = 'Implementation of a Machine Learning Operations pipeline, which consists of: model training, ' \
                    'data drift detection & data generation to generate data drift.\n' \
@@ -43,7 +43,6 @@ setup(
         "ruamel.yaml.clib==0.2.6",
         "ruamel.yaml==0.17.19",
         "scikit-learn==1.0.2",
-        "scikit-multiflow==0.5.3",
         "scipy==1.7.3",
         "seaborn==0.11.2",
         "setuptools==60.2.0",
