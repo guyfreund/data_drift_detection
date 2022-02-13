@@ -1,4 +1,5 @@
 from typing import List, Tuple, Dict
+from matplotlib import pyplot as plt
 
 from src.pipeline.model.constants import ModelMetricType
 from src.pipeline.model.interfaces.imodel_metric import IModelMetric
@@ -44,6 +45,15 @@ class ModelTrainingManager(IManager):
         self._info.model.train(X_train, y_train)
         self._info.model.tune_hyperparameters(X_validation, y_validation)
         model_metrics_dict: Dict[ModelMetricType, IModelMetric] = self._info.model.evaluate(X_test, y_test)
+        print(X_train.columns)
+        print(f'length of features: {len(X_train.columns)}')
+        print(self._info.model.feature_importances)
+        print(f'length of feature importance: {len(self._info.model.feature_importances)}')
+        plt.figure(figsize=(10, 8))
+        plt.bar(X_train.columns, self._info.model.feature_importances)
+        plt.xticks(X_train.columns, rotation='vertical')
+        plt.tight_layout()
+        plt.savefig("test.png", bbox_inches='tight')
 
         return self._info, feature_metrics_list, model_metrics_dict
 

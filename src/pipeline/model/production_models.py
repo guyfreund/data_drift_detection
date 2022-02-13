@@ -91,6 +91,10 @@ class BankMarketingProductionModel(IModel):
     def is_tuned(self) -> bool:
         return self._is_tuned
 
+    @property
+    def feature_importances(self):
+        return self._model.feature_importances_
+
 
 class GermanCreditProductionModel(IModel):
     def __init__(self):
@@ -175,6 +179,10 @@ class GermanCreditProductionModel(IModel):
     @property
     def is_tuned(self) -> bool:
         return self._is_tuned
+
+    @property
+    def feature_importances(self):
+        return self._model.feature_importances_
 
 
 class BankMarketingRetrainedProductionModel(BankMarketingProductionModel):
