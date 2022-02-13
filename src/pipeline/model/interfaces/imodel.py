@@ -79,3 +79,7 @@ class IModel(ABC):
     @property
     def is_tuned(self) -> bool:
         raise NotImplementedError
+
+    @property
+    def feature_importances(self) -> Any:
+        raise NotImplementedError
